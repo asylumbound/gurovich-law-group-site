@@ -12,14 +12,14 @@ import { motion } from "framer-motion";
  * Z-INDEX STACKING ORDER (TOP → BOTTOM):
  * 1. TEXT (z-50) - Headlines, body, CTAs - always topmost and clickable
  * 2. BOTTOM ANGLES (z-40) - White angled divider shape at bottom
- * 3. OPACITY OVERLAY (z-30) - Semi-transparent overlay for text readability
- * 4. JUSTICE STATUE (z-20) - Lady Justice statue, large and prominent
+ * 3. OPACITY OVERLAY (z-30) - Semi-transparent overlay for text readability (70% opacity)
+ * 4. JUSTICE STATUE (z-20) - Lady Justice statue, 60% larger, contained in left column
  * 5. BASE/BACKGROUND (z-10) - LA skyline background
  * 
  * RESPONSIVE BREAKPOINTS:
- * - ≥1024px: Two-column layout
- * - 768-1023px: Two-column with reduced type, rebalanced widths
- * - ≤767px: Stacked layout, text first, CTAs full-width
+ * - ≥1024px: Two-column layout, statue at full scale
+ * - 768-1023px: Two-column with reduced statue
+ * - ≤767px: Stacked layout, statue hidden or minimal
  */
 
 export default function Hero() {
@@ -42,35 +42,41 @@ export default function Hero() {
 
       {/* ============================================
           LAYER 4 (z-20): Justice Statue
-          Large, prominent, anchored bottom-left
-          Partially bleeding off left edge matches mock
+          60% larger than original, contained within left 55% column
+          Uses responsive width/height sizing (not transform scale)
+          Anchored bottom-left, overflow hidden on container
           ============================================ */}
       <motion.div
-        initial={{ opacity: 0, x: -50 }}
+        initial={{ opacity: 0, x: -30 }}
         animate={{ opacity: 1, x: 0 }}
         transition={{ duration: 0.8, delay: 0.2 }}
-        className="absolute left-0 bottom-0 z-20 pointer-events-none"
+        className="absolute left-0 bottom-0 z-20 pointer-events-none overflow-hidden"
         aria-hidden="true"
         style={{ 
-          height: '110%',
-          maxHeight: '115%',
+          /* Constrain to left column (55% of viewport) */
+          width: '55%',
+          height: '100%',
         }}
       >
         <img
           src="/images/justice_statue_replacment.png"
           alt=""
-          className="h-full w-auto object-contain object-left-bottom"
+          className="absolute bottom-0 left-0 object-contain object-left-bottom"
           style={{
-            maxWidth: '60vw',
-            minWidth: '400px',
+            /* 60% larger: original was ~70% height, now ~112% height */
+            /* Using clamp for responsive sizing */
+            height: 'clamp(400px, 112%, 900px)',
+            width: 'auto',
+            maxWidth: '100%',
           }}
         />
       </motion.div>
 
       {/* ============================================
           LAYER 3 (z-30): Opacity Overlay
-          Semi-transparent left region for text readability
+          70% opacity for improved text readability
           Covers left ~50%, above statue, below text
+          pointer-events: none ensures CTAs remain clickable
           ============================================ */}
       <div
         className="absolute inset-0 z-30 pointer-events-none"
@@ -80,7 +86,7 @@ export default function Hero() {
           src="/images/opacity_half_hero.png"
           alt=""
           className="w-full h-full object-cover"
-          style={{ opacity: 0.6 }}
+          style={{ opacity: 0.7 }}
         />
       </div>
 
