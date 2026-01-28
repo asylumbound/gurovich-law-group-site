@@ -52,8 +52,8 @@ export default function Hero() {
         className="absolute left-0 bottom-0 z-20 pointer-events-none"
         aria-hidden="true"
         style={{ 
-          height: '95%',
-          maxHeight: '100%',
+          height: '110%',
+          maxHeight: '115%',
         }}
       >
         <img
@@ -61,8 +61,8 @@ export default function Hero() {
           alt=""
           className="h-full w-auto object-contain object-left-bottom"
           style={{
-            maxWidth: '45vw',
-            minWidth: '280px',
+            maxWidth: '60vw',
+            minWidth: '400px',
           }}
         />
       </motion.div>
