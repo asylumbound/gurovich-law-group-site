@@ -1,4 +1,4 @@
-import { Link } from "wouter";
+import { Link, useLocation } from "wouter";
 import { Facebook, Twitter, Linkedin, Instagram } from "lucide-react";
 import { useContactModal } from "@/contexts/ContactModalContext";
 
@@ -23,92 +23,110 @@ const socialLinks = [
   { icon: Instagram, href: "#", label: "Instagram" },
 ];
 
+// Custom Link component that scrolls to top on navigation
+function ScrollToTopLink({ href, children, className }: { href: string; children: React.ReactNode; className?: string }) {
+  const [, setLocation] = useLocation();
+  
+  const handleClick = (e: React.MouseEvent) => {
+    e.preventDefault();
+    window.scrollTo({ top: 0, behavior: 'instant' });
+    setLocation(href);
+  };
+  
+  return (
+    <a href={href} onClick={handleClick} className={className}>
+      {children}
+    </a>
+  );
+}
+
 export default function Footer() {
   const { openContactModal } = useContactModal();
 
   return (
-    <footer className="bg-secondary text-secondary-foreground">
+    <footer className="bg-secondary text-secondary-foreground" role="contentinfo">
       <div className="container py-16">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12">
           {/* Brand with Full Logo */}
           <div>
-            <Link href="/" className="inline-block mb-6">
+            <ScrollToTopLink href="/" className="inline-block mb-6">
               <img
                 src="/images/footerlogo.png"
-                alt="Gurovich Law Group"
+                alt="Gurovich Law Group - Return to Homepage"
                 className="h-20 w-auto"
               />
-            </Link>
+            </ScrollToTopLink>
             <p className="font-body text-white/70 text-sm leading-relaxed">
               Gurovich Law Group provides vigorous advocacy for clients facing
               life's most serious legal challenges. We fight for your rights.
             </p>
-            <div className="flex gap-4 mt-6">
+            <div className="flex gap-4 mt-6" role="list" aria-label="Social media links">
               {socialLinks.map((social) => (
                 <a
                   key={social.label}
                   href={social.href}
-                  aria-label={social.label}
-                  className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center hover:bg-primary transition-colors"
+                  aria-label={`Follow us on ${social.label}`}
+                  className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center hover:bg-primary transition-colors focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:ring-offset-secondary"
+                  role="listitem"
                 >
-                  <social.icon className="w-5 h-5" />
+                  <social.icon className="w-5 h-5" aria-hidden="true" />
                 </a>
               ))}
             </div>
           </div>
 
           {/* Practice Areas */}
-          <div>
+          <nav aria-label="Practice Areas">
             <h4 className="font-heading text-lg font-semibold text-white mb-6">
               Practice Areas
             </h4>
-            <ul className="space-y-3">
+            <ul className="space-y-3" role="list">
               {practiceAreas.map((item) => (
-                <li key={item.href}>
-                  <Link
+                <li key={item.href} role="listitem">
+                  <ScrollToTopLink
                     href={item.href}
-                    className="font-body text-white/70 hover:text-primary transition-colors text-sm"
+                    className="font-body text-white/70 hover:text-primary transition-colors text-sm focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:ring-offset-secondary rounded"
                   >
                     {item.label}
-                  </Link>
+                  </ScrollToTopLink>
                 </li>
               ))}
             </ul>
-          </div>
+          </nav>
 
           {/* Quick Links */}
-          <div>
+          <nav aria-label="Quick Links">
             <h4 className="font-heading text-lg font-semibold text-white mb-6">
               Quick Links
             </h4>
-            <ul className="space-y-3">
+            <ul className="space-y-3" role="list">
               {quickLinks.map((item) => (
-                <li key={item.href}>
-                  <Link
+                <li key={item.href} role="listitem">
+                  <ScrollToTopLink
                     href={item.href}
-                    className="font-body text-white/70 hover:text-primary transition-colors text-sm"
+                    className="font-body text-white/70 hover:text-primary transition-colors text-sm focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:ring-offset-secondary rounded"
                   >
                     {item.label}
-                  </Link>
+                  </ScrollToTopLink>
                 </li>
               ))}
-              <li>
+              <li role="listitem">
                 <button
                   onClick={openContactModal}
-                  className="font-body text-white/70 hover:text-primary transition-colors text-sm"
+                  className="font-body text-white/70 hover:text-primary transition-colors text-sm focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:ring-offset-secondary rounded"
                 >
                   Contact Us
                 </button>
               </li>
             </ul>
-          </div>
+          </nav>
 
           {/* Contact */}
           <div>
             <h4 className="font-heading text-lg font-semibold text-white mb-6">
               Contact Us
             </h4>
-            <div className="space-y-4 font-body text-sm text-white/70">
+            <address className="space-y-4 font-body text-sm text-white/70 not-italic">
               <p>
                 15233 Ventura Blvd, Suite 500
                 <br />
@@ -117,7 +135,8 @@ export default function Footer() {
               <p>
                 <a
                   href="tel:8184014725"
-                  className="hover:text-primary transition-colors"
+                  className="hover:text-primary transition-colors focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:ring-offset-secondary rounded"
+                  aria-label="Call us at (818) 401-4725"
                 >
                   (818) 401-4725
                 </a>
@@ -125,13 +144,14 @@ export default function Footer() {
               <p>
                 <a
                   href="mailto:kg@gurovichlaw.com"
-                  className="hover:text-primary transition-colors"
+                  className="hover:text-primary transition-colors focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:ring-offset-secondary rounded"
+                  aria-label="Email us at kg@gurovichlaw.com"
                 >
                   kg@gurovichlaw.com
                 </a>
               </p>
               <p>Mon-Fri: 9:00 AM - 5:00 PM</p>
-            </div>
+            </address>
           </div>
         </div>
       </div>
@@ -143,31 +163,31 @@ export default function Footer() {
             © {new Date().getFullYear()} Gurovich Law Group, APC. All rights
             reserved.
           </p>
-          <div className="flex items-center gap-6">
+          <div className="flex items-center gap-6 flex-wrap justify-center">
             {/* Payment Icons */}
             <img
               src="/images/payment-icons.webp"
               alt="We accept American Express, MasterCard, Visa, Discover, and Cash"
               className="h-6 w-auto"
             />
-            <Link
+            <ScrollToTopLink
               href="/privacy"
-              className="font-body text-sm text-white/50 hover:text-white transition-colors"
+              className="font-body text-sm text-white/50 hover:text-white transition-colors focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:ring-offset-secondary rounded"
             >
               Privacy Policy
-            </Link>
-            <Link
+            </ScrollToTopLink>
+            <ScrollToTopLink
               href="/terms"
-              className="font-body text-sm text-white/50 hover:text-white transition-colors"
+              className="font-body text-sm text-white/50 hover:text-white transition-colors focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:ring-offset-secondary rounded"
             >
               Terms of Service
-            </Link>
-            <Link
+            </ScrollToTopLink>
+            <ScrollToTopLink
               href="/disclaimer"
-              className="font-body text-sm text-white/50 hover:text-white transition-colors"
+              className="font-body text-sm text-white/50 hover:text-white transition-colors focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:ring-offset-secondary rounded"
             >
               Disclaimer
-            </Link>
+            </ScrollToTopLink>
           </div>
         </div>
       </div>

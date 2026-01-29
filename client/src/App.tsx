@@ -7,6 +7,7 @@ import { ThemeProvider } from "./contexts/ThemeContext";
 import { ContactModalProvider } from "./contexts/ContactModalContext";
 import Layout from "./components/Layout";
 import CookieConsent from "./components/CookieConsent";
+import AccessibilityWidget from "./components/AccessibilityWidget";
 import Home from "./pages/Home";
 import Blog from "./pages/Blog";
 import BlogPost from "./pages/BlogPost";
@@ -60,9 +61,26 @@ function App() {
       >
         <ContactModalProvider>
           <TooltipProvider>
+            {/* Skip to Main Content Link - WCAG 2.4.1 Bypass Blocks */}
+            <a 
+              href="#main-content" 
+              className="skip-to-main"
+              onClick={(e) => {
+                e.preventDefault();
+                const main = document.getElementById('main-content');
+                if (main) {
+                  main.focus();
+                  main.scrollIntoView();
+                }
+              }}
+            >
+              Skip to main content
+            </a>
+            
             <Toaster />
             <Router />
             <CookieConsent />
+            <AccessibilityWidget />
           </TooltipProvider>
         </ContactModalProvider>
       </ThemeProvider>
