@@ -1071,4 +1071,552 @@ Guidelines:
         createdAt: i.created_at,
       }));
     }),
+
+  // ==================== KC LIBRARY PROCEDURES ====================
+
+  /**
+   * Get KC Library entries with filtering
+   */
+  getKCLibrary: adminProcedure
+    .input(z.object({
+      domain: z.enum(["civil", "criminal"]).optional(),
+      jurisdiction: z.enum(["CA", "FED"]).optional(),
+      category: z.string().optional(),
+      search: z.string().optional(),
+      limit: z.number().min(1).max(100).default(50),
+    }))
+    .query(async ({ input }) => {
+      const supabase = getSupabaseAdmin();
+      
+      let query = supabase
+        .from("kc_library")
+        .select(`
+          id,
+          kc_id,
+          name,
+          domain,
+          jurisdiction,
+          category,
+          authority_type,
+          authority_cite,
+          tags
+        `)
+        .order("category", { ascending: true })
+        .order("name", { ascending: true })
+        .limit(input.limit);
+      
+      if (input.domain) {
+        query = query.eq("domain", input.domain);
+      }
+      if (input.jurisdiction) {
+        query = query.eq("jurisdiction", input.jurisdiction);
+      }
+      if (input.category) {
+        query = query.eq("category", input.category);
+      }
+      if (input.search) {
+        query = query.or(`name.ilike.%${input.search}%,kc_id.ilike.%${input.search}%`);
+      }
+      
+      const { data: kcs, error } = await query;
+      
+      if (error) {
+        console.error("Failed to get KC library:", error);
+        return [];
+      }
+      
+      return kcs || [];
+    }),
+
+  /**
+   * Get KC categories for filtering
+   */
+  getKCCategories: adminProcedure
+    .input(z.object({
+      domain: z.enum(["civil", "criminal"]).optional(),
+      jurisdiction: z.enum(["CA", "FED"]).optional(),
+    }))
+    .query(async ({ input }) => {
+      const supabase = getSupabaseAdmin();
+      
+      let query = supabase
+        .from("kc_library")
+        .select("category")
+        .order("category", { ascending: true });
+      
+      if (input.domain) {
+        query = query.eq("domain", input.domain);
+      }
+      if (input.jurisdiction) {
+        query = query.eq("jurisdiction", input.jurisdiction);
+      }
+      
+      const { data, error } = await query;
+      
+      if (error) {
+        console.error("Failed to get KC categories:", error);
+        return [];
+      }
+      
+      // Get unique categories
+      const categories = Array.from(new Set((data || []).map(d => d.category)));
+      return categories;
+    }),
+
+  /**
+   * Get KC template with elements for a specific KC
+   */
+  getKCTemplate: adminProcedure
+    .input(z.object({
+      kcId: z.string(),
+    }))
+    .query(async ({ input }) => {
+      const supabase = getSupabaseAdmin();
+      
+      // Get the KC
+      const { data: kc, error: kcError } = await supabase
+        .from("kc_library")
+        .select("*")
+        .eq("kc_id", input.kcId)
+        .single();
+      
+      if (kcError || !kc) {
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "KC not found",
+        });
+      }
+      
+      // Get assigned template
+      const { data: assignment } = await supabase
+        .from("kc_template_assignments")
+        .select("template_id")
+        .eq("kc_id", input.kcId)
+        .single();
+      
+      let template = null;
+      if (assignment) {
+        const { data: templateData } = await supabase
+          .from("kc_templates")
+          .select("*")
+          .eq("template_id", assignment.template_id)
+          .single();
+        template = templateData;
+      }
+      
+      // Get evidence types for reference
+      const { data: evidenceTypes } = await supabase
+        .from("evidence_types")
+        .select("code, name, examples");
+      
+      return {
+        kc,
+        template,
+        evidenceTypes: evidenceTypes || [],
+      };
+    }),
+
+  /**
+   * Get KCs assigned to a specific intake/matter
+   */
+  getMatterKCs: adminProcedure
+    .input(z.object({
+      intakeId: z.number(),
+    }))
+    .query(async ({ input, ctx }) => {
+      const supabase = getSupabaseAdmin();
+      
+      // Verify access
+      const hasAccess = await verifyIntakeAccess(input.intakeId, ctx.user.id, ctx.user.role || "user");
+      if (!hasAccess) {
+        throw new TRPCError({
+          code: "FORBIDDEN",
+          message: "You do not have access to this intake",
+        });
+      }
+      
+      // Get assigned KCs with their details
+      const { data: matterKCs, error } = await supabase
+        .from("matter_kcs")
+        .select(`
+          id,
+          kc_id,
+          created_by,
+          created_at,
+          kc_library (
+            name,
+            domain,
+            jurisdiction,
+            category,
+            authority_cite
+          )
+        `)
+        .eq("intake_id", input.intakeId)
+        .order("created_at", { ascending: false });
+      
+      if (error) {
+        console.error("Failed to get matter KCs:", error);
+        return [];
+      }
+      
+      return (matterKCs || []).map(mk => ({
+        id: mk.id,
+        kcId: mk.kc_id,
+        createdBy: mk.created_by,
+        createdAt: mk.created_at,
+        kc: mk.kc_library,
+      }));
+    }),
+
+  /**
+   * Assign a KC to an intake and generate proof matrix rows
+   */
+  assignKCToIntake: adminProcedure
+    .input(z.object({
+      intakeId: z.number(),
+      kcId: z.string(),
+    }))
+    .mutation(async ({ input, ctx }) => {
+      const supabase = getSupabaseAdmin();
+      
+      // Verify access
+      const hasAccess = await verifyIntakeAccess(input.intakeId, ctx.user.id, ctx.user.role || "user");
+      if (!hasAccess) {
+        throw new TRPCError({
+          code: "FORBIDDEN",
+          message: "You do not have access to this intake",
+        });
+      }
+      
+      // Check if already assigned
+      const { data: existing } = await supabase
+        .from("matter_kcs")
+        .select("id")
+        .eq("intake_id", input.intakeId)
+        .eq("kc_id", input.kcId)
+        .single();
+      
+      if (existing) {
+        throw new TRPCError({
+          code: "CONFLICT",
+          message: "This KC is already assigned to this intake",
+        });
+      }
+      
+      // Get the KC and its template
+      const { data: kc } = await supabase
+        .from("kc_library")
+        .select("*")
+        .eq("kc_id", input.kcId)
+        .single();
+      
+      if (!kc) {
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "KC not found",
+        });
+      }
+      
+      // Get assigned template
+      const { data: assignment } = await supabase
+        .from("kc_template_assignments")
+        .select("template_id")
+        .eq("kc_id", input.kcId)
+        .single();
+      
+      let template = null;
+      if (assignment) {
+        const { data: templateData } = await supabase
+          .from("kc_templates")
+          .select("*")
+          .eq("template_id", assignment.template_id)
+          .single();
+        template = templateData;
+      }
+      
+      // Insert matter_kc assignment
+      const { error: assignError } = await supabase
+        .from("matter_kcs")
+        .insert({
+          intake_id: input.intakeId,
+          kc_id: input.kcId,
+          created_by: ctx.user.name || ctx.user.id,
+        });
+      
+      if (assignError) {
+        console.error("Failed to assign KC:", assignError);
+        throw new TRPCError({
+          code: "INTERNAL_SERVER_ERROR",
+          message: "Failed to assign KC to intake",
+        });
+      }
+      
+      // Generate proof matrix rows from template elements
+      let matrixRowsCreated = 0;
+      if (template && template.elements && Array.isArray(template.elements)) {
+        const matrixRows = [];
+        
+        for (const element of template.elements) {
+          // Create a row for each evidence type required for this element
+          for (const evidenceTypeCode of element.evidence_type_codes || []) {
+            matrixRows.push({
+              intake_id: input.intakeId,
+              kc_id: input.kcId,
+              element_key: element.element_key,
+              element_text: element.element_text,
+              evidence_type_code: evidenceTypeCode,
+              status: "MISSING",
+              linked_evidence_ids: [],
+              notes: null,
+            });
+          }
+        }
+        
+        if (matrixRows.length > 0) {
+          const { error: matrixError } = await supabase
+            .from("matter_proof_matrix")
+            .insert(matrixRows);
+          
+          if (matrixError) {
+            console.error("Failed to create proof matrix rows:", matrixError);
+          } else {
+            matrixRowsCreated = matrixRows.length;
+          }
+        }
+      }
+      
+      return {
+        success: true,
+        kcId: input.kcId,
+        kcName: kc.name,
+        matrixRowsCreated,
+      };
+    }),
+
+  /**
+   * Remove a KC from an intake (and its proof matrix rows)
+   */
+  removeKCFromIntake: adminProcedure
+    .input(z.object({
+      intakeId: z.number(),
+      kcId: z.string(),
+    }))
+    .mutation(async ({ input, ctx }) => {
+      const supabase = getSupabaseAdmin();
+      
+      // Verify access
+      const hasAccess = await verifyIntakeAccess(input.intakeId, ctx.user.id, ctx.user.role || "user");
+      if (!hasAccess) {
+        throw new TRPCError({
+          code: "FORBIDDEN",
+          message: "You do not have access to this intake",
+        });
+      }
+      
+      // Delete proof matrix rows first
+      await supabase
+        .from("matter_proof_matrix")
+        .delete()
+        .eq("intake_id", input.intakeId)
+        .eq("kc_id", input.kcId);
+      
+      // Delete the KC assignment
+      const { error } = await supabase
+        .from("matter_kcs")
+        .delete()
+        .eq("intake_id", input.intakeId)
+        .eq("kc_id", input.kcId);
+      
+      if (error) {
+        console.error("Failed to remove KC:", error);
+        throw new TRPCError({
+          code: "INTERNAL_SERVER_ERROR",
+          message: "Failed to remove KC from intake",
+        });
+      }
+      
+      return { success: true };
+    }),
+
+  /**
+   * Get proof matrix for an intake
+   */
+  getProofMatrix: adminProcedure
+    .input(z.object({
+      intakeId: z.number(),
+      kcId: z.string().optional(),
+    }))
+    .query(async ({ input, ctx }) => {
+      const supabase = getSupabaseAdmin();
+      
+      // Verify access
+      const hasAccess = await verifyIntakeAccess(input.intakeId, ctx.user.id, ctx.user.role || "user");
+      if (!hasAccess) {
+        throw new TRPCError({
+          code: "FORBIDDEN",
+          message: "You do not have access to this intake",
+        });
+      }
+      
+      let query = supabase
+        .from("matter_proof_matrix")
+        .select(`
+          id,
+          kc_id,
+          element_key,
+          element_text,
+          evidence_type_code,
+          status,
+          linked_evidence_ids,
+          notes,
+          created_at,
+          updated_at
+        `)
+        .eq("intake_id", input.intakeId)
+        .order("kc_id", { ascending: true })
+        .order("element_key", { ascending: true });
+      
+      if (input.kcId) {
+        query = query.eq("kc_id", input.kcId);
+      }
+      
+      const { data: matrix, error } = await query;
+      
+      if (error) {
+        console.error("Failed to get proof matrix:", error);
+        return [];
+      }
+      
+      // Get evidence types for display names
+      const { data: evidenceTypes } = await supabase
+        .from("evidence_types")
+        .select("code, name");
+      
+      const evidenceTypeMap = new Map((evidenceTypes || []).map(et => [et.code, et.name]));
+      
+      return (matrix || []).map(row => ({
+        ...row,
+        evidenceTypeName: evidenceTypeMap.get(row.evidence_type_code) || row.evidence_type_code,
+      }));
+    }),
+
+  /**
+   * Update proof matrix entry status
+   */
+  updateProofMatrixStatus: adminProcedure
+    .input(z.object({
+      intakeId: z.number(),
+      matrixId: z.number(),
+      status: z.enum(["MISSING", "PARTIAL", "SATISFIED"]),
+      notes: z.string().optional(),
+      linkedEvidenceIds: z.array(z.number()).optional(),
+    }))
+    .mutation(async ({ input, ctx }) => {
+      const supabase = getSupabaseAdmin();
+      
+      // Verify access
+      const hasAccess = await verifyIntakeAccess(input.intakeId, ctx.user.id, ctx.user.role || "user");
+      if (!hasAccess) {
+        throw new TRPCError({
+          code: "FORBIDDEN",
+          message: "You do not have access to this intake",
+        });
+      }
+      
+      // Verify the matrix entry belongs to this intake
+      const { data: existing } = await supabase
+        .from("matter_proof_matrix")
+        .select("id")
+        .eq("id", input.matrixId)
+        .eq("intake_id", input.intakeId)
+        .single();
+      
+      if (!existing) {
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "Proof matrix entry not found",
+        });
+      }
+      
+      const updateData: any = {
+        status: input.status,
+        updated_at: new Date().toISOString(),
+      };
+      
+      if (input.notes !== undefined) {
+        updateData.notes = input.notes;
+      }
+      if (input.linkedEvidenceIds !== undefined) {
+        updateData.linked_evidence_ids = input.linkedEvidenceIds;
+      }
+      
+      const { error } = await supabase
+        .from("matter_proof_matrix")
+        .update(updateData)
+        .eq("id", input.matrixId);
+      
+      if (error) {
+        console.error("Failed to update proof matrix:", error);
+        throw new TRPCError({
+          code: "INTERNAL_SERVER_ERROR",
+          message: "Failed to update proof matrix entry",
+        });
+      }
+      
+      return { success: true };
+    }),
+
+  /**
+   * Get proof matrix summary/stats for an intake
+   */
+  getProofMatrixSummary: adminProcedure
+    .input(z.object({
+      intakeId: z.number(),
+    }))
+    .query(async ({ input, ctx }) => {
+      const supabase = getSupabaseAdmin();
+      
+      // Verify access
+      const hasAccess = await verifyIntakeAccess(input.intakeId, ctx.user.id, ctx.user.role || "user");
+      if (!hasAccess) {
+        throw new TRPCError({
+          code: "FORBIDDEN",
+          message: "You do not have access to this intake",
+        });
+      }
+      
+      // Get all matrix entries
+      const { data: matrix, error } = await supabase
+        .from("matter_proof_matrix")
+        .select("kc_id, element_key, status")
+        .eq("intake_id", input.intakeId);
+      
+      if (error) {
+        console.error("Failed to get proof matrix summary:", error);
+        return { total: 0, missing: 0, partial: 0, satisfied: 0, byKC: {} };
+      }
+      
+      const entries = matrix || [];
+      
+      // Overall stats
+      const total = entries.length;
+      const missing = entries.filter(e => e.status === "MISSING").length;
+      const partial = entries.filter(e => e.status === "PARTIAL").length;
+      const satisfied = entries.filter(e => e.status === "SATISFIED").length;
+      
+      // Stats by KC
+      const byKC: Record<string, { total: number; missing: number; partial: number; satisfied: number }> = {};
+      
+      for (const entry of entries) {
+        if (!byKC[entry.kc_id]) {
+          byKC[entry.kc_id] = { total: 0, missing: 0, partial: 0, satisfied: 0 };
+        }
+        byKC[entry.kc_id].total++;
+        if (entry.status === "MISSING") byKC[entry.kc_id].missing++;
+        else if (entry.status === "PARTIAL") byKC[entry.kc_id].partial++;
+        else if (entry.status === "SATISFIED") byKC[entry.kc_id].satisfied++;
+      }
+      
+      return { total, missing, partial, satisfied, byKC };
+    }),
 });

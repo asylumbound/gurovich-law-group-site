@@ -294,3 +294,28 @@
 - [x] Update Admin Dashboard file download buttons to use getFileDownloadUrl
 - [x] Update Terminal citation panel to use getFileDownloadUrl for UPLOAD citations
 - [x] Test file downloads work correctly with signed URLs (60 tests passing)
+
+## KC Library Integration
+
+### Phase 1: KC Builder UI
+- [x] Create terminal.getKCLibrary procedure to fetch KCs by jurisdiction/category
+- [x] Create terminal.assignKCToIntake procedure to link KC to intake
+- [x] Create terminal.generateProofMatrix procedure to auto-create matrix rows from KC elements
+- [x] Add KC Builder panel to Terminal UI with search/filter
+- [x] Add "Add to Case" button that generates proof matrix rows
+- [x] Display assigned KCs for current intake
+- [x] Add proof matrix summary display (MISSING/PARTIAL/SATISFIED counts)
+- [x] Add vitest tests for KC Library procedures (11 tests)
+
+### Phase 2: Statute Lookup Integration
+- [ ] Update statute lookup to check KC library for matching entries
+- [ ] Display KC elements when statute is found in library
+- [ ] Show evidence type requirements for each element
+- [ ] Add "Apply KC Template" action from statute results
+
+### Phase 3: Proof Matrix Dashboard
+- [ ] Create proof_matrix_entries table for tracking element status
+- [ ] Create terminal.getProofMatrixStatus procedure
+- [ ] Build dashboard component showing MISSING/PARTIAL/SATISFIED status
+- [ ] Add evidence linking to proof matrix entries
+- [ ] Visual progress indicators per KC and overall case

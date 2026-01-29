@@ -135,6 +135,11 @@ export default function Terminal() {
   const [showCitations, setShowCitations] = useState(true);
   const [showDocSearch, setShowDocSearch] = useState(false);
   const [docSearchQuery, setDocSearchQuery] = useState("");
+  const [showKCBuilder, setShowKCBuilder] = useState(false);
+  const [kcDomain, setKcDomain] = useState<"civil" | "criminal" | undefined>(undefined);
+  const [kcJurisdiction, setKcJurisdiction] = useState<"CA" | "FED" | undefined>(undefined);
+  const [kcCategory, setKcCategory] = useState<string | undefined>(undefined);
+  const [kcSearch, setKcSearch] = useState("");
   
   // Static password protection
   const [isAdminAuthenticated, setIsAdminAuthenticated] = useState(() => {
@@ -270,6 +275,49 @@ export default function Terminal() {
     { sessionId: currentSessionId || "" },
     { enabled: false }
   );
+  
+  // KC Library queries
+  const kcLibraryQuery = trpc.terminal.getKCLibrary.useQuery(
+    { domain: kcDomain, jurisdiction: kcJurisdiction, category: kcCategory, search: kcSearch, limit: 50 },
+    { enabled: isAdminAuthenticated && showKCBuilder }
+  );
+  
+  const kcCategoriesQuery = trpc.terminal.getKCCategories.useQuery(
+    { domain: kcDomain, jurisdiction: kcJurisdiction },
+    { enabled: isAdminAuthenticated && showKCBuilder }
+  );
+  
+  const matterKCsQuery = trpc.terminal.getMatterKCs.useQuery(
+    { intakeId: selectedIntakeId! },
+    { enabled: isAdminAuthenticated && !!selectedIntakeId }
+  );
+  
+  const proofMatrixSummaryQuery = trpc.terminal.getProofMatrixSummary.useQuery(
+    { intakeId: selectedIntakeId! },
+    { enabled: isAdminAuthenticated && !!selectedIntakeId }
+  );
+  
+  const assignKCMutation = trpc.terminal.assignKCToIntake.useMutation({
+    onSuccess: (data) => {
+      toast.success(`Added "${data.kcName}" with ${data.matrixRowsCreated} proof matrix entries`);
+      matterKCsQuery.refetch();
+      proofMatrixSummaryQuery.refetch();
+    },
+    onError: (error) => {
+      toast.error(error.message);
+    },
+  });
+  
+  const removeKCMutation = trpc.terminal.removeKCFromIntake.useMutation({
+    onSuccess: () => {
+      toast.success("KC removed from case");
+      matterKCsQuery.refetch();
+      proofMatrixSummaryQuery.refetch();
+    },
+    onError: (error) => {
+      toast.error(error.message);
+    },
+  });
   
   // Handle PDF export
   const handleExportPDF = async () => {
@@ -674,6 +722,20 @@ export default function Terminal() {
                 Search Docs
               </Button>
               <Button
+                variant={showKCBuilder ? "default" : "outline"}
+                size="sm"
+                onClick={() => setShowKCBuilder(!showKCBuilder)}
+                disabled={!selectedIntakeId}
+              >
+                <BookOpen className="h-4 w-4 mr-2" />
+                KC Builder
+                {matterKCsQuery.data && matterKCsQuery.data.length > 0 && (
+                  <Badge variant="secondary" className="ml-2">
+                    {matterKCsQuery.data.length}
+                  </Badge>
+                )}
+              </Button>
+              <Button
                 variant="outline"
                 size="sm"
                 onClick={() => processUploadsMutation.mutate({ intakeId: selectedIntakeId! })}
@@ -820,6 +882,211 @@ export default function Terminal() {
                   ) : null}
                 </div>
               )}
+            </div>
+          </div>
+        )}
+        
+        {/* KC Builder Panel */}
+        {showKCBuilder && selectedIntakeId && (
+          <div className="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 p-4">
+            <div className="max-w-6xl mx-auto">
+              <div className="flex items-center justify-between mb-4">
+                <h3 className="font-semibold flex items-center gap-2">
+                  <BookOpen className="h-5 w-5" />
+                  Knowledge Concept Builder
+                </h3>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => setShowKCBuilder(false)}
+                >
+                  Close
+                </Button>
+              </div>
+              
+              {/* Proof Matrix Summary */}
+              {proofMatrixSummaryQuery.data && proofMatrixSummaryQuery.data.total > 0 && (
+                <div className="mb-4 p-3 bg-gray-50 dark:bg-gray-900 rounded-lg">
+                  <div className="flex items-center gap-4 text-sm">
+                    <span className="font-medium">Proof Matrix Status:</span>
+                    <Badge variant="destructive" className="gap-1">
+                      <AlertCircle className="h-3 w-3" />
+                      {proofMatrixSummaryQuery.data.missing} Missing
+                    </Badge>
+                    <Badge variant="secondary" className="gap-1 bg-amber-100 text-amber-800">
+                      <Clock className="h-3 w-3" />
+                      {proofMatrixSummaryQuery.data.partial} Partial
+                    </Badge>
+                    <Badge variant="secondary" className="gap-1 bg-green-100 text-green-800">
+                      <CheckCircle className="h-3 w-3" />
+                      {proofMatrixSummaryQuery.data.satisfied} Satisfied
+                    </Badge>
+                    <span className="text-gray-500">({proofMatrixSummaryQuery.data.total} total entries)</span>
+                  </div>
+                </div>
+              )}
+              
+              {/* Assigned KCs */}
+              {matterKCsQuery.data && matterKCsQuery.data.length > 0 && (
+                <div className="mb-4">
+                  <h4 className="text-sm font-medium mb-2">Assigned Knowledge Concepts ({matterKCsQuery.data.length})</h4>
+                  <div className="flex flex-wrap gap-2">
+                    {matterKCsQuery.data.map((mk: any) => (
+                      <Badge
+                        key={mk.id}
+                        variant="secondary"
+                        className="flex items-center gap-1 py-1 px-2"
+                      >
+                        <span className="text-xs">
+                          {mk.kc?.name || mk.kcId}
+                        </span>
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          className="h-4 w-4 ml-1 hover:bg-red-100 hover:text-red-600"
+                          onClick={() => removeKCMutation.mutate({ intakeId: selectedIntakeId, kcId: mk.kcId })}
+                          disabled={removeKCMutation.isPending}
+                        >
+                          <Trash2 className="h-3 w-3" />
+                        </Button>
+                      </Badge>
+                    ))}
+                  </div>
+                </div>
+              )}
+              
+              <Separator className="my-4" />
+              
+              {/* KC Library Browser */}
+              <div className="grid grid-cols-12 gap-4">
+                {/* Filters */}
+                <div className="col-span-3 space-y-3">
+                  <div>
+                    <Label className="text-xs">Domain</Label>
+                    <Select
+                      value={kcDomain || "all"}
+                      onValueChange={(v) => setKcDomain(v === "all" ? undefined : v as "civil" | "criminal")}
+                    >
+                      <SelectTrigger className="h-8">
+                        <SelectValue placeholder="All" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="all">All Domains</SelectItem>
+                        <SelectItem value="civil">Civil</SelectItem>
+                        <SelectItem value="criminal">Criminal</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div>
+                    <Label className="text-xs">Jurisdiction</Label>
+                    <Select
+                      value={kcJurisdiction || "all"}
+                      onValueChange={(v) => setKcJurisdiction(v === "all" ? undefined : v as "CA" | "FED")}
+                    >
+                      <SelectTrigger className="h-8">
+                        <SelectValue placeholder="All" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="all">All Jurisdictions</SelectItem>
+                        <SelectItem value="CA">California</SelectItem>
+                        <SelectItem value="FED">Federal</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div>
+                    <Label className="text-xs">Category</Label>
+                    <Select
+                      value={kcCategory || "all"}
+                      onValueChange={(v) => setKcCategory(v === "all" ? undefined : v)}
+                    >
+                      <SelectTrigger className="h-8">
+                        <SelectValue placeholder="All" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="all">All Categories</SelectItem>
+                        {kcCategoriesQuery.data?.map((cat: string) => (
+                          <SelectItem key={cat} value={cat}>{cat}</SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div>
+                    <Label className="text-xs">Search</Label>
+                    <Input
+                      placeholder="Search KCs..."
+                      value={kcSearch}
+                      onChange={(e) => setKcSearch(e.target.value)}
+                      className="h-8"
+                    />
+                  </div>
+                </div>
+                
+                {/* KC List */}
+                <div className="col-span-9">
+                  <ScrollArea className="h-64 border rounded-lg">
+                    {kcLibraryQuery.isLoading ? (
+                      <div className="flex items-center justify-center py-8">
+                        <Loader2 className="h-6 w-6 animate-spin text-gray-400" />
+                      </div>
+                    ) : kcLibraryQuery.data && kcLibraryQuery.data.length > 0 ? (
+                      <div className="divide-y">
+                        {kcLibraryQuery.data.map((kc: any) => {
+                          const isAssigned = matterKCsQuery.data?.some((mk: any) => mk.kcId === kc.kc_id);
+                          return (
+                            <div
+                              key={kc.id}
+                              className={`p-3 hover:bg-gray-50 dark:hover:bg-gray-700 ${isAssigned ? 'bg-green-50 dark:bg-green-900/20' : ''}`}
+                            >
+                              <div className="flex items-start justify-between gap-2">
+                                <div className="flex-1 min-w-0">
+                                  <p className="font-medium text-sm">{kc.name}</p>
+                                  <div className="flex items-center gap-2 mt-1">
+                                    <Badge variant="outline" className="text-xs">
+                                      {kc.domain === 'civil' ? 'Civil' : 'Criminal'}
+                                    </Badge>
+                                    <Badge variant="outline" className="text-xs">
+                                      {kc.jurisdiction}
+                                    </Badge>
+                                    <span className="text-xs text-gray-500">{kc.category}</span>
+                                  </div>
+                                  {kc.authority_cite && (
+                                    <p className="text-xs text-gray-500 mt-1">{kc.authority_cite}</p>
+                                  )}
+                                </div>
+                                <Button
+                                  variant={isAssigned ? "secondary" : "default"}
+                                  size="sm"
+                                  onClick={() => {
+                                    if (!isAssigned) {
+                                      assignKCMutation.mutate({ intakeId: selectedIntakeId, kcId: kc.kc_id });
+                                    }
+                                  }}
+                                  disabled={isAssigned || assignKCMutation.isPending}
+                                >
+                                  {isAssigned ? (
+                                    <><CheckCircle className="h-4 w-4 mr-1" /> Added</>
+                                  ) : assignKCMutation.isPending ? (
+                                    <><Loader2 className="h-4 w-4 mr-1 animate-spin" /> Adding...</>
+                                  ) : (
+                                    <><Plus className="h-4 w-4 mr-1" /> Add to Case</>
+                                  )}
+                                </Button>
+                              </div>
+                            </div>
+                          );
+                        })}
+                      </div>
+                    ) : (
+                      <div className="flex items-center justify-center py-8 text-gray-500">
+                        <p className="text-sm">No knowledge concepts found</p>
+                      </div>
+                    )}
+                  </ScrollArea>
+                  <p className="text-xs text-gray-500 mt-2">
+                    {kcLibraryQuery.data?.length || 0} KCs shown • Select a KC to add it to this case and auto-generate proof matrix entries
+                  </p>
+                </div>
+              </div>
             </div>
           </div>
         )}
