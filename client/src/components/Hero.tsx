@@ -1,7 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Phone } from "lucide-react";
 import { motion } from "framer-motion";
-import { useContactModal } from "@/contexts/ContactModalContext";
 
 /**
  * Hero Marquee Component — 2-Column Layout
@@ -11,7 +10,7 @@ import { useContactModal } from "@/contexts/ContactModalContext";
  * - RIGHT column (45%): Skyline background only (no content)
  * 
  * CRITICAL: All content elements MUST stay within the left column boundary
- * The opacity overlay is constrained to the left 55% of the viewport
+ * The opacity overlay is constrained to the left 70% of the viewport (extended by 15%)
  * 
  * Z-INDEX STACKING ORDER (TOP → BOTTOM):
  * 1. TEXT (z-30) - Headlines, body, CTAs - always topmost and clickable
@@ -27,8 +26,6 @@ import { useContactModal } from "@/contexts/ContactModalContext";
  */
 
 export default function Hero() {
-  const { openContactModal } = useContactModal();
-
   return (
     <section className="relative min-h-[70vh] lg:min-h-[80vh] overflow-hidden">
       {/* ============================================
@@ -48,11 +45,11 @@ export default function Hero() {
 
       {/* ============================================
           LAYER 3 (z-20): Opacity Overlay
-          CONSTRAINED TO LEFT COLUMN ONLY
+          EXTENDED TO 70% WIDTH (was 55%, +15%)
           Uses percentage width to match column split
           ============================================ */}
       <div
-        className="absolute top-0 bottom-0 left-0 z-20 pointer-events-none w-full md:w-[60%] lg:w-[55%]"
+        className="absolute top-0 bottom-0 left-0 z-20 pointer-events-none w-full md:w-[75%] lg:w-[70%]"
         aria-hidden="true"
       >
         <img
@@ -148,33 +145,23 @@ export default function Hero() {
                 disciplined case-building and sophisticated advocacy.
               </motion.p>
 
-              {/* CTA Buttons - Stack on smaller screens */}
+              {/* CTA Button - Only Call Button */}
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6, delay: 0.4 }}
-                className="mt-5 md:mt-6 lg:mt-8 flex flex-col sm:flex-row gap-3"
+                className="mt-5 md:mt-6 lg:mt-8"
               >
                 {/* Call Button */}
-                <a href="tel:8184014725" className="block">
+                <a href="tel:8184014725" className="inline-block">
                   <Button
                     size="lg"
-                    className="w-full sm:w-auto bg-primary hover:bg-primary/90 text-primary-foreground font-heading font-semibold text-sm md:text-base px-4 sm:px-5 md:px-6 py-4 md:py-5 shadow-lg whitespace-nowrap"
+                    className="bg-primary hover:bg-primary/90 text-primary-foreground font-heading font-semibold text-sm md:text-base px-4 sm:px-5 md:px-6 py-4 md:py-5 shadow-lg whitespace-nowrap"
                   >
                     <Phone className="mr-2 h-4 w-4" />
                     CALL TODAY: 818.401.4725
                   </Button>
                 </a>
-                
-                {/* Free Consultation Button - Opens Contact Modal */}
-                <Button
-                  size="lg"
-                  variant="outline"
-                  onClick={openContactModal}
-                  className="w-full sm:w-auto border-2 border-white text-white hover:bg-white/10 font-heading font-semibold text-sm md:text-base px-4 sm:px-5 md:px-6 py-4 md:py-5 shadow-lg whitespace-nowrap"
-                >
-                  Free Consultation
-                </Button>
               </motion.div>
             </div>
           </div>
