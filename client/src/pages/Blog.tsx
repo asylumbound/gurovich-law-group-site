@@ -11,8 +11,15 @@ export default function Blog() {
   return (
     <main className="min-h-screen bg-background">
       {/* Hero Section */}
-      <section className="bg-secondary py-16 md:py-24">
-        <div className="container">
+      <section className="relative py-16 md:py-24 overflow-hidden">
+        {/* Background Image */}
+        <div 
+          className="absolute inset-0 bg-cover bg-center bg-no-repeat"
+          style={{ backgroundImage: "url('/images/blog-hero-bg.png')" }}
+        />
+        {/* Dark Overlay */}
+        <div className="absolute inset-0 bg-secondary/70" />
+        <div className="container relative z-10">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
