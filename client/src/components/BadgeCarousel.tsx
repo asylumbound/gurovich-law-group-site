@@ -3,7 +3,7 @@
  * Gurovich Law Group
  * 
  * Auto-sliding carousel showcasing credential badges and awards.
- * Shows 6 badges at a time on desktop, auto-slides through all 13.
+ * Shows 7 badges at a time on desktop, auto-slides through all 13.
  * FULL COLOR - no grayscale effects.
  */
 
@@ -33,15 +33,15 @@ export default function BadgeCarousel() {
   
   // Number of badges visible at different breakpoints
   const getVisibleCount = () => {
-    if (typeof window === 'undefined') return 6;
-    if (window.innerWidth >= 1280) return 6; // xl
-    if (window.innerWidth >= 1024) return 5; // lg
-    if (window.innerWidth >= 768) return 4;  // md
+    if (typeof window === 'undefined') return 7;
+    if (window.innerWidth >= 1280) return 7; // xl - desktop
+    if (window.innerWidth >= 1024) return 6; // lg
+    if (window.innerWidth >= 768) return 5;  // md
     if (window.innerWidth >= 640) return 3;  // sm
     return 2; // mobile
   };
   
-  const [visibleCount, setVisibleCount] = useState(6);
+  const [visibleCount, setVisibleCount] = useState(7);
   
   useEffect(() => {
     const handleResize = () => {
