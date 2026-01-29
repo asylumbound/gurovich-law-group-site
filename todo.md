@@ -102,3 +102,4 @@
 - [x] Add FAQ schema markup to Civil Litigation page (5 FAQs)
 - [ ] Add FAQ schema markup to Tenant Rights page (not in current data)
 - [x] Add 5 Tenant Rights FAQs with schema markup
+- [x] Add Google Search Console verification meta tag
