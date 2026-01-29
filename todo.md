@@ -18,3 +18,12 @@
 - [x] Create success page after submission
 - [x] Write documentation files
 - [x] Add unit tests for onboarding procedures
+
+## Email Notifications & Admin Dashboard
+- [x] Set up email notifications for new intake submissions to kg@gurovichlaw.com
+- [x] Include client summary in notification emails
+- [x] Build admin dashboard page with intake list view
+- [x] Add status tracking (new, reviewed, contacted, converted)
+- [x] Add filtering and search functionality
+- [x] Add "Start Your Case" button to homepage
+- [x] Add "Start Your Case" button to service pages

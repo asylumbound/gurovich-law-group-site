@@ -2,6 +2,7 @@ import { z } from "zod";
 import { publicProcedure, router } from "./_core/trpc";
 import { getSupabaseAdmin } from "./supabase";
 import { nanoid } from "nanoid";
+import { notifyOwner } from "./_core/notification";
 import {
   step0Schema,
   step1Schema,
@@ -469,6 +470,66 @@ export const onboardRouter = router({
         .eq("draft_token", input.draftToken);
 
       if (error) throw new Error(error.message);
+
+      // Get issue type name for the notification
+      const { data: issueType } = await supabase
+        .from("issue_types")
+        .select("name")
+        .eq("id", intake.issue_type_id)
+        .single();
+
+      // Send email notification to kg@gurovichlaw.com
+      const practiceAreaLabels: Record<string, string> = {
+        personal_injury: "Personal Injury",
+        criminal_defense: "Criminal Defense",
+        employment_law: "Employment Law",
+        tenant_rights: "Tenant Rights",
+        civil_litigation: "Civil Litigation",
+      };
+
+      const urgencyLabels: Record<string, string> = {
+        emergency: "🚨 EMERGENCY",
+        high: "⚠️ High Priority",
+        normal: "Normal",
+        unsure: "Unsure",
+      };
+
+      const notificationTitle = `New Client Intake: ${intake.first_name} ${intake.last_name} - ${practiceAreaLabels[intake.practice_area] || intake.practice_area}`;
+      
+      const notificationContent = `
+## New Client Intake Submission
+
+**Urgency:** ${urgencyLabels[intake.urgency] || intake.urgency}
+
+### Contact Information
+- **Name:** ${intake.first_name} ${intake.last_name}
+- **Phone:** ${intake.phone || "Not provided"}
+- **Email:** ${intake.email || "Not provided"}
+- **Location:** ${intake.city}, ${intake.state}
+- **Preferred Contact:** ${intake.preferred_contact_method}
+- **Preferred Language:** ${intake.preferred_language === "en" ? "English" : intake.preferred_language === "es" ? "Spanish" : intake.preferred_language === "hy" ? "Armenian" : intake.preferred_language === "ru" ? "Russian" : "Ukrainian"}
+
+### Case Information
+- **Practice Area:** ${practiceAreaLabels[intake.practice_area] || intake.practice_area}
+- **Issue Type:** ${issueType?.name || "Unknown"}
+- **Incident Date:** ${intake.incident_date || "Unknown"}
+- **Incident Location:** ${intake.incident_city ? `${intake.incident_city}, ${intake.incident_state}` : "Not provided"}
+
+### Summary
+${intake.summary}
+
+${intake.additional_notes ? `### Additional Notes\n${intake.additional_notes}` : ""}
+
+---
+*View full details in the Admin Dashboard*
+      `.trim();
+
+      // Send notification (don't block on failure)
+      notifyOwner({
+        title: notificationTitle,
+        content: notificationContent,
+      }).catch(err => console.error("Failed to send intake notification:", err));
+
       return { success: true, intakeId: intake.id };
     }),
 });

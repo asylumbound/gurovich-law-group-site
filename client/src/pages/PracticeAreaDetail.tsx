@@ -7,7 +7,7 @@
 
 import { Link, useParams } from "wouter";
 import { getPracticeAreaBySlug } from "@/data/practiceAreas";
-import { Shield, Scale, Briefcase, Gavel, ArrowRight, Phone, ChevronRight } from "lucide-react";
+import { Shield, Scale, Briefcase, Gavel, ArrowRight, Phone, ChevronRight, FileText } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useContactModal } from "@/contexts/ContactModalContext";
 
@@ -162,13 +162,15 @@ export default function PracticeAreaDetail() {
                 We'll review your situation and explain your legal options.
               </p>
               <div className="space-y-4">
-                <Button 
-                  size="lg" 
-                  onClick={openContactModal}
-                  className="w-full bg-primary hover:bg-primary/90"
-                >
-                  Schedule Consultation
-                </Button>
+                <Link href="/onboarding">
+                  <Button 
+                    size="lg" 
+                    className="w-full bg-primary hover:bg-primary/90"
+                  >
+                    <FileText className="w-5 h-5 mr-2" />
+                    Start Your Case
+                  </Button>
+                </Link>
                 <a href="tel:818-401-4725" className="block">
                   <Button size="lg" variant="outline" className="w-full border-white text-white hover:bg-white hover:text-slate-900">
                     <Phone className="w-5 h-5 mr-2" />

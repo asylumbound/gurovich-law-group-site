@@ -1,5 +1,6 @@
 import { Button } from "@/components/ui/button";
-import { Phone } from "lucide-react";
+import { Phone, FileText } from "lucide-react";
+import { Link } from "wouter";
 import { motion } from "framer-motion";
 import { useLanguage } from "@/contexts/LanguageContext";
 
@@ -145,12 +146,12 @@ export default function Hero() {
                 {t("hero.description")}
               </motion.p>
 
-              {/* CTA Button - Only Call Button */}
+              {/* CTA Buttons */}
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6, delay: 0.4 }}
-                className="mt-5 md:mt-6 lg:mt-8"
+                className="mt-5 md:mt-6 lg:mt-8 flex flex-col sm:flex-row gap-3"
               >
                 {/* Call Button */}
                 <motion.a 
@@ -168,6 +169,24 @@ export default function Hero() {
                     {t("hero.callToday")} 818.401.4725
                   </Button>
                 </motion.a>
+
+                {/* Start Your Case Button */}
+                <Link href="/onboarding">
+                  <motion.div
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.98 }}
+                    transition={{ type: "spring", stiffness: 400, damping: 17 }}
+                  >
+                    <Button
+                      size="lg"
+                      variant="outline"
+                      className="bg-white hover:bg-gray-100 text-secondary border-white font-heading font-semibold text-sm md:text-base px-4 sm:px-5 md:px-6 py-4 md:py-5 shadow-lg hover:shadow-xl whitespace-nowrap transition-all duration-200"
+                    >
+                      <FileText className="mr-2 h-4 w-4" />
+                      Start Your Case
+                    </Button>
+                  </motion.div>
+                </Link>
               </motion.div>
             </div>
           </div>

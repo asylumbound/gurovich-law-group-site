@@ -8,7 +8,7 @@
 
 import { Link, useParams } from "wouter";
 import { getPracticeAreaBySlug, getSubPageBySlug } from "@/data/practiceAreas";
-import { Shield, Scale, Briefcase, Gavel, Phone, ChevronRight, CheckCircle, ArrowLeft } from "lucide-react";
+import { Shield, Scale, Briefcase, Gavel, Phone, ChevronRight, CheckCircle, ArrowLeft, FileText } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import ClientIntakeForm from "@/components/ClientIntakeForm";
 import { useContactModal } from "@/contexts/ContactModalContext";
@@ -165,11 +165,12 @@ export default function PracticeAreaSubPage() {
                       (818) 401-4725
                     </Button>
                   </a>
-                  <a href="#intake-form" className="block">
+                  <Link href="/onboarding">
                     <Button size="lg" variant="outline" className="w-full border-white text-white hover:bg-white hover:text-slate-900">
-                      Fill Out Form Below
+                      <FileText className="w-5 h-5 mr-2" />
+                      Start Your Case
                     </Button>
-                  </a>
+                  </Link>
                 </div>
                 <p className="text-slate-400 text-xs mt-4 text-center">
                   Available 24/7 for emergencies
@@ -217,13 +218,15 @@ export default function PracticeAreaSubPage() {
             Contact us today for a free consultation.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Button 
-              size="lg" 
-              onClick={openContactModal}
-              className="bg-white text-primary hover:bg-slate-100 px-8"
-            >
-              Contact Us Today
-            </Button>
+            <Link href="/onboarding">
+              <Button 
+                size="lg" 
+                className="bg-white text-primary hover:bg-slate-100 px-8"
+              >
+                <FileText className="w-5 h-5 mr-2" />
+                Start Your Case
+              </Button>
+            </Link>
             <a href="tel:818-401-4725">
               <Button size="lg" variant="outline" className="border-white text-white hover:bg-white hover:text-primary px-8">
                 <Phone className="w-5 h-5 mr-2" />
