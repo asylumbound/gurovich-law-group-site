@@ -1,0 +1,9 @@
+{
+  "query": "INSERT IGNORE INTO kc_library (kc_id, name, domain, jurisdiction, category, authority_type, authority_cite, authority_notes, tags) VALUES\n('CIV_CA_UNRUH_51', 'Unruh Civil Rights Act', 'civil', 'CA', 'Civil Rights', 'statute', 'Cal. Civ. Code § 51', 'Business establishments discrimination.', 'civil-rights,discrimination'),\n('CIV_CA_BANE_52_1', 'Bane Act (Interference with Rights by Threats/Intimidation/Coercion)', 'civil', 'CA', 'Civil Rights', 'statute', 'Cal. Civ. Code § 52.1', 'Threats/intimidation/coercion component is critical.', 'civil-rights,bane-act'),\n('CIV_CA_ANTISLAPP_425_16', 'Anti-SLAPP (Special Motion to Strike)', 'civil', 'CA', 'Procedural', 'procedural', 'Cal. Code Civ. Proc. § 425.16', 'Procedural defense mechanism; triggers fee shifting.', 'anti-slapp,motion');",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway03.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 2QmWxs7iH8DQva8.5d87819da4f6 --database J2wS2ZoP78AcJaejkgQxeA --execute INSERT IGNORE INTO kc_library (kc_id, name, domain, jurisdiction, category, authority_type, authority_cite, authority_notes, tags) VALUES\n('CIV_CA_UNRUH_51', 'Unruh Civil Rights Act', 'civil', 'CA', 'Civil Rights', 'statute', 'Cal. Civ. Code § 51', 'Business establishments discrimination.', 'civil-rights,discrimination'),\n('CIV_CA_BANE_52_1', 'Bane Act (Interference with Rights by Threats/Intimidation/Coercion)', 'civil', 'CA', 'Civil Rights', 'statute', 'Cal. Civ. Code § 52.1', 'Threats/intimidation/coercion component is critical.', 'civil-rights,bane-act'),\n('CIV_CA_ANTISLAPP_425_16', 'Anti-SLAPP (Special Motion to Strike)', 'civil', 'CA', 'Procedural', 'procedural', 'Cal. Code Civ. Proc. § 425.16', 'Procedural defense mechanism; triggers fee shifting.', 'anti-slapp,motion');",
+  "rows": [],
+  "messages": [],
+  "stdout": "",
+  "stderr": "",
+  "execution_time_ms": 65
+}

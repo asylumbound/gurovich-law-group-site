@@ -1,0 +1,30 @@
+{
+  "query": "SELECT COUNT(*) as total, domain, jurisdiction FROM kc_library GROUP BY domain, jurisdiction;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway03.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 2QmWxs7iH8DQva8.5d87819da4f6 --database J2wS2ZoP78AcJaejkgQxeA --execute SELECT COUNT(*) as total, domain, jurisdiction FROM kc_library GROUP BY domain, jurisdiction;",
+  "rows": [
+    {
+      "total": "10",
+      "domain": "criminal",
+      "jurisdiction": "CA"
+    },
+    {
+      "total": "9",
+      "domain": "criminal",
+      "jurisdiction": "FED"
+    },
+    {
+      "total": "6",
+      "domain": "civil",
+      "jurisdiction": "FED"
+    },
+    {
+      "total": "36",
+      "domain": "civil",
+      "jurisdiction": "CA"
+    }
+  ],
+  "messages": [],
+  "stdout": "total\tdomain\tjurisdiction\n10\tcriminal\tCA\n9\tcriminal\tFED\n6\tcivil\tFED\n36\tcivil\tCA\n",
+  "stderr": "",
+  "execution_time_ms": 58
+}

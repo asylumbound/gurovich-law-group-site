@@ -1,0 +1,9 @@
+{
+  "query": "CREATE TABLE IF NOT EXISTS kc_library (\n  id SERIAL PRIMARY KEY,\n  kc_id VARCHAR(100) UNIQUE NOT NULL,\n  name VARCHAR(500) NOT NULL,\n  domain VARCHAR(50) NOT NULL,\n  jurisdiction VARCHAR(20) NOT NULL,\n  category VARCHAR(200),\n  authority_type VARCHAR(50),\n  authority_cite TEXT,\n  authority_notes TEXT,\n  tags TEXT,\n  created_at TIMESTAMP DEFAULT NOW()\n);",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway03.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 2QmWxs7iH8DQva8.5d87819da4f6 --database J2wS2ZoP78AcJaejkgQxeA --execute CREATE TABLE IF NOT EXISTS kc_library (\n  id SERIAL PRIMARY KEY,\n  kc_id VARCHAR(100) UNIQUE NOT NULL,\n  name VARCHAR(500) NOT NULL,\n  domain VARCHAR(50) NOT NULL,\n  jurisdiction VARCHAR(20) NOT NULL,\n  category VARCHAR(200),\n  authority_type VARCHAR(50),\n  authority_cite TEXT,\n  authority_notes TEXT,\n  tags TEXT,\n  created_at TIMESTAMP DEFAULT NOW()\n);",
+  "rows": [],
+  "messages": [],
+  "stdout": "",
+  "stderr": "",
+  "execution_time_ms": 231
+}

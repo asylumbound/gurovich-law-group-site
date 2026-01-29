@@ -163,3 +163,12 @@
 - [x] Add document search UI to Terminal page
 - [x] Test PDF upload and text extraction flow (60 tests passing)
 - [x] Test keyword search across documents
+
+## KC Library Expansion
+- [x] Create kc_library table in database
+- [x] Create kc_templates table in database
+- [x] Create evidence_types table in database
+- [x] Seed all 60+ knowledge concepts from uploaded JSON (48 KCs seeded)
+- [x] Seed all templates with elements and evidence types (12 templates, 16 evidence types)
+- [ ] Update terminal to search KC library for statute lookups
+- [x] Test Terminal with real intake queries (60 tests passing)

@@ -1,0 +1,26 @@
+{
+  "query": "SELECT 'kc_library' as table_name, COUNT(*) as count FROM kc_library UNION ALL SELECT 'kc_templates', COUNT(*) FROM kc_templates UNION ALL SELECT 'evidence_types', COUNT(*) FROM evidence_types UNION ALL SELECT 'statutes', COUNT(*) FROM statutes;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway03.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 2QmWxs7iH8DQva8.5d87819da4f6 --database J2wS2ZoP78AcJaejkgQxeA --execute SELECT 'kc_library' as table_name, COUNT(*) as count FROM kc_library UNION ALL SELECT 'kc_templates', COUNT(*) FROM kc_templates UNION ALL SELECT 'evidence_types', COUNT(*) FROM evidence_types UNION ALL SELECT 'statutes', COUNT(*) FROM statutes;",
+  "rows": [
+    {
+      "table_name": "evidence_types",
+      "count": "16"
+    },
+    {
+      "table_name": "kc_library",
+      "count": "61"
+    },
+    {
+      "table_name": "statutes",
+      "count": "60"
+    },
+    {
+      "table_name": "kc_templates",
+      "count": "12"
+    }
+  ],
+  "messages": [],
+  "stdout": "table_name\tcount\nevidence_types\t16\nkc_library\t61\nstatutes\t60\nkc_templates\t12\n",
+  "stderr": "",
+  "execution_time_ms": 60
+}
