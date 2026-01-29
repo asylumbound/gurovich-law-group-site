@@ -10,6 +10,11 @@ import Blog from "./pages/Blog";
 import BlogPost from "./pages/BlogPost";
 import AboutUs from "./pages/AboutUs";
 import Reviews from "./pages/Reviews";
+import PracticeAreas from "./pages/PracticeAreas";
+import PracticeAreaDetail from "./pages/PracticeAreaDetail";
+import PracticeAreaSubPage from "./pages/PracticeAreaSubPage";
+import Contact from "./pages/Contact";
+import OurTeam from "./pages/OurTeam";
 
 function Router() {
   return (
@@ -20,6 +25,11 @@ function Router() {
         <Route path={"/blog/:slug"} component={BlogPost} />
         <Route path={"/about"} component={AboutUs} />
         <Route path={"/reviews"} component={Reviews} />
+        <Route path={"/practice-areas"} component={PracticeAreas} />
+        <Route path={"/practice-areas/:area"} component={PracticeAreaDetail} />
+        <Route path={"/practice-areas/:area/:subpage"} component={PracticeAreaSubPage} />
+        <Route path={"/contact"} component={Contact} />
+        <Route path={"/team"} component={OurTeam} />
         <Route path={"/404"} component={NotFound} />
         {/* Final fallback route */}
         <Route component={NotFound} />
