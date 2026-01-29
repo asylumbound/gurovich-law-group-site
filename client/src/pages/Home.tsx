@@ -4,6 +4,7 @@ import Statistics from "@/components/Statistics";
 import About from "@/components/About";
 import NoFeeGuarantee from "@/components/NoFeeGuarantee";
 import BadgeCarousel from "@/components/BadgeCarousel";
+import CallToday from "@/components/CallToday";
 import Testimonials from "@/components/Testimonials";
 import Contact from "@/components/Contact";
 
@@ -16,6 +17,7 @@ export default function Home() {
       <Statistics />
       <About />
       <BadgeCarousel />
+      <CallToday />
       <Testimonials />
       <Contact />
     </>
