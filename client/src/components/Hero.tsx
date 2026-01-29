@@ -52,7 +52,7 @@ export default function Hero() {
           Uses percentage width to match column split
           ============================================ */}
       <div
-        className="absolute top-0 bottom-0 left-0 z-20 pointer-events-none w-full md:w-[75%] lg:w-[70%]"
+        className="absolute top-0 bottom-0 left-0 z-20 pointer-events-none w-full md:w-[85%] lg:w-[80%]"
         aria-hidden="true"
       >
         <img
