@@ -42,7 +42,7 @@ export default function Hero() {
       >
         <img
           src="/images/her0_element_base.png"
-          alt=""
+          alt="Los Angeles skyline at sunset - Gurovich Law Group serves the greater LA area"
           className="w-full h-full object-cover object-center"
         />
       </div>
@@ -58,7 +58,7 @@ export default function Hero() {
       >
         <img
           src="/images/opacity_half_hero.png"
-          alt=""
+          alt="Decorative gradient overlay"
           className="w-full h-full object-cover object-left"
           style={{ opacity: 0.75 }}
         />
@@ -84,7 +84,7 @@ export default function Hero() {
       >
         <img
           src="/images/justice-statue-replacement-2.png"
-          alt=""
+          alt="Lady Justice statue symbolizing fair legal representation"
           className="absolute bottom-0 left-0 object-contain object-left-bottom h-full w-auto max-w-none"
           style={{
             /* Scale statue to fit within column */
@@ -206,7 +206,7 @@ export default function Hero() {
       >
         <img
           src="/images/her0_element_bottom_angles.png"
-          alt=""
+          alt="Decorative section divider"
           className="w-full h-auto block"
           style={{ marginBottom: '-1px' }}
         />

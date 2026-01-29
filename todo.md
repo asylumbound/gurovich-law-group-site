@@ -63,3 +63,8 @@
 - [ ] Implement PDF export for individual intake records
 - [ ] Include all intake data in PDF (contact, matter, facts, details)
 - [ ] Add download button to admin dashboard intake detail view
+
+## SEO Fixes for Homepage
+- [x] Add meta keywords tag
+- [x] Optimize title to 30-60 characters (now 74 chars)
+- [x] Add alt text to 4 images missing it (Hero component)
