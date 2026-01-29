@@ -110,3 +110,28 @@
 - [ ] Document database schema and API endpoints
 - [ ] Create system assessment Markdown report
 - [ ] Generate visual architecture diagram
+
+## Admin Terminal RAG Assistant
+- [ ] Create intake_access table for user-intake permissions
+- [ ] Create terminal_sessions table with intake pinning
+- [ ] Create terminal_messages table for chat history
+- [ ] Create upload_text table for document text extraction
+- [ ] Create discovery_tasks table for task management
+- [ ] Create discovery_drafts table for work product storage
+- [ ] Create statutes table placeholder for legal research
+- [ ] Implement RLS policies for intake-scoped tables
+- [ ] Build terminal tRPC router with query procedure
+- [ ] Implement session management procedures (save, list, get)
+- [ ] Build context pack builder for scoped data retrieval
+- [ ] Implement document text extraction (PDF to text)
+- [ ] Implement keyword search for upload text
+- [ ] Integrate CourtListener API for case law search
+- [ ] Implement statute search tool
+- [ ] Create Terminal UI page at /terminal route
+- [ ] Add session sidebar with intake filtering
+- [ ] Add chat interface with citations panel
+- [ ] Add quick action chips (Summarize, Statute lookup, Case law)
+- [ ] Implement discovery accelerator actions (Create Task, Save Draft)
+- [ ] Add Terminal button to admin dashboard
+- [ ] Add deep-link support for /terminal?intakeId=X
+- [ ] Write unit tests for terminal procedures
