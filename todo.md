@@ -195,3 +195,10 @@
 - [x] Add delete button to session items
 - [x] Add PDF download button
 - [ ] Test all session management features
+
+## KC Library Data Migration (Completed)
+- [x] Verify KC tables created in Supabase (evidence_types, kc_library, kc_templates, kc_template_assignments, matter_kcs, matter_proof_matrix)
+- [x] Seed 56 Knowledge Concepts (civil and criminal, CA and Federal)
+- [x] Seed 35 KC Templates with elements and evidence type requirements
+- [x] Seed 56 KC Template Assignments linking KCs to templates
+- [x] Verify 16 Evidence Types already seeded from migration

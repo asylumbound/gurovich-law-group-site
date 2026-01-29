@@ -1,0 +1,8 @@
+{
+  "query": "ALTER TABLE kc_template_assignments ADD CONSTRAINT kc_template_assignments_kc_id_key UNIQUE (kc_id); SELECT COUNT(*) as template_count FROM kc_templates;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway03.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 2QmWxs7iH8DQva8.5d87819da4f6 --database J2wS2ZoP78AcJaejkgQxeA --execute ALTER TABLE kc_template_assignments ADD CONSTRAINT kc_template_assignments_kc_id_key UNIQUE (kc_id); SELECT COUNT(*) as template_count FROM kc_templates;",
+  "returncode": 1,
+  "logs": [
+    "ERROR 1146 (42S02) at line 1: Table 'j2ws2zop78acjaejkgqxea.kc_template_assignments' doesn't exist"
+  ]
+}
