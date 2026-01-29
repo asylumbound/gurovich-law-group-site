@@ -1,3 +1,4 @@
+import { lazy, Suspense } from "react";
 import { Toaster } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import NotFound from "@/pages/NotFound";
@@ -9,6 +10,9 @@ import { LanguageProvider } from "./contexts/LanguageContext";
 import Layout from "./components/Layout";
 import CookieConsent from "./components/CookieConsent";
 import AccessibilityWidget from "./components/AccessibilityWidget";
+import { Loader2 } from "lucide-react";
+
+// Static imports for public-facing pages (SEO important, fast initial load)
 import Home from "./pages/Home";
 import Blog from "./pages/Blog";
 import BlogPost from "./pages/BlogPost";
@@ -22,39 +26,86 @@ import OurTeam from "./pages/OurTeam";
 import PrivacyPolicy from "./pages/PrivacyPolicy";
 import TermsOfService from "./pages/TermsOfService";
 import Disclaimer from "./pages/Disclaimer";
-import Onboarding from "./pages/Onboarding";
 import OnboardingSuccess from "./pages/OnboardingSuccess";
-import AdminDashboard from "./pages/AdminDashboard";
-import Terminal from "./pages/Terminal";
+
+// Lazy imports for heavy admin/internal pages (auth required, loaded on demand)
+const AdminDashboard = lazy(() => import("./pages/AdminDashboard"));
+const Terminal = lazy(() => import("./pages/Terminal"));
+const Onboarding = lazy(() => import("./pages/Onboarding"));
+const ComponentShowcase = lazy(() => import("./pages/ComponentShowcase"));
+
+// Loading fallback component for lazy-loaded routes
+function PageLoader() {
+  return (
+    <div className="flex items-center justify-center min-h-screen bg-background">
+      <div className="flex flex-col items-center gap-4">
+        <Loader2 className="h-8 w-8 animate-spin text-primary" />
+        <p className="text-sm text-muted-foreground">Loading...</p>
+      </div>
+    </div>
+  );
+}
+
+// Wrapper component for lazy-loaded routes
+function LazyRoute({ component: Component }: { component: React.LazyExoticComponent<React.ComponentType<any>> }) {
+  return (
+    <Suspense fallback={<PageLoader />}>
+      <Component />
+    </Suspense>
+  );
+}
 
 function Router() {
   // make sure to consider if you need authentication for certain routes
   return (
     <Switch>
-      {/* Terminal has its own layout, render outside Layout */}
-      <Route path={"/terminal"} component={Terminal} />
+      {/* Terminal has its own layout, render outside Layout - LAZY LOADED */}
+      <Route path="/terminal">
+        <Suspense fallback={<PageLoader />}>
+          <Terminal />
+        </Suspense>
+      </Route>
+      
+      {/* Component Showcase - LAZY LOADED (dev only) */}
+      <Route path="/components">
+        <Suspense fallback={<PageLoader />}>
+          <ComponentShowcase />
+        </Suspense>
+      </Route>
       
       {/* All other routes use the standard Layout */}
       <Route>
         <Layout>
           <Switch>
-            <Route path={"/"} component={Home} />
-            <Route path={"/blog"} component={Blog} />
-            <Route path={"/blog/:slug"} component={BlogPost} />
-            <Route path={"/about"} component={AboutUs} />
-            <Route path={"/reviews"} component={Reviews} />
-            <Route path={"/practice-areas"} component={PracticeAreas} />
-            <Route path={"/practice-areas/:area"} component={PracticeAreaDetail} />
-            <Route path={"/practice-areas/:area/:subpage"} component={PracticeAreaSubPage} />
-            <Route path={"/contact"} component={Contact} />
-            <Route path={"/team"} component={OurTeam} />
-            <Route path={"/privacy"} component={PrivacyPolicy} />
-            <Route path={"/terms"} component={TermsOfService} />
-            <Route path={"/disclaimer"} component={Disclaimer} />
-            <Route path={"/onboarding"} component={Onboarding} />
-            <Route path={"/onboarding/success"} component={OnboardingSuccess} />
-            <Route path={"/admin"} component={AdminDashboard} />
-            <Route path={"/404"} component={NotFound} />
+            {/* Public pages - static imports for SEO */}
+            <Route path="/" component={Home} />
+            <Route path="/blog" component={Blog} />
+            <Route path="/blog/:slug" component={BlogPost} />
+            <Route path="/about" component={AboutUs} />
+            <Route path="/reviews" component={Reviews} />
+            <Route path="/practice-areas" component={PracticeAreas} />
+            <Route path="/practice-areas/:area" component={PracticeAreaDetail} />
+            <Route path="/practice-areas/:area/:subpage" component={PracticeAreaSubPage} />
+            <Route path="/contact" component={Contact} />
+            <Route path="/team" component={OurTeam} />
+            <Route path="/privacy" component={PrivacyPolicy} />
+            <Route path="/terms" component={TermsOfService} />
+            <Route path="/disclaimer" component={Disclaimer} />
+            <Route path="/onboarding/success" component={OnboardingSuccess} />
+            <Route path="/404" component={NotFound} />
+            
+            {/* Admin/Internal pages - LAZY LOADED */}
+            <Route path="/onboarding">
+              <Suspense fallback={<PageLoader />}>
+                <Onboarding />
+              </Suspense>
+            </Route>
+            <Route path="/admin">
+              <Suspense fallback={<PageLoader />}>
+                <AdminDashboard />
+              </Suspense>
+            </Route>
+            
             {/* Final fallback route */}
             <Route component={NotFound} />
           </Switch>

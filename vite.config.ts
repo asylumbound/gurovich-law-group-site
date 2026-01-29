@@ -167,6 +167,36 @@ export default defineConfig({
   build: {
     outDir: path.resolve(import.meta.dirname, "dist/public"),
     emptyOutDir: true,
+    rollupOptions: {
+      output: {
+        manualChunks(id) {
+          // Core React vendor chunk
+          if (id.includes('node_modules/react-dom') || id.includes('node_modules/react/')) {
+            return 'vendor-react';
+          }
+          // Radix UI components
+          if (id.includes('node_modules/@radix-ui')) {
+            return 'vendor-radix';
+          }
+          // Charts (only used in admin/terminal)
+          if (id.includes('node_modules/recharts')) {
+            return 'vendor-charts';
+          }
+          // Animation library
+          if (id.includes('node_modules/framer-motion')) {
+            return 'vendor-motion';
+          }
+          // tRPC and data fetching
+          if (id.includes('node_modules/@trpc') || id.includes('node_modules/@tanstack')) {
+            return 'vendor-trpc';
+          }
+          // Streamdown/Mermaid (heavy, only in Terminal)
+          if (id.includes('node_modules/streamdown') || id.includes('node_modules/mermaid')) {
+            return 'vendor-mermaid';
+          }
+        },
+      },
+    },
   },
   server: {
     host: true,

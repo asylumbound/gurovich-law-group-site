@@ -226,3 +226,18 @@
 - [x] Apply migration to Supabase (terminal_sessions, terminal_messages, upload_text, discovery_tasks, discovery_drafts)
 - [x] Verify indexes created successfully (12 indexes confirmed)
 - Note: case_memory and intake_notes tables don't exist in MySQL/TiDB - they are Supabase-only tables
+
+## Code Splitting Implementation (P1) - Completed
+- [x] Add React.lazy() for AdminDashboard route
+- [x] Add React.lazy() for Terminal route
+- [x] Add React.lazy() for Onboarding route
+- [x] Add React.lazy() for ComponentShowcase route
+- [x] Add Suspense fallback with loading spinner
+- [x] Configure Vite manual chunks for vendor splitting
+- [x] Build and verify bundle size reduction
+
+### Results:
+- Main index.js: 613 KB (was 2,588 KB) - 76% reduction
+- Initial load (gzip): ~350 KB (was 669 KB) - 47% reduction
+- Mermaid/Streamdown (3.2 MB) now lazy loaded only when Terminal accessed
+- Vendor chunks split: react, radix, motion, trpc, charts
