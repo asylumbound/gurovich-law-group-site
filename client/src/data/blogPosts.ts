@@ -282,7 +282,7 @@ If you suffered injury stemming from an accident, contact us for a free consulta
     category: "Personal Injury",
     author: "Gurovich Law Group",
     readTime: "7 min read",
-    image: "/images/blog/personal-injury.jpg"
+    image: "/images/blog-what-is-personal-injury.png"
   }
 ];
 
