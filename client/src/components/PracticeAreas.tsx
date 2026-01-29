@@ -86,11 +86,12 @@ export default function PracticeAreas() {
             <motion.div key={area.title} variants={itemVariants}>
               <Link href={area.href}>
                 <div className="group bg-card rounded-xl p-8 shadow-sm hover:shadow-xl transition-all duration-300 border border-border hover:border-primary/20 h-full flex flex-col">
-                  <div className="w-16 h-16 rounded-xl bg-secondary/10 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300 overflow-hidden">
+                  {/* Icon container - NO background, NO border */}
+                  <div className="w-16 h-16 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
                     <img
                       src={area.icon}
                       alt={`${area.title} icon`}
-                      className="w-12 h-12 object-contain"
+                      className="w-14 h-14 object-contain"
                     />
                   </div>
                   <h3 className="font-heading text-xl font-semibold text-foreground mb-3">

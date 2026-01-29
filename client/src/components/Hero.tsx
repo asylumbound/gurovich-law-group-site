@@ -11,11 +11,13 @@ import { useContactModal } from "@/contexts/ContactModalContext";
  * - RIGHT column: Skyline/background visual
  * 
  * Z-INDEX STACKING ORDER (TOP → BOTTOM):
- * 1. TEXT (z-50) - Headlines, body, CTAs - always topmost and clickable
- * 2. BOTTOM ANGLES (z-40) - White angled divider shape at bottom
- * 3. OPACITY OVERLAY (z-30) - Semi-transparent overlay for text readability (70% opacity)
- * 4. JUSTICE STATUE (z-20) - Lady Justice statue, 60% larger, contained in left column
+ * 1. TEXT (z-30) - Headlines, body, CTAs - always topmost and clickable (below header z-50)
+ * 2. BOTTOM ANGLES (z-25) - White angled divider shape at bottom
+ * 3. OPACITY OVERLAY (z-20) - Semi-transparent overlay for text readability (70% opacity)
+ * 4. JUSTICE STATUE (z-15) - Lady Justice statue, larger version, contained in left column
  * 5. BASE/BACKGROUND (z-10) - LA skyline background
+ * 
+ * NOTE: Header is z-50, so all hero content must be below z-50 to scroll under it
  * 
  * RESPONSIVE BREAKPOINTS:
  * - ≥1024px: Two-column layout, statue at full scale
@@ -44,16 +46,15 @@ export default function Hero() {
       </div>
 
       {/* ============================================
-          LAYER 4 (z-20): Justice Statue
-          60% larger than original, contained within left 55% column
-          Uses responsive width/height sizing (not transform scale)
-          Anchored bottom-left, overflow hidden on container
+          LAYER 4 (z-[15]): Justice Statue
+          Using the larger replacement image
+          Anchored bottom-left, sized to be more prominent
           ============================================ */}
       <motion.div
         initial={{ opacity: 0, x: -30 }}
         animate={{ opacity: 1, x: 0 }}
         transition={{ duration: 0.8, delay: 0.2 }}
-        className="absolute left-0 bottom-0 z-20 pointer-events-none overflow-hidden"
+        className="absolute left-0 bottom-0 z-[15] pointer-events-none overflow-hidden"
         aria-hidden="true"
         style={{ 
           /* Constrain to left column (55% of viewport) */
@@ -62,27 +63,26 @@ export default function Hero() {
         }}
       >
         <img
-          src="/images/justice_statue_replacment.png"
+          src="/images/justice-statue-replacement-2.png"
           alt=""
           className="absolute bottom-0 left-0 object-contain object-left-bottom"
           style={{
-            /* 60% larger: original was ~70% height, now ~112% height */
-            /* Using clamp for responsive sizing */
-            height: 'clamp(400px, 112%, 900px)',
+            /* Larger statue - takes up more of the hero height */
+            height: 'clamp(450px, 130%, 1000px)',
             width: 'auto',
-            maxWidth: '100%',
+            maxWidth: '110%',
           }}
         />
       </motion.div>
 
       {/* ============================================
-          LAYER 3 (z-30): Opacity Overlay
+          LAYER 3 (z-20): Opacity Overlay
           70% opacity for improved text readability
           Covers left ~50%, above statue, below text
           pointer-events: none ensures CTAs remain clickable
           ============================================ */}
       <div
-        className="absolute inset-0 z-30 pointer-events-none"
+        className="absolute inset-0 z-20 pointer-events-none"
         aria-hidden="true"
       >
         <img
@@ -94,11 +94,12 @@ export default function Hero() {
       </div>
 
       {/* ============================================
-          LAYER 1 (z-50): Text Content - 2-Column Grid
+          LAYER 1 (z-30): Text Content - 2-Column Grid
           LEFT: All text and CTAs
           RIGHT: Visual space for skyline
+          z-30 ensures content scrolls UNDER the header (z-50)
           ============================================ */}
-      <div className="relative z-50 h-full min-h-[70vh] lg:min-h-[80vh]">
+      <div className="relative z-30 h-full min-h-[70vh] lg:min-h-[80vh]">
         {/* Grid Container: 2 columns on desktop/tablet, 1 on mobile */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-[55%_45%] h-full">
           
@@ -186,12 +187,12 @@ export default function Hero() {
       </div>
 
       {/* ============================================
-          LAYER 2 (z-40): Bottom Angles
+          LAYER 2 (z-[25]): Bottom Angles
           White angled divider at bottom
           Full width, no clipping/warping on resize
           ============================================ */}
       <div 
-        className="absolute bottom-0 left-0 right-0 z-40 pointer-events-none"
+        className="absolute bottom-0 left-0 right-0 z-[25] pointer-events-none"
         aria-hidden="true"
       >
         <img
