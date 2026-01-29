@@ -31,6 +31,7 @@ import {
   Plus,
   Trash2,
   StickyNote,
+  Scale,
 } from "lucide-react";
 import { Link } from "wouter";
 
@@ -502,6 +503,12 @@ function AdminDashboardContent({
                   <Download className="h-4 w-4 mr-2" />
                 )}
                 Export CSV
+              </Button>
+              <Button asChild variant="default">
+                <Link href="/terminal">
+                  <Scale className="h-4 w-4 mr-2" />
+                  Terminal
+                </Link>
               </Button>
               <Button asChild variant="outline">
                 <Link href="/">← Back to Site</Link>

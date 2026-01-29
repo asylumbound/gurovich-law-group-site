@@ -248,6 +248,24 @@ async function searchUploadTextFallback(
 }
 
 /**
+ * Sanitize filename for safe storage
+ */
+export function sanitizeFilename(filename: string): string {
+  if (!filename) return "";
+  return filename
+    .replace(/[^a-zA-Z0-9._-]/g, "_")
+    .replace(/_+/g, "_")
+    .replace(/^_|_$/g, "");
+}
+
+/**
+ * Build a unique key for upload text storage
+ */
+export function buildUploadTextKey(intakeId: number, uploadId: number): string {
+  return `intake_${intakeId}_upload_${uploadId}`;
+}
+
+/**
  * Get all extracted text for an intake (for context building)
  */
 export async function getAllExtractedText(intakeId: number): Promise<{ uploadId: number; fileName: string; text: string }[]> {

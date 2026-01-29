@@ -25,32 +25,42 @@ import Disclaimer from "./pages/Disclaimer";
 import Onboarding from "./pages/Onboarding";
 import OnboardingSuccess from "./pages/OnboardingSuccess";
 import AdminDashboard from "./pages/AdminDashboard";
+import Terminal from "./pages/Terminal";
+
 function Router() {
   // make sure to consider if you need authentication for certain routes
   return (
-    <Layout>
-      <Switch>
-        <Route path={"/"} component={Home} />
-        <Route path={"/blog"} component={Blog} />
-        <Route path={"/blog/:slug"} component={BlogPost} />
-        <Route path={"/about"} component={AboutUs} />
-        <Route path={"/reviews"} component={Reviews} />
-        <Route path={"/practice-areas"} component={PracticeAreas} />
-        <Route path={"/practice-areas/:area"} component={PracticeAreaDetail} />
-        <Route path={"/practice-areas/:area/:subpage"} component={PracticeAreaSubPage} />
-        <Route path={"/contact"} component={Contact} />
-        <Route path={"/team"} component={OurTeam} />
-        <Route path={"/privacy"} component={PrivacyPolicy} />
-        <Route path={"/terms"} component={TermsOfService} />
-        <Route path={"/disclaimer"} component={Disclaimer} />
-        <Route path={"/onboarding"} component={Onboarding} />
-        <Route path={"/onboarding/success"} component={OnboardingSuccess} />
-        <Route path={"/admin"} component={AdminDashboard} />
-        <Route path={"/404"} component={NotFound} />
-        {/* Final fallback route */}
-        <Route component={NotFound} />
-      </Switch>
-    </Layout>
+    <Switch>
+      {/* Terminal has its own layout, render outside Layout */}
+      <Route path={"/terminal"} component={Terminal} />
+      
+      {/* All other routes use the standard Layout */}
+      <Route>
+        <Layout>
+          <Switch>
+            <Route path={"/"} component={Home} />
+            <Route path={"/blog"} component={Blog} />
+            <Route path={"/blog/:slug"} component={BlogPost} />
+            <Route path={"/about"} component={AboutUs} />
+            <Route path={"/reviews"} component={Reviews} />
+            <Route path={"/practice-areas"} component={PracticeAreas} />
+            <Route path={"/practice-areas/:area"} component={PracticeAreaDetail} />
+            <Route path={"/practice-areas/:area/:subpage"} component={PracticeAreaSubPage} />
+            <Route path={"/contact"} component={Contact} />
+            <Route path={"/team"} component={OurTeam} />
+            <Route path={"/privacy"} component={PrivacyPolicy} />
+            <Route path={"/terms"} component={TermsOfService} />
+            <Route path={"/disclaimer"} component={Disclaimer} />
+            <Route path={"/onboarding"} component={Onboarding} />
+            <Route path={"/onboarding/success"} component={OnboardingSuccess} />
+            <Route path={"/admin"} component={AdminDashboard} />
+            <Route path={"/404"} component={NotFound} />
+            {/* Final fallback route */}
+            <Route component={NotFound} />
+          </Switch>
+        </Layout>
+      </Route>
+    </Switch>
   );
 }
 
