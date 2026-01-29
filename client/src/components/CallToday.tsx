@@ -47,7 +47,7 @@ export default function CallToday() {
             
             {/* Call button */}
             <motion.a
-              href="tel:8184015725"
+              href="tel:8184014725"
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.98 }}
               transition={{ type: "spring", stiffness: 400, damping: 17 }}
@@ -58,7 +58,7 @@ export default function CallToday() {
                 className="font-display text-xl md:text-2xl font-bold tracking-wide"
                 style={{ color: "#1A222B" }}
               >
-                818-401-5725
+                818-401-4725
               </span>
             </motion.a>
           </div>
