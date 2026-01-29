@@ -41,7 +41,7 @@ function AnimatedCounter({
   }, [inView, value]);
 
   return (
-    <span className="font-display text-5xl md:text-6xl lg:text-7xl font-bold text-white">
+    <span className="font-display text-5xl md:text-6xl lg:text-7xl font-bold text-secondary">
       {prefix}
       {count}
       {suffix}
@@ -54,7 +54,7 @@ export default function Statistics() {
   const isInView = useInView(ref, { once: true, margin: "-100px" });
 
   return (
-    <section ref={ref} className="py-16 lg:py-20 bg-secondary">
+    <section ref={ref} className="py-16 lg:py-20 bg-white">
       <div className="container">
         <motion.div
           initial={{ opacity: 0 }}
@@ -78,7 +78,7 @@ export default function Statistics() {
                 suffix={stat.suffix}
                 inView={isInView}
               />
-              <p className="font-heading text-lg text-white/80 mt-4 uppercase tracking-widest">
+              <p className="font-heading text-lg text-secondary/80 mt-4 uppercase tracking-widest">
                 {stat.label}
               </p>
             </motion.div>
