@@ -76,13 +76,14 @@ export async function initializeClientFolder(intakeId: number): Promise<{ succes
 
 /**
  * Upload a file to the client's folder in Supabase storage
+ * Returns storagePath for database storage - use getSignedDownloadUrl for access
  */
 export async function uploadClientFile(
   intakeId: number,
   filename: string,
   data: Buffer | Uint8Array,
   mimeType: string
-): Promise<{ uploadId: string; storagePath: string; publicUrl: string }> {
+): Promise<{ uploadId: string; storagePath: string }> {
   const supabase = getSupabaseAdmin();
   
   // Generate unique upload ID
@@ -103,15 +104,10 @@ export async function uploadClientFile(
     throw new Error(`Upload failed: ${uploadError.message}`);
   }
   
-  // Get public URL
-  const { data: urlData } = supabase.storage
-    .from(BUCKET_NAME)
-    .getPublicUrl(storagePath);
-  
+  // Return storage path only - use getSignedDownloadUrl for access
   return {
     uploadId,
     storagePath,
-    publicUrl: urlData.publicUrl,
   };
 }
 
@@ -155,9 +151,11 @@ export async function listClientFiles(intakeId: number): Promise<string[]> {
 }
 
 /**
- * Get signed URL for a private file (if bucket is private)
+ * Get signed download URL for a private file
+ * @param storagePath - The storage path of the file
+ * @param expiresIn - URL expiration time in seconds (default: 1 hour)
  */
-export async function getSignedUrl(storagePath: string, expiresIn = 3600): Promise<string | null> {
+export async function getSignedDownloadUrl(storagePath: string, expiresIn = 3600): Promise<string | null> {
   const supabase = getSupabaseAdmin();
   
   const { data, error } = await supabase.storage
@@ -165,11 +163,44 @@ export async function getSignedUrl(storagePath: string, expiresIn = 3600): Promi
     .createSignedUrl(storagePath, expiresIn);
   
   if (error) {
-    console.error("Failed to get signed URL:", error);
+    console.error("Failed to get signed download URL:", error);
     return null;
   }
   
   return data.signedUrl;
+}
+
+/**
+ * Get signed upload URL for direct client uploads (presigned)
+ * @param storagePath - The target storage path
+ * @param expiresIn - URL expiration time in seconds (default: 5 minutes)
+ */
+export async function getSignedUploadUrl(
+  storagePath: string,
+  expiresIn = 300
+): Promise<{ signedUrl: string; token: string } | null> {
+  const supabase = getSupabaseAdmin();
+  
+  const { data, error } = await supabase.storage
+    .from(BUCKET_NAME)
+    .createSignedUploadUrl(storagePath);
+  
+  if (error) {
+    console.error("Failed to get signed upload URL:", error);
+    return null;
+  }
+  
+  return {
+    signedUrl: data.signedUrl,
+    token: data.token,
+  };
+}
+
+/**
+ * @deprecated Use getSignedDownloadUrl instead - bucket is now private
+ */
+export async function getSignedUrl(storagePath: string, expiresIn = 3600): Promise<string | null> {
+  return getSignedDownloadUrl(storagePath, expiresIn);
 }
 
 // Export constants for use in other modules

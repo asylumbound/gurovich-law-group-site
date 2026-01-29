@@ -3,6 +3,7 @@ import { protectedProcedure, router } from "./_core/trpc";
 import { getSupabaseAdmin } from "./supabase";
 import { TRPCError } from "@trpc/server";
 import { generateIntakePDF } from "./intake-pdf";
+import { getSignedDownloadUrl } from "./intake-storage";
 
 // Status enum for intakes
 const intakeStatusSchema = z.enum(["draft", "submitted", "reviewed", "contacted", "converted", "closed"]);
@@ -451,6 +452,42 @@ export const adminRouter = router({
 
     return stats;
   }),
+
+  // Get signed download URL for a file
+  getFileDownloadUrl: adminProcedure
+    .input(z.object({
+      storagePath: z.string(),
+      intakeId: z.number(),
+    }))
+    .mutation(async ({ input }) => {
+      const supabase = getSupabaseAdmin();
+
+      // Verify the file belongs to the intake
+      const { data: upload, error } = await supabase
+        .from("intake_uploads")
+        .select("id, storage_path, file_path")
+        .eq("intake_id", input.intakeId)
+        .or(`storage_path.eq.${input.storagePath},file_path.eq.${input.storagePath}`)
+        .single();
+
+      if (error || !upload) {
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "File not found or access denied",
+        });
+      }
+
+      // Get signed URL (1 hour expiry)
+      const signedUrl = await getSignedDownloadUrl(input.storagePath, 3600);
+      if (!signedUrl) {
+        throw new TRPCError({
+          code: "INTERNAL_SERVER_ERROR",
+          message: "Failed to generate download URL",
+        });
+      }
+
+      return { url: signedUrl };
+    }),
 
   // Generate PDF for a single intake
   generatePDF: adminProcedure

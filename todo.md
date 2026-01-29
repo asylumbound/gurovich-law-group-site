@@ -241,3 +241,51 @@
 - Initial load (gzip): ~350 KB (was 669 KB) - 47% reduction
 - Mermaid/Streamdown (3.2 MB) now lazy loaded only when Terminal accessed
 - Vendor chunks split: react, radix, motion, trpc, charts
+
+## Sprint: P0 Security + P1 Performance + Discovery Writes
+
+### P0.1 - Signed URLs + Storage Bucket Unification
+- [x] Ensure bucket `Gurovich` is private (not public)
+- [x] Delete duplicate bucket `GUROVICH` if present (none found)
+- [x] Create storage helper with getSignedUploadUrl and getSignedDownloadUrl
+- [x] Replace all getPublicUrl calls with signed URLs
+- [x] Update onboard.ts upload handling (removed publicUrl return)
+- [x] Update admin.ts file listing/export (added getFileDownloadUrl procedure)
+- [x] Update terminal.ts file snippet retrieval (added getFileDownloadUrl procedure)
+- [ ] Update Admin pages download actions (frontend)
+- [ ] Update Terminal.tsx citations panel (frontend)
+
+### P0.2 - RLS + intake_access Table
+- [ ] Create intake_access table migration
+- [ ] Enable RLS on intake-scoped tables
+- [ ] Create RLS policies for intake isolation
+- [ ] Test user cannot access unassigned intakes
+
+### P0.3 - Terminal Intake Scope Pinning
+- [x] Add intakeId validation to terminal.query (verifyIntakeAccess called)
+- [x] Verify session.intake_id matches on session load (throws BAD_REQUEST if mismatch)
+- [x] Add "Select Matter" dropdown to Terminal UI (already implemented)
+- [x] Show "Active Scope" badge in Terminal (Badge with CheckCircle icon)
+- [x] Prevent cross-intake session mixing (session pinned to intake_id on creation)
+
+### P1 - Code Splitting (Already Done)
+- [x] Route-level lazy loading implemented
+- [x] Vite manual chunks configured
+- [x] Verify heavy libs (Mermaid) are deferred
+
+**Verified Bundle Sizes:**
+- Main index.js: 599 KB (down from 2.59 MB)
+- AdminDashboard: 72 KB (lazy loaded)
+- Terminal: 49 KB (lazy loaded)
+- Onboarding: 161 KB (lazy loaded)
+- ComponentShowcase: 339 KB (lazy loaded)
+- Mermaid/Shiki syntax themes: ~200+ separate chunks (lazy loaded on demand)
+
+### Product - Terminal Discovery Writes
+- [x] Create discovery_tasks table (if not exists) - EXISTS
+- [x] Create discovery_drafts table (if not exists) - EXISTS
+- [x] Add terminal.createTask procedure (lines 487-524)
+- [x] Add terminal.saveDraft procedure (lines 530-568)
+- [x] Add "Create Task" button to Terminal UI (via suggestedActions)
+- [x] Add "Save as Draft" button to Terminal UI (via suggestedActions)
+- [x] handleQuickAction supports createTask and saveDraft actions

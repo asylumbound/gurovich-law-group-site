@@ -16,6 +16,7 @@ import { getSupabaseAdmin } from "./supabase";
 import { invokeLLM } from "./_core/llm";
 import { buildContextPack, formatContextPackForLLM, verifyIntakeAccess } from "./terminal-context";
 import { searchUploadText, processAllUploadsForIntake } from "./terminal-text-extraction";
+import { getSignedDownloadUrl } from "./intake-storage";
 import { searchStatutes, searchCourtListener, getStatutesByPracticeArea } from "./terminal-legal-tools";
 import type { Citation, SuggestedAction, TerminalQueryOutput } from "./terminal-types";
 import { randomUUID } from "crypto";
@@ -980,6 +981,58 @@ Guidelines:
       }
       
       return memories || [];
+    }),
+
+  /**
+   * Get signed download URL for a file (citations panel)
+   */
+  getFileDownloadUrl: adminProcedure
+    .input(z.object({
+      intakeId: z.number(),
+      uploadId: z.number(),
+    }))
+    .mutation(async ({ input, ctx }) => {
+      const supabase = getSupabaseAdmin();
+      
+      // Verify intake access
+      const hasAccess = await verifyIntakeAccess(input.intakeId, ctx.user.id, ctx.user.role || "user");
+      if (!hasAccess) {
+        throw new TRPCError({
+          code: "FORBIDDEN",
+          message: "You do not have access to this intake",
+        });
+      }
+      
+      // Get the upload record and verify it belongs to the intake
+      const { data: upload, error } = await supabase
+        .from("intake_uploads")
+        .select("id, storage_path, file_path, file_name")
+        .eq("id", input.uploadId)
+        .eq("intake_id", input.intakeId)
+        .single();
+      
+      if (error || !upload) {
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "File not found or access denied",
+        });
+      }
+      
+      // Get signed URL (1 hour expiry)
+      const storagePath = upload.storage_path || upload.file_path;
+      const signedUrl = await getSignedDownloadUrl(storagePath, 3600);
+      
+      if (!signedUrl) {
+        throw new TRPCError({
+          code: "INTERNAL_SERVER_ERROR",
+          message: "Failed to generate download URL",
+        });
+      }
+      
+      return { 
+        url: signedUrl,
+        fileName: upload.file_name,
+      };
     }),
 
   /**
