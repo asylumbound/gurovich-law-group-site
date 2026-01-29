@@ -51,13 +51,18 @@ export function buildClientFilePath(intakeId: number, uploadId: string, filename
  */
 export async function initializeClientFolder(intakeId: number): Promise<{ success: boolean; path: string }> {
   const supabase = getSupabaseAdmin();
-  const keepPath = `${CLIENT_PREFIX}/${intakeId}/.keep`;
+  const keepPath = `${CLIENT_PREFIX}/${intakeId}/manifest.json`;
   
-  // Create a zero-byte placeholder file
+  // Create a manifest JSON file to initialize the folder
+  const manifest = JSON.stringify({
+    intake_id: intakeId,
+    created_at: new Date().toISOString(),
+    status: "draft",
+  });
   const { error } = await supabase.storage
     .from(BUCKET_NAME)
-    .upload(keepPath, new Uint8Array(0), {
-      contentType: "application/octet-stream",
+    .upload(keepPath, new TextEncoder().encode(manifest), {
+      contentType: "application/json",
       upsert: true,
     });
   

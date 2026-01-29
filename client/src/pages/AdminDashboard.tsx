@@ -517,7 +517,7 @@ function AdminDashboardContent({
           <Card>
             <CardContent className="p-4">
               <div className="flex items-center gap-2">
-                <FileText className="h-5 w-5 text-blue-500" />
+                <FileText className="h-5 w-5 text-gray-500" />
                 <div>
                   <p className="text-sm text-gray-500">Total</p>
                   <p className="text-2xl font-bold">{statsLoading ? "-" : stats?.total || 0}</p>
@@ -528,7 +528,7 @@ function AdminDashboardContent({
           <Card>
             <CardContent className="p-4">
               <div className="flex items-center gap-2">
-                <Clock className="h-5 w-5 text-blue-500" />
+                <Clock className="h-5 w-5 text-gray-500" />
                 <div>
                   <p className="text-sm text-gray-500">New</p>
                   <p className="text-2xl font-bold">{statsLoading ? "-" : stats?.submitted || 0}</p>
@@ -539,7 +539,7 @@ function AdminDashboardContent({
           <Card>
             <CardContent className="p-4">
               <div className="flex items-center gap-2">
-                <CheckCircle className="h-5 w-5 text-yellow-500" />
+                <CheckCircle className="h-5 w-5 text-gray-500" />
                 <div>
                   <p className="text-sm text-gray-500">Reviewed</p>
                   <p className="text-2xl font-bold">{statsLoading ? "-" : stats?.reviewed || 0}</p>
@@ -550,7 +550,7 @@ function AdminDashboardContent({
           <Card>
             <CardContent className="p-4">
               <div className="flex items-center gap-2">
-                <Phone className="h-5 w-5 text-purple-500" />
+                <Phone className="h-5 w-5 text-gray-500" />
                 <div>
                   <p className="text-sm text-gray-500">Contacted</p>
                   <p className="text-2xl font-bold">{statsLoading ? "-" : stats?.contacted || 0}</p>
@@ -561,7 +561,7 @@ function AdminDashboardContent({
           <Card>
             <CardContent className="p-4">
               <div className="flex items-center gap-2">
-                <Users className="h-5 w-5 text-green-500" />
+                <Users className="h-5 w-5 text-gray-500" />
                 <div>
                   <p className="text-sm text-gray-500">Converted</p>
                   <p className="text-2xl font-bold">{statsLoading ? "-" : stats?.converted || 0}</p>
@@ -572,7 +572,7 @@ function AdminDashboardContent({
           <Card>
             <CardContent className="p-4">
               <div className="flex items-center gap-2">
-                <div className="h-5 w-5 rounded-full bg-red-500" />
+                <div className="h-5 w-5 rounded-full bg-gray-500" />
                 <div>
                   <p className="text-sm text-gray-500">Emergency</p>
                   <p className="text-2xl font-bold">{statsLoading ? "-" : stats?.byUrgency?.emergency || 0}</p>
@@ -867,10 +867,14 @@ function AdminDashboardContent({
                                           rows={2}
                                         />
                                         <Button 
-                                          onClick={() => handleAddNote(selectedIntake.id)}
-                                          disabled={!newNote.trim() || addNoteMutation.isPending}
+                                          onClick={() => {
+                                            if (newNote.trim()) {
+                                              createNoteMutation.mutate({ intakeId: selectedIntake.id, note: newNote.trim() });
+                                            }
+                                          }}
+                                          disabled={!newNote.trim() || createNoteMutation.isPending}
                                         >
-                                          {addNoteMutation.isPending ? <Loader2 className="h-4 w-4 animate-spin" /> : "Add"}
+                                          {createNoteMutation.isPending ? <Loader2 className="h-4 w-4 animate-spin" /> : "Add"}
                                         </Button>
                                       </div>
                                     </div>

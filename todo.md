@@ -78,3 +78,6 @@
 - [x] Add INTAKE menu item to top navigation (right of BLOG, links to /onboarding)
 - [x] Remove Armenian from onboarding preferred language options
 - [x] Ensure all onboarding steps scroll to top when navigating
+- [x] Fix admin notes error - switched to use intake_notes table via createNote mutation
+- [x] Remove colored icons from admin dashboard stats cards (now gray)
+- [x] Fix document uploads - bucket 'Gurovich' created and configured with proper mime types
