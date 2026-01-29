@@ -10,6 +10,7 @@ import { Link } from "wouter";
 import { practiceAreas } from "@/data/practiceAreas";
 import { Shield, Scale, Briefcase, Gavel, ArrowRight, Phone } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { useContactModal } from "@/contexts/ContactModalContext";
 
 const iconMap: Record<string, React.ElementType> = {
   Shield,
@@ -19,6 +20,8 @@ const iconMap: Record<string, React.ElementType> = {
 };
 
 export default function PracticeAreas() {
+  const { openContactModal } = useContactModal();
+
   return (
     <main className="min-h-screen">
       {/* Hero Section */}
@@ -115,11 +118,13 @@ export default function PracticeAreas() {
             Contact us today for a free, confidential consultation.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Link href="/contact">
-              <Button size="lg" className="bg-primary hover:bg-primary/90 text-white px-8">
-                Schedule Consultation
-              </Button>
-            </Link>
+            <Button 
+              size="lg" 
+              onClick={openContactModal}
+              className="bg-primary hover:bg-primary/90 text-white px-8"
+            >
+              Schedule Consultation
+            </Button>
             <a href="tel:818-401-4725">
               <Button size="lg" variant="outline" className="border-white text-white hover:bg-white hover:text-slate-900 px-8">
                 <Phone className="w-5 h-5 mr-2" />

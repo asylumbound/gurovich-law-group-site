@@ -1,7 +1,7 @@
-import { Link } from "wouter";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Phone, Scale, Heart, Shield, Users, Award, Clock, Globe } from "lucide-react";
+import { useContactModal } from "@/contexts/ContactModalContext";
 
 
 
@@ -44,6 +44,8 @@ const firmStats = [
 ];
 
 export default function AboutUs() {
+  const { openContactModal } = useContactModal();
+
   return (
     <>
         {/* Hero Section */}
@@ -72,11 +74,13 @@ export default function AboutUs() {
                 At Gurovich Law Group, we pride ourselves on our years of experience in criminal defense, personal injury, and employment law. Our team is dedicated to providing personalized attention while navigating the legal system.
               </p>
               <div className="mt-8 flex flex-col sm:flex-row gap-4">
-                <Link href="/contact">
-                  <Button size="lg" className="bg-primary hover:bg-primary/90 text-primary-foreground font-heading font-semibold px-8">
-                    Get In Touch
-                  </Button>
-                </Link>
+                <Button 
+                  size="lg" 
+                  onClick={openContactModal}
+                  className="bg-primary hover:bg-primary/90 text-primary-foreground font-heading font-semibold px-8"
+                >
+                  Get In Touch
+                </Button>
                 <a href="tel:8184014725">
                   <Button size="lg" variant="outline" className="border-white text-white hover:bg-white/10 font-heading font-semibold px-8">
                     <Phone className="mr-2 h-5 w-5" />
@@ -303,11 +307,14 @@ export default function AboutUs() {
                 If you are facing legal issues or need guidance, we're here to help. Our experienced team combines deep legal knowledge with a personal touch. Let's discuss your situation and find the best path forward together.
               </p>
               <div className="mt-8 flex flex-col sm:flex-row gap-4 justify-center">
-                <Link href="/contact">
-                  <Button size="lg" variant="secondary" className="font-heading font-semibold px-8">
-                    Contact Us
-                  </Button>
-                </Link>
+                <Button 
+                  size="lg" 
+                  variant="secondary" 
+                  onClick={openContactModal}
+                  className="font-heading font-semibold px-8"
+                >
+                  Contact Us
+                </Button>
                 <a href="tel:8184014725">
                   <Button size="lg" variant="outline" className="border-white text-white hover:bg-white/10 font-heading font-semibold px-8">
                     <Phone className="mr-2 h-5 w-5" />

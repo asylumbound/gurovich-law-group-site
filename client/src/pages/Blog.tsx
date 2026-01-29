@@ -2,8 +2,11 @@ import { Link } from "wouter";
 import { Calendar, Clock, ArrowRight, User } from "lucide-react";
 import { blogPosts } from "@/data/blogPosts";
 import { motion } from "framer-motion";
+import { useContactModal } from "@/contexts/ContactModalContext";
 
 export default function Blog() {
+  const { openContactModal } = useContactModal();
+
   return (
     <main className="min-h-screen bg-background">
       {/* Hero Section */}
@@ -111,11 +114,12 @@ export default function Blog() {
             <p className="font-body text-muted-foreground mb-6">
               Our experienced attorneys are here to help. Contact us today for a free, confidential consultation about your legal matter.
             </p>
-            <Link href="/contact">
-              <button className="bg-primary hover:bg-primary/90 text-primary-foreground font-heading font-semibold px-8 py-3 rounded-lg shadow-lg transition-colors">
-                Schedule a Free Consultation
-              </button>
-            </Link>
+            <button 
+              onClick={openContactModal}
+              className="bg-primary hover:bg-primary/90 text-primary-foreground font-heading font-semibold px-8 py-3 rounded-lg shadow-lg transition-colors"
+            >
+              Schedule a Free Consultation
+            </button>
           </div>
         </div>
       </section>

@@ -2,6 +2,7 @@ import { Button } from "@/components/ui/button";
 import { Phone, Mail, Menu, X } from "lucide-react";
 import { useState } from "react";
 import { Link, useLocation } from "wouter";
+import { useContactModal } from "@/contexts/ContactModalContext";
 
 const navItems = [
   { label: "Home", href: "/" },
@@ -15,6 +16,12 @@ const navItems = [
 export default function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [location] = useLocation();
+  const { openContactModal } = useContactModal();
+
+  const handleContactClick = () => {
+    setMobileMenuOpen(false);
+    openContactModal();
+  };
 
   return (
     <header className="sticky top-0 z-50 w-full">
@@ -74,11 +81,12 @@ export default function Header() {
 
           {/* CTA Button */}
           <div className="hidden lg:block">
-            <Link href="/contact">
-              <Button className="bg-primary hover:bg-primary/90 text-primary-foreground font-heading font-semibold px-6">
-                CONTACT US
-              </Button>
-            </Link>
+            <Button 
+              onClick={handleContactClick}
+              className="bg-primary hover:bg-primary/90 text-primary-foreground font-heading font-semibold px-6"
+            >
+              CONTACT US
+            </Button>
           </div>
 
           {/* Mobile Menu Button */}
@@ -113,11 +121,12 @@ export default function Header() {
                   {item.label}
                 </Link>
               ))}
-              <Link href="/contact" onClick={() => setMobileMenuOpen(false)}>
-                <Button className="w-full bg-primary hover:bg-primary/90 text-primary-foreground font-heading font-semibold">
-                  CONTACT US
-                </Button>
-              </Link>
+              <Button 
+                onClick={handleContactClick}
+                className="w-full bg-primary hover:bg-primary/90 text-primary-foreground font-heading font-semibold"
+              >
+                CONTACT US
+              </Button>
             </div>
           </div>
         )}

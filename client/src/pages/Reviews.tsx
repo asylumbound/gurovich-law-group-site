@@ -1,8 +1,8 @@
 import { useState, useMemo } from "react";
-import { Link } from "wouter";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Star, Phone, ArrowUpDown } from "lucide-react";
+import { useContactModal } from "@/contexts/ContactModalContext";
 
 import reviewsData from "@/content/reviews/reviews.json";
 
@@ -85,6 +85,7 @@ function ReviewCard({ review, index }: { review: Review; index: number }) {
 
 export default function Reviews() {
   const [sortBy, setSortBy] = useState<SortOption>("rating");
+  const { openContactModal } = useContactModal();
 
   const sortedReviews = useMemo(() => {
     const reviews = [...reviewsData] as Review[];
@@ -196,11 +197,13 @@ export default function Reviews() {
                 Join our satisfied clients. Contact us today for a free consultation.
               </p>
               <div className="mt-6 flex flex-col sm:flex-row gap-4 justify-center">
-                <Link href="/contact">
-                  <Button size="lg" className="bg-primary hover:bg-primary/90 text-primary-foreground font-heading font-semibold px-8">
-                    Contact Us
-                  </Button>
-                </Link>
+                <Button 
+                  size="lg" 
+                  onClick={openContactModal}
+                  className="bg-primary hover:bg-primary/90 text-primary-foreground font-heading font-semibold px-8"
+                >
+                  Contact Us
+                </Button>
                 <a href="tel:8184014725">
                   <Button size="lg" variant="outline" className="font-heading font-semibold px-8">
                     <Phone className="mr-2 h-5 w-5" />

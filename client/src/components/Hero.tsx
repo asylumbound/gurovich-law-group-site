@@ -1,6 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Phone } from "lucide-react";
 import { motion } from "framer-motion";
+import { useContactModal } from "@/contexts/ContactModalContext";
 
 /**
  * Hero Marquee Component — 2-Column Layout
@@ -23,6 +24,8 @@ import { motion } from "framer-motion";
  */
 
 export default function Hero() {
+  const { openContactModal } = useContactModal();
+
   return (
     <section className="relative min-h-[70vh] lg:min-h-[80vh] overflow-hidden">
       {/* ============================================
@@ -164,10 +167,11 @@ export default function Hero() {
                   </Button>
                 </a>
                 
-                {/* Free Consultation Button */}
+                {/* Free Consultation Button - Opens Contact Modal */}
                 <Button
                   size="lg"
                   variant="outline"
+                  onClick={openContactModal}
                   className="w-full sm:w-auto border-2 border-white text-white hover:bg-white/10 font-heading font-semibold text-sm sm:text-base md:text-lg px-5 sm:px-6 md:px-8 py-4 sm:py-5 md:py-6 shadow-lg"
                 >
                   Free Consultation

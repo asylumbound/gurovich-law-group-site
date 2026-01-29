@@ -11,6 +11,7 @@ import { getPracticeAreaBySlug, getSubPageBySlug } from "@/data/practiceAreas";
 import { Shield, Scale, Briefcase, Gavel, Phone, ChevronRight, CheckCircle, ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import ClientIntakeForm from "@/components/ClientIntakeForm";
+import { useContactModal } from "@/contexts/ContactModalContext";
 
 const iconMap: Record<string, React.ElementType> = {
   Shield,
@@ -23,6 +24,7 @@ export default function PracticeAreaSubPage() {
   const params = useParams<{ area: string; subpage: string }>();
   const area = getPracticeAreaBySlug(params.area || "");
   const subPage = getSubPageBySlug(params.area || "", params.subpage || "");
+  const { openContactModal } = useContactModal();
 
   if (!area || !subPage) {
     return (
@@ -215,11 +217,13 @@ export default function PracticeAreaSubPage() {
             Contact us today for a free consultation.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Link href="/contact">
-              <Button size="lg" className="bg-white text-primary hover:bg-slate-100 px-8">
-                Contact Us Today
-              </Button>
-            </Link>
+            <Button 
+              size="lg" 
+              onClick={openContactModal}
+              className="bg-white text-primary hover:bg-slate-100 px-8"
+            >
+              Contact Us Today
+            </Button>
             <a href="tel:818-401-4725">
               <Button size="lg" variant="outline" className="border-white text-white hover:bg-white hover:text-primary px-8">
                 <Phone className="w-5 h-5 mr-2" />

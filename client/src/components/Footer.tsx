@@ -1,5 +1,6 @@
 import { Link } from "wouter";
 import { Facebook, Twitter, Linkedin, Instagram } from "lucide-react";
+import { useContactModal } from "@/contexts/ContactModalContext";
 
 const practiceAreas = [
   { label: "Personal Injury", href: "/practice-areas/personal-injury" },
@@ -10,10 +11,9 @@ const practiceAreas = [
 
 const quickLinks = [
   { label: "Home", href: "/" },
-  { label: "Our Team", href: "/our-team" },
+  { label: "Our Team", href: "/team" },
   { label: "Testimonials", href: "/reviews" },
   { label: "Blog", href: "/blog" },
-  { label: "Contact Us", href: "/contact" },
 ];
 
 const socialLinks = [
@@ -24,6 +24,8 @@ const socialLinks = [
 ];
 
 export default function Footer() {
+  const { openContactModal } = useContactModal();
+
   return (
     <footer className="bg-secondary text-secondary-foreground">
       <div className="container py-16">
@@ -90,6 +92,14 @@ export default function Footer() {
                   </Link>
                 </li>
               ))}
+              <li>
+                <button
+                  onClick={openContactModal}
+                  className="font-body text-white/70 hover:text-primary transition-colors text-sm"
+                >
+                  Contact Us
+                </button>
+              </li>
             </ul>
           </div>
 

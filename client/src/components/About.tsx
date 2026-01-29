@@ -2,6 +2,7 @@ import { Button } from "@/components/ui/button";
 import { motion } from "framer-motion";
 import { CheckCircle } from "lucide-react";
 import { Link } from "wouter";
+import { useContactModal } from "@/contexts/ContactModalContext";
 
 const highlights = [
   "Over 20 years of combined legal experience",
@@ -13,6 +14,8 @@ const highlights = [
 ];
 
 export default function About() {
+  const { openContactModal } = useContactModal();
+
   return (
     <section className="py-20 lg:py-28 bg-background">
       <div className="container">
@@ -87,7 +90,7 @@ export default function About() {
             </div>
 
             <div className="mt-10 flex flex-col sm:flex-row gap-4">
-              <Link href="/our-team">
+              <Link href="/team">
                 <Button
                   size="lg"
                   className="bg-primary hover:bg-primary/90 text-primary-foreground font-heading font-semibold"
@@ -95,15 +98,14 @@ export default function About() {
                   Meet Our Team
                 </Button>
               </Link>
-              <Link href="/contact">
-                <Button
-                  size="lg"
-                  variant="outline"
-                  className="border-primary text-primary hover:bg-primary/5 font-heading font-semibold"
-                >
-                  Schedule Consultation
-                </Button>
-              </Link>
+              <Button
+                size="lg"
+                variant="outline"
+                onClick={openContactModal}
+                className="border-primary text-primary hover:bg-primary/5 font-heading font-semibold"
+              >
+                Schedule Consultation
+              </Button>
             </div>
           </motion.div>
         </div>

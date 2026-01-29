@@ -3,11 +3,13 @@ import { Calendar, Clock, User, ArrowLeft, Phone } from "lucide-react";
 import { getBlogPostBySlug, getRecentPosts } from "@/data/blogPosts";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
+import { useContactModal } from "@/contexts/ContactModalContext";
 
 export default function BlogPost() {
   const { slug } = useParams<{ slug: string }>();
   const post = getBlogPostBySlug(slug || "");
   const recentPosts = getRecentPosts(3).filter(p => p.slug !== slug);
+  const { openContactModal } = useContactModal();
 
   if (!post) {
     return (
@@ -123,11 +125,12 @@ export default function BlogPost() {
                   If you have questions about your legal situation, our experienced attorneys are here to help. Contact us today for a free, confidential consultation.
                 </p>
                 <div className="flex flex-col sm:flex-row gap-4">
-                  <Link href="/contact">
-                    <Button className="bg-primary hover:bg-primary/90 text-primary-foreground font-heading font-semibold w-full sm:w-auto">
-                      Schedule Consultation
-                    </Button>
-                  </Link>
+                  <Button 
+                    onClick={openContactModal}
+                    className="bg-primary hover:bg-primary/90 text-primary-foreground font-heading font-semibold w-full sm:w-auto"
+                  >
+                    Schedule Consultation
+                  </Button>
                   <a href="tel:8184014725">
                     <Button variant="outline" className="border-white text-white hover:bg-white/10 font-heading font-semibold w-full sm:w-auto">
                       <Phone className="h-4 w-4 mr-2" />
@@ -153,12 +156,13 @@ export default function BlogPost() {
                 <p className="text-muted-foreground text-sm font-body mb-4">
                   Speak with an experienced attorney about your case. No obligation.
                 </p>
-                <a href="tel:8184014725">
-                  <Button className="w-full bg-primary hover:bg-primary/90 text-primary-foreground font-heading font-semibold">
-                    <Phone className="h-4 w-4 mr-2" />
-                    Call Now
-                  </Button>
-                </a>
+                <Button 
+                  onClick={openContactModal}
+                  className="w-full bg-primary hover:bg-primary/90 text-primary-foreground font-heading font-semibold"
+                >
+                  <Phone className="h-4 w-4 mr-2" />
+                  Free Consultation
+                </Button>
               </div>
 
               {/* Recent Posts */}

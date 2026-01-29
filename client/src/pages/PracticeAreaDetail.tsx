@@ -9,6 +9,7 @@ import { Link, useParams } from "wouter";
 import { getPracticeAreaBySlug } from "@/data/practiceAreas";
 import { Shield, Scale, Briefcase, Gavel, ArrowRight, Phone, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { useContactModal } from "@/contexts/ContactModalContext";
 
 const iconMap: Record<string, React.ElementType> = {
   Shield,
@@ -20,6 +21,7 @@ const iconMap: Record<string, React.ElementType> = {
 export default function PracticeAreaDetail() {
   const params = useParams<{ area: string }>();
   const area = getPracticeAreaBySlug(params.area || "");
+  const { openContactModal } = useContactModal();
 
   if (!area) {
     return (
@@ -160,11 +162,13 @@ export default function PracticeAreaDetail() {
                 We'll review your situation and explain your legal options.
               </p>
               <div className="space-y-4">
-                <Link href="/contact">
-                  <Button size="lg" className="w-full bg-primary hover:bg-primary/90">
-                    Schedule Consultation
-                  </Button>
-                </Link>
+                <Button 
+                  size="lg" 
+                  onClick={openContactModal}
+                  className="w-full bg-primary hover:bg-primary/90"
+                >
+                  Schedule Consultation
+                </Button>
                 <a href="tel:818-401-4725" className="block">
                   <Button size="lg" variant="outline" className="w-full border-white text-white hover:bg-white hover:text-slate-900">
                     <Phone className="w-5 h-5 mr-2" />
