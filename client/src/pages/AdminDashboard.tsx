@@ -337,6 +337,39 @@ function AdminDashboardContent({
     },
   });
 
+  // PDF generation mutation
+  const generatePDFMutation = trpc.admin.generatePDF.useMutation({
+    onSuccess: (data) => {
+      // Convert base64 to blob and download
+      const byteCharacters = atob(data.pdf);
+      const byteNumbers = new Array(byteCharacters.length);
+      for (let i = 0; i < byteCharacters.length; i++) {
+        byteNumbers[i] = byteCharacters.charCodeAt(i);
+      }
+      const byteArray = new Uint8Array(byteNumbers);
+      const blob = new Blob([byteArray], { type: "application/pdf" });
+      
+      // Create download link
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = data.filename;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(url);
+      
+      toast.success("PDF downloaded successfully");
+    },
+    onError: (error) => {
+      toast.error(`Failed to generate PDF: ${error.message}`);
+    },
+  });
+
+  const handleDownloadPDF = (intakeId: number) => {
+    generatePDFMutation.mutate({ id: intakeId });
+  };
+
   const handleStatusChange = (intakeId: number, newStatus: string) => {
     updateStatusMutation.mutate({ id: intakeId, status: newStatus as any });
   };
@@ -651,12 +684,32 @@ function AdminDashboardContent({
                               </DialogTrigger>
                               <DialogContent className="max-w-3xl max-h-[80vh] overflow-y-auto">
                                 <DialogHeader>
-                                  <DialogTitle>
-                                    Intake Details - {selectedIntake?.first_name} {selectedIntake?.last_name}
-                                  </DialogTitle>
-                                  <DialogDescription>
-                                    Submitted on {selectedIntake?.created_at ? new Date(selectedIntake.created_at).toLocaleString() : ""}
-                                  </DialogDescription>
+                                  <div className="flex items-start justify-between">
+                                    <div>
+                                      <DialogTitle>
+                                        Intake Details - {selectedIntake?.first_name} {selectedIntake?.last_name}
+                                      </DialogTitle>
+                                      <DialogDescription>
+                                        Submitted on {selectedIntake?.created_at ? new Date(selectedIntake.created_at).toLocaleString() : ""}
+                                      </DialogDescription>
+                                    </div>
+                                    {selectedIntake && (
+                                      <Button
+                                        variant="outline"
+                                        size="sm"
+                                        onClick={() => handleDownloadPDF(selectedIntake.id)}
+                                        disabled={generatePDFMutation.isPending}
+                                        className="ml-4"
+                                      >
+                                        {generatePDFMutation.isPending ? (
+                                          <Loader2 className="h-4 w-4 animate-spin mr-2" />
+                                        ) : (
+                                          <Download className="h-4 w-4 mr-2" />
+                                        )}
+                                        Download PDF
+                                      </Button>
+                                    )}
+                                  </div>
                                 </DialogHeader>
                                 {intakeLoading ? (
                                   <div className="flex justify-center py-8">

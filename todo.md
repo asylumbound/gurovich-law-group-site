@@ -59,10 +59,12 @@
 - [x] Verify intake_uploads row matches storage path
 
 ## PDF Export & Admin Link
-- [ ] Add admin link to footer (left of Disclaimer)
-- [ ] Implement PDF export for individual intake records
-- [ ] Include all intake data in PDF (contact, matter, facts, details)
-- [ ] Add download button to admin dashboard intake detail view
+- [x] Add admin link to footer (left of Disclaimer)
+- [x] Implement PDF export for individual intake records
+- [x] Include all intake data in PDF (contact, matter, facts, details)
+- [x] Add download button to admin dashboard intake detail view
+- [x] Style PDF with Gurovich Law Group branding
+- [x] Add unit tests for PDF generation (8 tests)
 
 ## SEO Fixes for Homepage
 - [x] Add meta keywords tag

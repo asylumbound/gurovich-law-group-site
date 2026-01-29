@@ -2,6 +2,7 @@ import { z } from "zod";
 import { protectedProcedure, router } from "./_core/trpc";
 import { getSupabaseAdmin } from "./supabase";
 import { TRPCError } from "@trpc/server";
+import { generateIntakePDF } from "./intake-pdf";
 
 // Status enum for intakes
 const intakeStatusSchema = z.enum(["draft", "submitted", "reviewed", "contacted", "converted", "closed"]);
@@ -450,4 +451,78 @@ export const adminRouter = router({
 
     return stats;
   }),
+
+  // Generate PDF for a single intake
+  generatePDF: adminProcedure
+    .input(z.object({ id: z.number() }))
+    .mutation(async ({ input }) => {
+      const supabase = getSupabaseAdmin();
+
+      // Get main intake data
+      const { data: intake, error } = await supabase
+        .from("intakes")
+        .select("*")
+        .eq("id", input.id)
+        .single();
+
+      if (error) throw new Error(error.message);
+      if (!intake) throw new Error("Intake not found");
+
+      // Get issue type
+      let issueType = null;
+      if (intake.issue_type_id) {
+        const { data } = await supabase
+          .from("issue_types")
+          .select("*")
+          .eq("id", intake.issue_type_id)
+          .single();
+        issueType = data;
+      }
+
+      // Get parties
+      const { data: parties } = await supabase
+        .from("intake_parties")
+        .select("*")
+        .eq("intake_id", input.id);
+
+      // Get uploads
+      const { data: uploads } = await supabase
+        .from("intake_uploads")
+        .select("*")
+        .eq("intake_id", input.id);
+
+      // Get practice-specific details
+      let practiceDetails = null;
+      const detailsTableMap: Record<string, string> = {
+        personal_injury: "intake_pi_details",
+        criminal_defense: "intake_criminal_details",
+        employment_law: "intake_employment_details",
+        tenant_rights: "intake_tenant_details",
+        civil_litigation: "intake_civil_details",
+      };
+
+      if (intake.practice_area && detailsTableMap[intake.practice_area]) {
+        const { data } = await supabase
+          .from(detailsTableMap[intake.practice_area])
+          .select("*")
+          .eq("intake_id", input.id)
+          .single();
+        practiceDetails = data;
+      }
+
+      // Generate PDF
+      const pdfBuffer = generateIntakePDF({
+        ...intake,
+        issue_type: issueType,
+        parties: parties || [],
+        uploads: uploads || [],
+        practice_details: practiceDetails,
+      });
+
+      // Return as base64
+      return {
+        pdf: pdfBuffer.toString("base64"),
+        filename: `intake-${intake.id}-${intake.last_name}-${new Date().toISOString().split("T")[0]}.pdf`,
+      };
+    }),
 });

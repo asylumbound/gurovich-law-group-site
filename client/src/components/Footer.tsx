@@ -183,6 +183,12 @@ export default function Footer() {
               {t("footer.terms")}
             </ScrollToTopLink>
             <ScrollToTopLink
+              href="/admin"
+              className="font-body text-sm text-white/50 hover:text-white transition-colors focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:ring-offset-secondary rounded"
+            >
+              Admin
+            </ScrollToTopLink>
+            <ScrollToTopLink
               href="/disclaimer"
               className="font-body text-sm text-white/50 hover:text-white transition-colors focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:ring-offset-secondary rounded"
             >
