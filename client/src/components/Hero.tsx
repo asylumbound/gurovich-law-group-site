@@ -7,22 +7,23 @@ import { useContactModal } from "@/contexts/ContactModalContext";
  * Hero Marquee Component — 2-Column Layout
  * 
  * LAYOUT: CSS Grid with two columns
- * - LEFT column: All text + CTAs (headline, subhead, body, divider, buttons)
- * - RIGHT column: Skyline/background visual
+ * - LEFT column (55%): Contains ALL content - text, buttons, statue, opacity overlay
+ * - RIGHT column (45%): Skyline background only (no content)
+ * 
+ * CRITICAL: All content elements MUST stay within the left column boundary
+ * The opacity overlay is constrained to the left 55% of the viewport
  * 
  * Z-INDEX STACKING ORDER (TOP → BOTTOM):
- * 1. TEXT (z-30) - Headlines, body, CTAs - always topmost and clickable (below header z-50)
- * 2. BOTTOM ANGLES (z-25) - White angled divider shape at bottom
- * 3. OPACITY OVERLAY (z-20) - Semi-transparent overlay for text readability (70% opacity)
- * 4. JUSTICE STATUE (z-15) - Lady Justice statue, larger version, contained in left column
- * 5. BASE/BACKGROUND (z-10) - LA skyline background
+ * 1. TEXT (z-30) - Headlines, body, CTAs - always topmost and clickable
+ * 2. BOTTOM ANGLES (z-[25]) - White angled divider shape at bottom
+ * 3. OPACITY OVERLAY (z-20) - Semi-transparent overlay, LEFT COLUMN ONLY
+ * 4. JUSTICE STATUE (z-[15]) - Lady Justice statue, LEFT COLUMN ONLY
+ * 5. BASE/BACKGROUND (z-10) - LA skyline background (full width)
  * 
- * NOTE: Header is z-50, so all hero content must be below z-50 to scroll under it
- * 
- * RESPONSIVE BREAKPOINTS:
- * - ≥1024px: Two-column layout, statue at full scale
- * - 768-1023px: Two-column with reduced statue
- * - ≤767px: Stacked layout, statue hidden or minimal
+ * RESPONSIVE BEHAVIOR:
+ * - Desktop (≥1024px): 55%/45% split, statue visible
+ * - Tablet (768-1023px): 60%/40% split, statue smaller
+ * - Mobile (≤767px): Full width left column, statue hidden
  */
 
 export default function Hero() {
@@ -32,7 +33,7 @@ export default function Hero() {
     <section className="relative min-h-[70vh] lg:min-h-[80vh] overflow-hidden">
       {/* ============================================
           LAYER 5 (z-10): Background Base - LA Skyline
-          Covers entire hero as background
+          Covers entire hero as background (full width)
           ============================================ */}
       <div
         className="absolute inset-0 z-10"
@@ -46,73 +47,70 @@ export default function Hero() {
       </div>
 
       {/* ============================================
+          LAYER 3 (z-20): Opacity Overlay
+          CONSTRAINED TO LEFT COLUMN ONLY
+          Uses percentage width to match column split
+          ============================================ */}
+      <div
+        className="absolute top-0 bottom-0 left-0 z-20 pointer-events-none w-full md:w-[60%] lg:w-[55%]"
+        aria-hidden="true"
+      >
+        <img
+          src="/images/opacity_half_hero.png"
+          alt=""
+          className="w-full h-full object-cover object-left"
+          style={{ opacity: 0.75 }}
+        />
+      </div>
+
+      {/* ============================================
           LAYER 4 (z-[15]): Justice Statue
-          Using the larger replacement image
-          Anchored bottom-left, sized to be more prominent
+          CONSTRAINED TO LEFT COLUMN ONLY
+          Positioned at bottom-left, responsive sizing
+          Hidden on mobile to prevent overflow
           ============================================ */}
       <motion.div
         initial={{ opacity: 0, x: -30 }}
         animate={{ opacity: 1, x: 0 }}
         transition={{ duration: 0.8, delay: 0.2 }}
-        className="absolute left-0 bottom-0 z-[15] pointer-events-none overflow-hidden"
+        className="absolute left-0 bottom-0 z-[15] pointer-events-none hidden md:block"
         aria-hidden="true"
         style={{ 
-          /* Constrain to left column (55% of viewport) */
-          width: '55%',
+          /* Constrain to left column width */
+          width: 'min(55%, 600px)',
           height: '100%',
         }}
       >
         <img
           src="/images/justice-statue-replacement-2.png"
           alt=""
-          className="absolute bottom-0 left-0 object-contain object-left-bottom"
+          className="absolute bottom-0 left-0 object-contain object-left-bottom h-full w-auto max-w-none"
           style={{
-            /* Larger statue - takes up more of the hero height */
-            height: 'clamp(450px, 130%, 1000px)',
-            width: 'auto',
-            maxWidth: '110%',
+            /* Scale statue to fit within column */
+            maxHeight: '95%',
           }}
         />
       </motion.div>
 
       {/* ============================================
-          LAYER 3 (z-20): Opacity Overlay
-          70% opacity for improved text readability
-          Covers left ~50%, above statue, below text
-          pointer-events: none ensures CTAs remain clickable
-          ============================================ */}
-      <div
-        className="absolute inset-0 z-20 pointer-events-none"
-        aria-hidden="true"
-      >
-        <img
-          src="/images/opacity_half_hero.png"
-          alt=""
-          className="w-full h-full object-cover"
-          style={{ opacity: 0.7 }}
-        />
-      </div>
-
-      {/* ============================================
-          LAYER 1 (z-30): Text Content - 2-Column Grid
-          LEFT: All text and CTAs
-          RIGHT: Visual space for skyline
-          z-30 ensures content scrolls UNDER the header (z-50)
+          LAYER 1 (z-30): Text Content
+          CONSTRAINED TO LEFT COLUMN ONLY
+          Uses grid to ensure content stays in bounds
           ============================================ */}
       <div className="relative z-30 h-full min-h-[70vh] lg:min-h-[80vh]">
-        {/* Grid Container: 2 columns on desktop/tablet, 1 on mobile */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-[55%_45%] h-full">
+        {/* Grid Container: Defines column boundaries */}
+        <div className="grid grid-cols-1 md:grid-cols-[60%_40%] lg:grid-cols-[55%_45%] h-full">
           
-          {/* LEFT COLUMN: Text + CTAs */}
-          <div className="flex flex-col justify-center px-6 sm:px-8 md:px-12 lg:px-16 xl:px-20 py-12 md:py-16 lg:py-20">
-            <div className="max-w-xl">
+          {/* LEFT COLUMN: All text + CTAs - content MUST NOT exceed this column */}
+          <div className="flex flex-col justify-center px-4 sm:px-6 md:px-8 lg:px-12 xl:px-16 py-12 md:py-16 lg:py-20">
+            <div className="max-w-lg lg:max-w-xl">
               {/* Headline */}
               <motion.h1
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6 }}
                 className="font-display text-3xl sm:text-4xl md:text-4xl lg:text-5xl xl:text-6xl font-bold text-white leading-[1.1] tracking-wide"
-                style={{ textShadow: '2px 2px 8px rgba(0,0,0,0.4)' }}
+                style={{ textShadow: '2px 2px 8px rgba(0,0,0,0.5)' }}
               >
                 VIGOROUS ADVOCACY
               </motion.h1>
@@ -122,8 +120,8 @@ export default function Hero() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6, delay: 0.1 }}
-                className="font-heading text-xs sm:text-sm md:text-base lg:text-lg text-white mt-3 md:mt-4 tracking-[0.12em] sm:tracking-[0.15em] md:tracking-[0.18em] uppercase"
-                style={{ textShadow: '1px 1px 4px rgba(0,0,0,0.4)' }}
+                className="font-heading text-xs sm:text-sm md:text-sm lg:text-base xl:text-lg text-white mt-2 md:mt-3 tracking-[0.1em] sm:tracking-[0.12em] md:tracking-[0.15em] uppercase"
+                style={{ textShadow: '1px 1px 4px rgba(0,0,0,0.5)' }}
               >
                 For Life's Most Serious Legal Challenges
               </motion.h2>
@@ -133,7 +131,7 @@ export default function Hero() {
                 initial={{ opacity: 0, scaleX: 0 }}
                 animate={{ opacity: 1, scaleX: 1 }}
                 transition={{ duration: 0.6, delay: 0.2 }}
-                className="w-16 md:w-20 h-1 bg-primary mt-5 md:mt-6 origin-left"
+                className="w-14 md:w-16 lg:w-20 h-1 bg-primary mt-4 md:mt-5 origin-left"
               />
 
               {/* Body Text */}
@@ -141,8 +139,8 @@ export default function Hero() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6, delay: 0.3 }}
-                className="font-body text-sm md:text-base lg:text-lg text-white/95 mt-5 md:mt-6 leading-relaxed"
-                style={{ textShadow: '1px 1px 3px rgba(0,0,0,0.3)' }}
+                className="font-body text-sm md:text-sm lg:text-base xl:text-lg text-white/95 mt-4 md:mt-5 leading-relaxed"
+                style={{ textShadow: '1px 1px 3px rgba(0,0,0,0.4)' }}
               >
                 High-stakes matters demand clear strategy and experienced execution.
                 The Gurovich Law Group represents clients in personal injury,
@@ -150,20 +148,20 @@ export default function Hero() {
                 disciplined case-building and sophisticated advocacy.
               </motion.p>
 
-              {/* CTA Buttons */}
+              {/* CTA Buttons - Stack on smaller screens */}
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6, delay: 0.4 }}
-                className="mt-6 md:mt-8 flex flex-col sm:flex-row gap-3 md:gap-4"
+                className="mt-5 md:mt-6 lg:mt-8 flex flex-col sm:flex-row gap-3"
               >
                 {/* Call Button */}
-                <a href="tel:8184014725" className="block sm:inline-block">
+                <a href="tel:8184014725" className="block">
                   <Button
                     size="lg"
-                    className="w-full sm:w-auto bg-primary hover:bg-primary/90 text-primary-foreground font-heading font-semibold text-sm sm:text-base md:text-lg px-5 sm:px-6 md:px-8 py-4 sm:py-5 md:py-6 shadow-lg"
+                    className="w-full sm:w-auto bg-primary hover:bg-primary/90 text-primary-foreground font-heading font-semibold text-sm md:text-base px-4 sm:px-5 md:px-6 py-4 md:py-5 shadow-lg whitespace-nowrap"
                   >
-                    <Phone className="mr-2 h-4 w-4 md:h-5 md:w-5" />
+                    <Phone className="mr-2 h-4 w-4" />
                     CALL TODAY: 818.401.4725
                   </Button>
                 </a>
@@ -173,7 +171,7 @@ export default function Hero() {
                   size="lg"
                   variant="outline"
                   onClick={openContactModal}
-                  className="w-full sm:w-auto border-2 border-white text-white hover:bg-white/10 font-heading font-semibold text-sm sm:text-base md:text-lg px-5 sm:px-6 md:px-8 py-4 sm:py-5 md:py-6 shadow-lg"
+                  className="w-full sm:w-auto border-2 border-white text-white hover:bg-white/10 font-heading font-semibold text-sm md:text-base px-4 sm:px-5 md:px-6 py-4 md:py-5 shadow-lg whitespace-nowrap"
                 >
                   Free Consultation
                 </Button>
@@ -181,15 +179,14 @@ export default function Hero() {
             </div>
           </div>
 
-          {/* RIGHT COLUMN: Visual space (skyline shows through) */}
+          {/* RIGHT COLUMN: Empty - skyline shows through */}
           <div className="hidden md:block" aria-hidden="true" />
         </div>
       </div>
 
       {/* ============================================
           LAYER 2 (z-[25]): Bottom Angles
-          White angled divider at bottom
-          Full width, no clipping/warping on resize
+          White angled divider at bottom (full width)
           ============================================ */}
       <div 
         className="absolute bottom-0 left-0 right-0 z-[25] pointer-events-none"
@@ -199,7 +196,7 @@ export default function Hero() {
           src="/images/her0_element_bottom_angles.png"
           alt=""
           className="w-full h-auto block"
-          style={{ marginBottom: '-1px' }} /* Prevent subpixel gap */
+          style={{ marginBottom: '-1px' }}
         />
       </div>
     </section>
