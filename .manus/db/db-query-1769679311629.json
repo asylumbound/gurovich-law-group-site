@@ -1,0 +1,22 @@
+{
+  "query": "SELECT table_name FROM information_schema.tables WHERE table_schema = 'public' AND table_name LIKE 'terminal%' OR table_name LIKE 'discovery%' OR table_name LIKE 'intake_access' OR table_name LIKE 'upload_text';",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway03.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 2QmWxs7iH8DQva8.5d87819da4f6 --database J2wS2ZoP78AcJaejkgQxeA --execute SELECT table_name FROM information_schema.tables WHERE table_schema = 'public' AND table_name LIKE 'terminal%' OR table_name LIKE 'discovery%' OR table_name LIKE 'intake_access' OR table_name LIKE 'upload_text';",
+  "rows": [
+    {
+      "table_name": "upload_text"
+    },
+    {
+      "table_name": "discovery_tasks"
+    },
+    {
+      "table_name": "discovery_drafts"
+    },
+    {
+      "table_name": "intake_access"
+    }
+  ],
+  "messages": [],
+  "stdout": "table_name\nupload_text\ndiscovery_tasks\ndiscovery_drafts\nintake_access\n",
+  "stderr": "",
+  "execution_time_ms": 62
+}

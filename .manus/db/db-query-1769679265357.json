@@ -1,0 +1,9 @@
+{
+  "query": "SELECT table_name FROM information_schema.tables WHERE table_schema = 'public' AND table_name LIKE 'terminal%';",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway03.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 2QmWxs7iH8DQva8.5d87819da4f6 --database J2wS2ZoP78AcJaejkgQxeA --execute SELECT table_name FROM information_schema.tables WHERE table_schema = 'public' AND table_name LIKE 'terminal%';",
+  "rows": [],
+  "messages": [],
+  "stdout": "",
+  "stderr": "",
+  "execution_time_ms": 108
+}

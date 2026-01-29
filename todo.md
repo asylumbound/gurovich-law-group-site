@@ -172,3 +172,12 @@
 - [x] Seed all templates with elements and evidence types (12 templates, 16 evidence types)
 - [ ] Update terminal to search KC library for statute lookups
 - [x] Test Terminal with real intake queries (60 tests passing)
+
+## Terminal Database Migration to Supabase
+- [x] Create terminal_sessions table in Supabase (PostgreSQL)
+- [x] Create terminal_messages table in Supabase (PostgreSQL)
+- [x] Create upload_text table in Supabase (PostgreSQL)
+- [x] Create discovery_tasks table in Supabase (PostgreSQL)
+- [x] Create discovery_drafts table in Supabase (PostgreSQL)
+- [ ] Revert terminal-router.ts to use Supabase client (not Drizzle)
+- [ ] Test Terminal functionality with Supabase

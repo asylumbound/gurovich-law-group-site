@@ -1,0 +1,46 @@
+{
+  "query": "SHOW TABLES;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway03.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 2QmWxs7iH8DQva8.5d87819da4f6 --database J2wS2ZoP78AcJaejkgQxeA --execute SHOW TABLES;",
+  "rows": [
+    {
+      "Tables_in_J2wS2ZoP78AcJaejkgQxeA": "__drizzle_migrations"
+    },
+    {
+      "Tables_in_J2wS2ZoP78AcJaejkgQxeA": "discovery_drafts"
+    },
+    {
+      "Tables_in_J2wS2ZoP78AcJaejkgQxeA": "discovery_tasks"
+    },
+    {
+      "Tables_in_J2wS2ZoP78AcJaejkgQxeA": "evidence_types"
+    },
+    {
+      "Tables_in_J2wS2ZoP78AcJaejkgQxeA": "intake_access"
+    },
+    {
+      "Tables_in_J2wS2ZoP78AcJaejkgQxeA": "kc_library"
+    },
+    {
+      "Tables_in_J2wS2ZoP78AcJaejkgQxeA": "kc_templates"
+    },
+    {
+      "Tables_in_J2wS2ZoP78AcJaejkgQxeA": "statutes"
+    },
+    {
+      "Tables_in_J2wS2ZoP78AcJaejkgQxeA": "terminal_messages"
+    },
+    {
+      "Tables_in_J2wS2ZoP78AcJaejkgQxeA": "terminal_sessions"
+    },
+    {
+      "Tables_in_J2wS2ZoP78AcJaejkgQxeA": "upload_text"
+    },
+    {
+      "Tables_in_J2wS2ZoP78AcJaejkgQxeA": "users"
+    }
+  ],
+  "messages": [],
+  "stdout": "Tables_in_J2wS2ZoP78AcJaejkgQxeA\n__drizzle_migrations\ndiscovery_drafts\ndiscovery_tasks\nevidence_types\nintake_access\nkc_library\nkc_templates\nstatutes\nterminal_messages\nterminal_sessions\nupload_text\nusers\n",
+  "stderr": "",
+  "execution_time_ms": 56
+}

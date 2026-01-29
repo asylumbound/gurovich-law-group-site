@@ -1,0 +1,9 @@
+{
+  "query": "CREATE TABLE IF NOT EXISTS upload_text (\n  id INT AUTO_INCREMENT PRIMARY KEY,\n  intake_id INT NOT NULL,\n  upload_id INT NOT NULL,\n  file_name VARCHAR(500),\n  extracted_text LONGTEXT,\n  word_count INT DEFAULT 0,\n  status VARCHAR(20) DEFAULT 'pending',\n  error_message TEXT,\n  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,\n  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP\n);",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway03.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 2QmWxs7iH8DQva8.5d87819da4f6 --database J2wS2ZoP78AcJaejkgQxeA --execute CREATE TABLE IF NOT EXISTS upload_text (\n  id INT AUTO_INCREMENT PRIMARY KEY,\n  intake_id INT NOT NULL,\n  upload_id INT NOT NULL,\n  file_name VARCHAR(500),\n  extracted_text LONGTEXT,\n  word_count INT DEFAULT 0,\n  status VARCHAR(20) DEFAULT 'pending',\n  error_message TEXT,\n  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,\n  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP\n);",
+  "rows": [],
+  "messages": [],
+  "stdout": "",
+  "stderr": "",
+  "execution_time_ms": 57
+}

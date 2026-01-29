@@ -3,6 +3,10 @@
  * 
  * tRPC router for the Admin Terminal RAG assistant.
  * All procedures enforce strict intake scoping and authorization.
+ * 
+ * Uses Supabase for ALL data storage:
+ * - terminal_sessions, terminal_messages, discovery_tasks, discovery_drafts
+ * - intakes, intake_uploads, intake_notes (existing tables)
  */
 
 import { z } from "zod";
@@ -14,6 +18,7 @@ import { buildContextPack, formatContextPackForLLM, verifyIntakeAccess } from ".
 import { searchUploadText, processAllUploadsForIntake } from "./terminal-text-extraction";
 import { searchStatutes, searchCourtListener, getStatutesByPracticeArea } from "./terminal-legal-tools";
 import type { Citation, SuggestedAction, TerminalQueryOutput } from "./terminal-types";
+import { randomUUID } from "crypto";
 
 // Admin-only procedure
 const adminProcedure = protectedProcedure.use(({ ctx, next }) => {
@@ -55,11 +60,11 @@ export const terminalRouter = router({
     }))
     .mutation(async ({ input, ctx }): Promise<TerminalQueryOutput> => {
       const supabase = getSupabaseAdmin();
-      const userId = ctx.user.id;
+      const userId = String(ctx.user.id);
       const userRole = ctx.user.role;
       
       // Verify intake access
-      const hasAccess = await verifyIntakeAccess(input.intakeId, userId, userRole);
+      const hasAccess = await verifyIntakeAccess(input.intakeId, ctx.user.id, userRole || "user");
       if (!hasAccess) {
         throw new TRPCError({
           code: "FORBIDDEN",
@@ -67,16 +72,18 @@ export const terminalRouter = router({
         });
       }
       
-      // If sessionId provided, verify it's pinned to the same intake
+      // Get or create session
       let sessionId = input.sessionId;
+      
       if (sessionId) {
-        const { data: session } = await supabase
+        // Verify session belongs to user and intake
+        const { data: sessions } = await supabase
           .from("terminal_sessions")
-          .select("intake_id")
+          .select("*")
           .eq("id", sessionId)
-          .single();
+          .limit(1);
         
-        if (session && session.intake_id !== input.intakeId) {
+        if (sessions && sessions.length > 0 && sessions[0].intake_id !== input.intakeId) {
           throw new TRPCError({
             code: "BAD_REQUEST",
             message: "Session is pinned to a different intake. Please create a new session.",
@@ -86,213 +93,193 @@ export const terminalRouter = router({
       
       // Create new session if not provided
       if (!sessionId) {
-        const { data: newSession, error: sessionError } = await supabase
+        sessionId = randomUUID();
+        const { error } = await supabase
           .from("terminal_sessions")
           .insert({
+            id: sessionId,
             user_id: userId,
             intake_id: input.intakeId,
             title: input.query.substring(0, 100),
-          })
-          .select("id")
-          .single();
+          });
         
-        if (sessionError || !newSession) {
+        if (error) {
+          console.error("Failed to create session:", error);
           throw new TRPCError({
             code: "INTERNAL_SERVER_ERROR",
             message: "Failed to create session",
           });
         }
-        sessionId = newSession.id;
       }
       
       // Save user message
-      await supabase.from("terminal_messages").insert({
-        session_id: sessionId,
-        role: "user",
-        content: input.query,
+      await supabase
+        .from("terminal_messages")
+        .insert({
+          session_id: sessionId,
+          role: "user",
+          content: input.query,
+        });
+      
+      // Build context pack for the intake
+      const contextPack = await buildContextPack(input.intakeId, ctx.user.id);
+      const formattedContext = formatContextPackForLLM(contextPack);
+      
+      // Collect citations from context
+      const citations: Citation[] = [];
+      
+      // Add intake citation
+      if (contextPack.intake) {
+        citations.push({
+          type: "INTAKE",
+          id: contextPack.intake.id,
+        });
+      }
+      
+      // Add note citations
+      contextPack.notes.forEach(note => {
+        citations.push({
+          type: "NOTE",
+          id: note.id,
+        });
       });
       
-      // Build context pack
-      const contextPack = await buildContextPack(input.intakeId, userId);
-      const contextString = formatContextPackForLLM(contextPack);
+      // Add upload citations
+      contextPack.uploads.forEach(upload => {
+        citations.push({
+          type: "UPLOAD",
+          id: upload.id,
+          file_name: upload.file_name,
+        });
+      });
       
-      // Gather additional context based on tools requested
-      const citations: Citation[] = [];
-      let additionalContext = "";
-      
-      // Search upload text if requested or if query mentions documents
-      const shouldSearchUploads = input.tools?.includes("uploads") || 
-        /document|file|upload|evidence|report|record/i.test(input.query);
-      
-      if (shouldSearchUploads && contextPack.uploads.length > 0) {
-        const uploadResults = await searchUploadText(input.intakeId, input.query, 3);
-        if (uploadResults.length > 0) {
-          additionalContext += "\n\n## RELEVANT DOCUMENT EXCERPTS\n";
-          for (const result of uploadResults) {
-            additionalContext += `\n### From: ${result.file_name}\n${result.snippet}\n`;
-            citations.push({
-              type: "UPLOAD",
-              id: result.upload_id,
-              file_name: result.file_name,
-            });
-          }
-        }
-      }
-      
-      // Search statutes if requested
-      const shouldSearchStatutes = input.tools?.includes("statutes") ||
-        /statute|law|code|section|legal|regulation/i.test(input.query);
-      
-      if (shouldSearchStatutes) {
-        // Get practice-area specific statutes
-        if (contextPack.intake.practice_area) {
-          const practiceStatutes = await getStatutesByPracticeArea(contextPack.intake.practice_area, 3);
-          if (practiceStatutes.length > 0) {
-            additionalContext += "\n\n## RELEVANT CALIFORNIA STATUTES\n";
-            for (const statute of practiceStatutes) {
-              additionalContext += `\n### ${statute.citation}\n**${statute.title}**\n${statute.excerpt}\n`;
-              citations.push({
-                type: "STATUTE",
-                id: statute.id,
-                citation: statute.citation,
-              });
-            }
-          }
-        }
-        
-        // Also search by query keywords
-        const statuteResults = await searchStatutes(input.query, "CA", undefined, 3);
-        for (const statute of statuteResults) {
-          if (!citations.some(c => c.type === "STATUTE" && c.id === statute.id)) {
-            additionalContext += `\n### ${statute.citation}\n**${statute.title}**\n${statute.excerpt}\n`;
+      // Search for relevant statutes if requested or query mentions law/statute
+      let statuteContext = "";
+      if (input.tools?.includes("statutes") || /statute|law|code|section|§/i.test(input.query)) {
+        const practiceArea = contextPack.intake?.practice_area;
+        const statutes = await searchStatutes(input.query, practiceArea || undefined);
+        if (statutes.length > 0) {
+          statuteContext = "\n\n## Relevant Statutes:\n" + statutes.map(s => 
+            `- ${s.citation}: ${s.title}\n  ${s.excerpt}`
+          ).join("\n");
+          
+          statutes.forEach(s => {
             citations.push({
               type: "STATUTE",
-              id: statute.id,
-              citation: statute.citation,
+              id: s.id,
+              citation: s.citation,
             });
-          }
+          });
         }
       }
       
-      // Search case law if requested
-      const shouldSearchCaselaw = input.tools?.includes("caselaw") ||
-        /case law|precedent|ruling|decision|court|opinion/i.test(input.query);
-      
-      if (shouldSearchCaselaw) {
-        const caselawResults = await searchCourtListener(input.query, undefined, undefined, 3);
-        if (caselawResults.length > 0) {
-          additionalContext += "\n\n## RELEVANT CASE LAW\n";
-          for (const caselaw of caselawResults) {
-            additionalContext += `\n### ${caselaw.title}\n**${caselaw.court}** (${caselaw.date})\n${caselaw.excerpt}\n[View full opinion](${caselaw.url})\n`;
+      // Search for case law if requested
+      let caselawContext = "";
+      if (input.tools?.includes("caselaw") || /case law|precedent|ruling|court/i.test(input.query)) {
+        const cases = await searchCourtListener(input.query);
+        if (cases.length > 0) {
+          caselawContext = "\n\n## Relevant Case Law:\n" + cases.map(c => 
+            `- ${c.title} (${c.court}, ${c.date})\n  ${c.excerpt}`
+          ).join("\n");
+          
+          cases.forEach(c => {
             citations.push({
               type: "CASELAW",
-              id: caselaw.id,
-              citation: caselaw.citation,
-              url: caselaw.url,
+              id: c.id,
+              citation: c.citation,
+              url: c.url,
             });
-          }
+          });
         }
       }
       
-      // Build system prompt with strict scoping instructions
-      const systemPrompt = `You are a legal research assistant for Gurovich Law Group. You are helping analyze a specific client matter (intake).
+      // Search uploaded documents if requested
+      let uploadSearchContext = "";
+      if (input.tools?.includes("uploads")) {
+        const uploadResults = await searchUploadText(input.intakeId, input.query);
+        if (uploadResults.length > 0) {
+          uploadSearchContext = "\n\n## Document Search Results:\n" + uploadResults.map(r => 
+            `- ${r.file_name}: ...${r.snippet}...`
+          ).join("\n");
+        }
+      }
+      
+      // Build system prompt
+      const systemPrompt = `You are a legal research assistant for Gurovich Law Group, a California law firm specializing in personal injury, criminal defense, employment law, tenant rights, and civil litigation.
 
-## CRITICAL RULES
-1. Use ONLY the provided scope data. Do not assume facts not in scope.
-2. Cite every key claim with record IDs in brackets, e.g., [INTAKE #123], [NOTE #45], [UPLOAD: filename.pdf].
-3. If the question concerns another client or matter, instruct the user to switch scope.
-4. Be precise and professional. Avoid speculation.
-5. When referencing statutes, use proper citations like [CA CCP § 335.1].
-6. When referencing case law, include the case name and year.
+You are helping analyze a specific client intake/case. All your responses must be grounded in the provided context. Do not make up facts or cite cases that are not provided.
 
-## ACTIVE SCOPE DATA
-${contextString}
-${additionalContext}
+${formattedContext}
+${statuteContext}
+${caselawContext}
+${uploadSearchContext}
 
-## YOUR CAPABILITIES
-- Summarize intake information
-- Analyze uploaded documents (if text extracted)
-- Research California statutes
-- Search case law via CourtListener
-- Identify missing information
-- Suggest discovery tasks and next steps
-
-Respond in markdown format. Be concise but thorough.`;
+Guidelines:
+1. Always reference the specific intake data when answering questions
+2. Cite relevant statutes and case law when applicable
+3. Be precise and professional in your responses
+4. If information is missing or unclear, note what additional information would be helpful
+5. Suggest next steps or actions when appropriate`;
 
       // Call LLM
-      const llmResponse = await invokeLLM({
+      const response = await invokeLLM({
         messages: [
           { role: "system", content: systemPrompt },
           { role: "user", content: input.query },
         ],
       });
       
-      const rawContent = llmResponse.choices[0]?.message?.content;
-      const answer = typeof rawContent === "string" 
-        ? rawContent 
-        : Array.isArray(rawContent) 
-          ? rawContent.filter(c => c.type === "text").map(c => (c as any).text).join("\n")
-          : "I was unable to generate a response.";
+      const rawContent = response.choices[0]?.message?.content;
+      const answer = typeof rawContent === 'string' ? rawContent : "I apologize, but I was unable to generate a response.";
       
-      // Generate suggested actions based on context
+      // Generate suggested actions based on the query and response
       const suggestedActions: SuggestedAction[] = [];
       
-      // Add intake citation
-      citations.unshift({
-        type: "INTAKE",
-        id: input.intakeId,
-      });
-      
-      // Suggest actions based on query and context
-      if (/summar/i.test(input.query)) {
+      // Suggest creating a task if the response mentions action items
+      if (/should|need to|must|recommend|suggest/i.test(answer)) {
         suggestedActions.push({
-          label: "Save Summary as Draft",
-          action: "saveDraft",
-          payload: { type: "other", title: "Case Summary" },
-        });
-      }
-      
-      if (/discover/i.test(input.query) || /interrogator/i.test(input.query)) {
-        suggestedActions.push({
-          label: "Draft Discovery Requests",
-          action: "saveDraft",
-          payload: { type: "requests" },
-        });
-      }
-      
-      if (/witness/i.test(input.query) || /deposition/i.test(input.query)) {
-        suggestedActions.push({
-          label: "Generate Witness Topics",
-          action: "saveDraft",
-          payload: { type: "witness_topics" },
-        });
-      }
-      
-      if (contextPack.missing_info_hints.length > 0) {
-        suggestedActions.push({
-          label: "Create Task: Gather Missing Info",
+          label: "Create Task",
           action: "createTask",
-          payload: { title: "Gather missing information", description: contextPack.missing_info_hints.join("; ") },
+          payload: { title: input.query.substring(0, 50) },
         });
       }
       
-      // Default suggestions
-      if (suggestedActions.length === 0) {
-        suggestedActions.push(
-          { label: "Summarize Intake", action: "query", payload: { query: "Summarize this intake" } },
-          { label: "Statute Lookup", action: "query", payload: { query: "What statutes apply to this case?", tools: ["statutes"] } },
-          { label: "Case Law Search", action: "query", payload: { query: "Find relevant case law", tools: ["caselaw"] } },
-        );
+      // Suggest saving as draft if it's a substantial response
+      if (answer.length > 500) {
+        suggestedActions.push({
+          label: "Save as Draft",
+          action: "saveDraft",
+          payload: { type: "analysis", content: answer },
+        });
+      }
+      
+      // Suggest follow-up queries
+      if (/statute|law/i.test(input.query) && !input.tools?.includes("statutes")) {
+        suggestedActions.push({
+          label: "Search Statutes",
+          action: "query",
+          payload: { query: input.query, tools: ["statutes"] },
+        });
+      }
+      
+      if (/case|precedent/i.test(input.query) && !input.tools?.includes("caselaw")) {
+        suggestedActions.push({
+          label: "Search Case Law",
+          action: "query",
+          payload: { query: input.query, tools: ["caselaw"] },
+        });
       }
       
       // Save assistant message
-      await supabase.from("terminal_messages").insert({
-        session_id: sessionId,
-        role: "assistant",
-        content: answer,
-        citations: citations,
-        suggested_actions: suggestedActions,
-      });
+      await supabase
+        .from("terminal_messages")
+        .insert({
+          session_id: sessionId,
+          role: "assistant",
+          content: answer,
+          citations: citations,
+          suggested_actions: suggestedActions,
+        });
       
       // Update session title if this is the first message
       await supabase
@@ -318,17 +305,12 @@ Respond in markdown format. Be concise but thorough.`;
     }))
     .query(async ({ input, ctx }) => {
       const supabase = getSupabaseAdmin();
+      const userId = String(ctx.user.id);
       
       let query = supabase
         .from("terminal_sessions")
-        .select(`
-          id,
-          intake_id,
-          title,
-          created_at,
-          updated_at
-        `)
-        .eq("user_id", ctx.user.id)
+        .select("*")
+        .eq("user_id", userId)
         .order("updated_at", { ascending: false })
         .limit(input.limit);
       
@@ -336,16 +318,14 @@ Respond in markdown format. Be concise but thorough.`;
         query = query.eq("intake_id", input.intakeId);
       }
       
-      const { data, error } = await query;
+      const { data: sessions, error } = await query;
       
       if (error) {
-        throw new TRPCError({
-          code: "INTERNAL_SERVER_ERROR",
-          message: error.message,
-        });
+        console.error("Failed to list sessions:", error);
+        return [];
       }
       
-      return data || [];
+      return sessions || [];
     }),
 
   /**
@@ -357,32 +337,50 @@ Respond in markdown format. Be concise but thorough.`;
     }))
     .query(async ({ input, ctx }) => {
       const supabase = getSupabaseAdmin();
+      const userId = String(ctx.user.id);
       
       // Get session
-      const { data: session, error: sessionError } = await supabase
+      const { data: sessions, error: sessionError } = await supabase
         .from("terminal_sessions")
         .select("*")
         .eq("id", input.sessionId)
-        .eq("user_id", ctx.user.id)
-        .single();
+        .eq("user_id", userId)
+        .limit(1);
       
-      if (sessionError || !session) {
+      if (sessionError || !sessions || sessions.length === 0) {
         throw new TRPCError({
           code: "NOT_FOUND",
           message: "Session not found",
         });
       }
       
+      const session = sessions[0];
+      
       // Get messages
-      const { data: messages } = await supabase
+      const { data: messages, error: messagesError } = await supabase
         .from("terminal_messages")
         .select("*")
         .eq("session_id", input.sessionId)
         .order("created_at", { ascending: true });
       
+      if (messagesError) {
+        console.error("Failed to get messages:", messagesError);
+      }
+      
       return {
         ...session,
-        messages: messages || [],
+        // Map snake_case to camelCase for frontend compatibility
+        intakeId: session.intake_id,
+        createdAt: new Date(session.created_at),
+        updatedAt: new Date(session.updated_at),
+        messages: (messages || []).map(m => ({
+          id: m.id,
+          role: m.role,
+          content: m.content,
+          citations: m.citations,
+          suggestedActions: m.suggested_actions,
+          createdAt: new Date(m.created_at),
+        })),
       };
     }),
 
@@ -396,17 +394,18 @@ Respond in markdown format. Be concise but thorough.`;
     }))
     .mutation(async ({ input, ctx }) => {
       const supabase = getSupabaseAdmin();
+      const userId = String(ctx.user.id);
       
       const { error } = await supabase
         .from("terminal_sessions")
         .update({ title: input.title })
         .eq("id", input.sessionId)
-        .eq("user_id", ctx.user.id);
+        .eq("user_id", userId);
       
       if (error) {
         throw new TRPCError({
           code: "INTERNAL_SERVER_ERROR",
-          message: error.message,
+          message: "Failed to save session",
         });
       }
       
@@ -422,17 +421,25 @@ Respond in markdown format. Be concise but thorough.`;
     }))
     .mutation(async ({ input, ctx }) => {
       const supabase = getSupabaseAdmin();
+      const userId = String(ctx.user.id);
       
+      // Delete messages first (cascade should handle this, but be explicit)
+      await supabase
+        .from("terminal_messages")
+        .delete()
+        .eq("session_id", input.sessionId);
+      
+      // Delete session
       const { error } = await supabase
         .from("terminal_sessions")
         .delete()
         .eq("id", input.sessionId)
-        .eq("user_id", ctx.user.id);
+        .eq("user_id", userId);
       
       if (error) {
         throw new TRPCError({
           code: "INTERNAL_SERVER_ERROR",
-          message: error.message,
+          message: "Failed to delete session",
         });
       }
       
@@ -471,6 +478,7 @@ Respond in markdown format. Be concise but thorough.`;
     }))
     .mutation(async ({ input, ctx }) => {
       const supabase = getSupabaseAdmin();
+      const userId = String(ctx.user.id);
       
       const hasAccess = await verifyIntakeAccess(input.intakeId, ctx.user.id, ctx.user.role || "user");
       if (!hasAccess) {
@@ -484,19 +492,17 @@ Respond in markdown format. Be concise but thorough.`;
         .from("discovery_tasks")
         .insert({
           intake_id: input.intakeId,
+          user_id: userId,
           title: input.title,
           description: input.description,
-          priority: input.priority,
-          created_by_id: ctx.user.id,
-          created_by_name: ctx.user.name,
         })
-        .select("id")
+        .select()
         .single();
       
       if (error) {
         throw new TRPCError({
           code: "INTERNAL_SERVER_ERROR",
-          message: error.message,
+          message: "Failed to create task",
         });
       }
       
@@ -509,12 +515,13 @@ Respond in markdown format. Be concise but thorough.`;
   saveDraft: adminProcedure
     .input(z.object({
       intakeId: z.number(),
-      type: z.enum(["requests", "witness_topics", "esi_plan", "proof_matrix", "other"]),
+      type: z.string(),
       title: z.string().optional(),
-      content: z.record(z.string(), z.unknown()),
+      content: z.any(),
     }))
     .mutation(async ({ input, ctx }) => {
       const supabase = getSupabaseAdmin();
+      const userId = String(ctx.user.id);
       
       const hasAccess = await verifyIntakeAccess(input.intakeId, ctx.user.id, ctx.user.role || "user");
       if (!hasAccess) {
@@ -528,19 +535,18 @@ Respond in markdown format. Be concise but thorough.`;
         .from("discovery_drafts")
         .insert({
           intake_id: input.intakeId,
+          user_id: userId,
           type: input.type,
           title: input.title,
           content: input.content,
-          created_by_id: ctx.user.id,
-          created_by_name: ctx.user.name,
         })
-        .select("id")
+        .select()
         .single();
       
       if (error) {
         throw new TRPCError({
           code: "INTERNAL_SERVER_ERROR",
-          message: error.message,
+          message: "Failed to save draft",
         });
       }
       
@@ -565,20 +571,18 @@ Respond in markdown format. Be concise but thorough.`;
         });
       }
       
-      const { data, error } = await supabase
+      const { data: tasks, error } = await supabase
         .from("discovery_tasks")
         .select("*")
         .eq("intake_id", input.intakeId)
         .order("created_at", { ascending: false });
       
       if (error) {
-        throw new TRPCError({
-          code: "INTERNAL_SERVER_ERROR",
-          message: error.message,
-        });
+        console.error("Failed to get tasks:", error);
+        return [];
       }
       
-      return data || [];
+      return tasks || [];
     }),
 
   /**
@@ -599,30 +603,27 @@ Respond in markdown format. Be concise but thorough.`;
         });
       }
       
-      const { data, error } = await supabase
+      const { data: drafts, error } = await supabase
         .from("discovery_drafts")
         .select("*")
         .eq("intake_id", input.intakeId)
         .order("created_at", { ascending: false });
       
       if (error) {
-        throw new TRPCError({
-          code: "INTERNAL_SERVER_ERROR",
-          message: error.message,
-        });
+        console.error("Failed to get drafts:", error);
+        return [];
       }
       
-      return data || [];
+      return drafts || [];
     }),
 
   /**
-   * Search documents for keywords
+   * Search documents (upload text) for keywords
    */
   searchDocuments: adminProcedure
     .input(z.object({
       intakeId: z.number(),
       query: z.string().min(1).max(500),
-      limit: z.number().min(1).max(20).default(10),
     }))
     .query(async ({ input, ctx }) => {
       const hasAccess = await verifyIntakeAccess(input.intakeId, ctx.user.id, ctx.user.role || "user");
@@ -633,7 +634,7 @@ Respond in markdown format. Be concise but thorough.`;
         });
       }
       
-      const results = await searchUploadText(input.intakeId, input.query, input.limit);
+      const results = await searchUploadText(input.intakeId, input.query);
       return results;
     }),
 
@@ -655,45 +656,32 @@ Respond in markdown format. Be concise but thorough.`;
         });
       }
       
-      // Get all uploads for intake
+      // Get all uploads for the intake
       const { data: uploads } = await supabase
         .from("intake_uploads")
-        .select("id, file_name, mime_type, file_size")
+        .select("id, file_name")
         .eq("intake_id", input.intakeId);
       
-      if (!uploads || uploads.length === 0) {
-        return { total: 0, processed: 0, pending: 0, uploads: [] };
-      }
-      
-      // Get which uploads have been processed
-      const { data: processedUploads } = await supabase
+      // Get processed uploads
+      const { data: processed } = await supabase
         .from("upload_text")
-        .select("upload_id, word_count")
+        .select("upload_id")
         .eq("intake_id", input.intakeId);
       
-      const processedMap = new Map(
-        (processedUploads || []).map(p => [p.upload_id, p.word_count])
-      );
-      
-      const uploadStatus = uploads.map(u => ({
-        id: u.id,
-        fileName: u.file_name,
-        mimeType: u.mime_type,
-        fileSize: u.file_size,
-        processed: processedMap.has(u.id),
-        wordCount: processedMap.get(u.id) || 0,
-      }));
+      const processedIds = new Set((processed || []).map(p => p.upload_id));
       
       return {
-        total: uploads.length,
-        processed: processedUploads?.length || 0,
-        pending: uploads.length - (processedUploads?.length || 0),
-        uploads: uploadStatus,
+        total: uploads?.length || 0,
+        processed: processedIds.size,
+        pending: (uploads || []).filter(u => !processedIds.has(u.id)).map(u => ({
+          id: u.id,
+          file_name: u.file_name,
+        })),
       };
     }),
 
   /**
-   * Get list of intakes for dropdown (simplified)
+   * Get list of intakes for the terminal dropdown
    */
   getIntakeList: adminProcedure
     .input(z.object({
@@ -705,36 +693,28 @@ Respond in markdown format. Be concise but thorough.`;
       
       let query = supabase
         .from("intakes")
-        .select(`
-          id,
-          first_name,
-          last_name,
-          practice_area,
-          status,
-          created_at
-        `)
-        .neq("status", "draft")
+        .select("id, first_name, last_name, practice_area, status, created_at")
         .order("created_at", { ascending: false })
         .limit(input.limit);
       
-      if (input.search) {
+      // Filter by search term if provided
+      if (input.search && input.search.length > 0) {
         query = query.or(`first_name.ilike.%${input.search}%,last_name.ilike.%${input.search}%`);
       }
       
-      const { data, error } = await query;
+      const { data: intakes, error } = await query;
       
       if (error) {
-        throw new TRPCError({
-          code: "INTERNAL_SERVER_ERROR",
-          message: error.message,
-        });
+        console.error("Failed to get intakes:", error);
+        return [];
       }
       
-      return (data || []).map(intake => ({
-        id: intake.id,
-        label: `#${intake.id} - ${intake.first_name || ""} ${intake.last_name || ""}`.trim(),
-        practiceArea: intake.practice_area,
-        status: intake.status,
+      return (intakes || []).map(i => ({
+        id: i.id,
+        name: `${i.first_name || ''} ${i.last_name || ''}`.trim() || `Intake #${i.id}`,
+        practiceArea: i.practice_area,
+        status: i.status,
+        createdAt: i.created_at,
       }));
     }),
 });

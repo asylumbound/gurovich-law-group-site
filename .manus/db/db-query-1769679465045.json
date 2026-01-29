@@ -1,0 +1,16 @@
+{
+  "query": "SHOW TABLES LIKE '%terminal%';",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway03.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 2QmWxs7iH8DQva8.5d87819da4f6 --database J2wS2ZoP78AcJaejkgQxeA --execute SHOW TABLES LIKE '%terminal%';",
+  "rows": [
+    {
+      "Tables_in_J2wS2ZoP78AcJaejkgQxeA (%terminal%)": "terminal_messages"
+    },
+    {
+      "Tables_in_J2wS2ZoP78AcJaejkgQxeA (%terminal%)": "terminal_sessions"
+    }
+  ],
+  "messages": [],
+  "stdout": "Tables_in_J2wS2ZoP78AcJaejkgQxeA (%terminal%)\nterminal_messages\nterminal_sessions\n",
+  "stderr": "",
+  "execution_time_ms": 55
+}

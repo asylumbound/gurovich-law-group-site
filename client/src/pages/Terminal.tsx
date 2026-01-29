@@ -53,12 +53,12 @@ const ADMIN_PASSWORD = "&&77GAbriel";
 const ADMIN_AUTH_KEY = "glg_admin_authenticated";
 
 interface Message {
-  id: string;
-  role: "user" | "assistant" | "system";
+  id: number;
+  role: "user" | "assistant";
   content: string;
   citations?: any[];
-  suggested_actions?: any[];
-  created_at: string;
+  suggestedActions?: any[];
+  createdAt: Date;
 }
 
 export default function Terminal() {
@@ -109,12 +109,12 @@ export default function Terminal() {
   const queryMutation = trpc.terminal.query.useMutation({
     onSuccess: (data) => {
       setMessages(prev => [...prev, {
-        id: crypto.randomUUID(),
-        role: "assistant",
+        id: Date.now(),
+        role: "assistant" as const,
         content: data.answer,
-        citations: data.citations,
-        suggested_actions: data.suggestedActions,
-        created_at: new Date().toISOString(),
+        citations: data.citations as any[],
+        suggestedActions: data.suggestedActions as any[],
+        createdAt: new Date(),
       }]);
       setCurrentSessionId(data.sessionId);
       setIsQuerying(false);
@@ -161,7 +161,7 @@ export default function Terminal() {
   
   // Document search query
   const docSearchResults = trpc.terminal.searchDocuments.useQuery(
-    { intakeId: selectedIntakeId!, query: docSearchQuery, limit: 10 },
+    { intakeId: selectedIntakeId!, query: docSearchQuery },
     { enabled: isAdminAuthenticated && !!selectedIntakeId && docSearchQuery.length >= 2 }
   );
   
@@ -196,8 +196,12 @@ export default function Terminal() {
       setCurrentSessionId(sessionId);
       const result = await getSessionQuery.refetch();
       if (result.data) {
-        setMessages(result.data.messages || []);
-        setSelectedIntakeId(result.data.intake_id);
+        setMessages((result.data.messages || []).map((m: any) => ({
+          ...m,
+          citations: m.citations as any[] | undefined,
+          suggestedActions: m.suggestedActions as any[] | undefined,
+        })));
+        setSelectedIntakeId(result.data.intakeId);
       }
     } catch (error) {
       toast.error("Failed to load session");
@@ -220,10 +224,10 @@ export default function Terminal() {
     
     // Add user message to UI immediately
     setMessages(prev => [...prev, {
-      id: crypto.randomUUID(),
-      role: "user",
+      id: Date.now(),
+      role: "user" as const,
       content: inputValue,
-      created_at: new Date().toISOString(),
+      createdAt: new Date(),
     }]);
     
     setIsQuerying(true);
@@ -432,7 +436,7 @@ export default function Terminal() {
                     </div>
                     {intakeListQuery.data?.map((intake) => (
                       <SelectItem key={intake.id} value={intake.id.toString()}>
-                        {intake.label}
+                        {intake.name}
                         {intake.practiceArea && (
                           <span className="text-xs text-gray-500 ml-2">
                             ({intake.practiceArea.replace("_", " ")})
@@ -457,7 +461,7 @@ export default function Terminal() {
               {/* Upload Status Badge */}
               {uploadStatusQuery.data && selectedIntakeId && (
                 <Badge 
-                  variant={uploadStatusQuery.data.pending > 0 ? "secondary" : "outline"}
+                  variant={uploadStatusQuery.data.pending.length > 0 ? "secondary" : "outline"}
                   className="cursor-pointer"
                   onClick={() => setShowDocSearch(!showDocSearch)}
                 >
@@ -529,9 +533,9 @@ export default function Terminal() {
                     <span className="text-gray-600 dark:text-gray-400">
                       {uploadStatusQuery.data.total} documents total | 
                       {uploadStatusQuery.data.processed} indexed | 
-                      {uploadStatusQuery.data.pending} pending
+                      {uploadStatusQuery.data.pending.length} pending
                     </span>
-                    {uploadStatusQuery.data.pending > 0 && (
+                    {uploadStatusQuery.data.pending.length > 0 && (
                       <Button
                         variant="link"
                         size="sm"
@@ -544,26 +548,17 @@ export default function Terminal() {
                   </div>
                   
                   {/* Document List */}
-                  {uploadStatusQuery.data.uploads.length > 0 && (
+                  {uploadStatusQuery.data.pending.length > 0 && (
                     <div className="mt-2 space-y-1">
-                      {uploadStatusQuery.data.uploads.map((upload) => (
+                      <p className="text-xs text-gray-500 mb-1">Pending documents:</p>
+                      {uploadStatusQuery.data.pending.map((upload: { id: number; file_name: string }) => (
                         <div key={upload.id} className="flex items-center gap-2 text-xs">
                           <FileText className="h-3 w-3 text-gray-400" />
-                          <span className="truncate flex-1">{upload.fileName}</span>
-                          <span className="text-gray-400">
-                            {Math.round(upload.fileSize / 1024)}KB
-                          </span>
-                          {upload.processed ? (
-                            <Badge variant="outline" className="text-xs">
-                              <CheckCircle className="h-2 w-2 mr-1 text-green-500" />
-                              {upload.wordCount} words
-                            </Badge>
-                          ) : (
-                            <Badge variant="secondary" className="text-xs">
-                              <Clock className="h-2 w-2 mr-1" />
-                              Pending
-                            </Badge>
-                          )}
+                          <span className="truncate flex-1">{upload.file_name}</span>
+                          <Badge variant="secondary" className="text-xs">
+                            <Clock className="h-2 w-2 mr-1" />
+                            Pending
+                          </Badge>
                         </div>
                       ))}
                     </div>
@@ -724,11 +719,11 @@ export default function Terminal() {
                             )}
                             
                             {/* Suggested Actions */}
-                            {message.suggested_actions && message.suggested_actions.length > 0 && (
+                            {message.suggestedActions && message.suggestedActions.length > 0 && (
                               <div className="mt-3 pt-3 border-t border-gray-200 dark:border-gray-600">
                                 <p className="text-xs font-medium mb-2 text-gray-500">Actions:</p>
                                 <div className="flex flex-wrap gap-2">
-                                  {message.suggested_actions.map((action, idx) => (
+                                  {message.suggestedActions.map((action: any, idx: number) => (
                                     <Button
                                       key={idx}
                                       variant="outline"
