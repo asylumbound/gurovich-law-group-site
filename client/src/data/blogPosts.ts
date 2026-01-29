@@ -186,7 +186,7 @@ Contact us today for a free consultation.`,
     category: "Personal Injury",
     author: "Gurovich Law Group",
     readTime: "6 min read",
-    image: "/images/blog/car-accident.jpg"
+    image: "/images/blog-car-accident.png"
   },
   {
     id: "5",
