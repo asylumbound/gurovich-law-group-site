@@ -44,12 +44,33 @@ export default function Contact() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    // Validate required fields
+    if (!formData.name.trim() || !formData.email.trim() || !formData.message.trim()) {
+      toast.error("Please fill in all required fields.");
+      return;
+    }
+    
     setIsSubmitting(true);
 
-    // Simulate form submission
-    await new Promise((resolve) => setTimeout(resolve, 1000));
+    // Construct mailto link with form data
+    const subject = encodeURIComponent("New Contact Form Inquiry - Gurovich Law Group");
+    const body = encodeURIComponent(
+      `New Contact Form Submission\n\n` +
+      `Name: ${formData.name}\n` +
+      `Email: ${formData.email}\n` +
+      `Phone: ${formData.phone || "Not provided"}\n\n` +
+      `Message:\n${formData.message}\n\n` +
+      `---\nSubmitted from: ${window.location.href}`
+    );
 
-    toast.success("Message sent! We'll get back to you within 24 hours.");
+    // Simulate form processing delay
+    await new Promise((resolve) => setTimeout(resolve, 800));
+
+    // Open mailto link
+    window.location.href = `mailto:kg@gurovichlaw.com?subject=${subject}&body=${body}`;
+
+    toast.success("Your inquiry has been prepared. Please complete sending the email from your email client.");
     setFormData({ name: "", email: "", phone: "", message: "" });
     setIsSubmitting(false);
   };
