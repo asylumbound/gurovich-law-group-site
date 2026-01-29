@@ -27,3 +27,8 @@
 - [x] Add filtering and search functionality
 - [x] Add "Start Your Case" button to homepage
 - [x] Add "Start Your Case" button to service pages
+
+## Admin Dashboard Enhancements
+- [x] Add CSV export functionality for intake data
+- [x] Add internal notes feature for intake records
+- [x] Update tests for new features

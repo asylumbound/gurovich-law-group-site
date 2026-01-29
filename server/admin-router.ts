@@ -231,6 +231,160 @@ export const adminRouter = router({
       return { success: true };
     }),
 
+  // Export intakes to CSV
+  exportCSV: adminProcedure
+    .input(z.object({
+      status: intakeStatusSchema.optional(),
+      practice_area: z.string().optional(),
+      urgency: z.enum(["emergency", "high", "normal", "unsure"]).optional(),
+      dateFrom: z.string().optional(),
+      dateTo: z.string().optional(),
+    }))
+    .query(async ({ input }) => {
+      const supabase = getSupabaseAdmin();
+
+      // Build query for all matching intakes
+      let query = supabase
+        .from("intakes")
+        .select(`
+          id,
+          first_name,
+          last_name,
+          phone,
+          email,
+          address,
+          city,
+          state,
+          zip,
+          practice_area,
+          issue_type_id,
+          urgency,
+          incident_date,
+          summary,
+          status,
+          preferred_contact_method,
+          preferred_language,
+          how_heard,
+          admin_notes,
+          created_at,
+          updated_at
+        `)
+        .neq("status", "draft")
+        .order("created_at", { ascending: false });
+
+      // Apply filters
+      if (input.status) {
+        query = query.eq("status", input.status);
+      }
+      if (input.practice_area) {
+        query = query.eq("practice_area", input.practice_area);
+      }
+      if (input.urgency) {
+        query = query.eq("urgency", input.urgency);
+      }
+      if (input.dateFrom) {
+        query = query.gte("created_at", input.dateFrom);
+      }
+      if (input.dateTo) {
+        query = query.lte("created_at", input.dateTo);
+      }
+
+      const { data, error } = await query;
+      if (error) throw new Error(error.message);
+
+      // Get issue type names
+      const issueTypeIds = Array.from(new Set(data?.map(i => i.issue_type_id).filter(Boolean)));
+      let issueTypes: Record<number, string> = {};
+      
+      if (issueTypeIds.length > 0) {
+        const { data: issueTypeData } = await supabase
+          .from("issue_types")
+          .select("id, name")
+          .in("id", issueTypeIds);
+        
+        if (issueTypeData) {
+          issueTypes = Object.fromEntries(issueTypeData.map(it => [it.id, it.name]));
+        }
+      }
+
+      // Format data for CSV
+      const csvData = data?.map(intake => ({
+        ...intake,
+        issue_type_name: intake.issue_type_id ? issueTypes[intake.issue_type_id] : "",
+        created_at: new Date(intake.created_at).toLocaleString(),
+        updated_at: new Date(intake.updated_at).toLocaleString(),
+        incident_date: intake.incident_date ? new Date(intake.incident_date).toLocaleDateString() : "",
+        admin_notes: intake.admin_notes?.replace(/\n/g, " | ") || "",
+      })) || [];
+
+      return { data: csvData };
+    }),
+
+  // Get notes for an intake
+  getNotes: adminProcedure
+    .input(z.object({ intakeId: z.number() }))
+    .query(async ({ input }) => {
+      const supabase = getSupabaseAdmin();
+
+      const { data: notes, error } = await supabase
+        .from("intake_notes")
+        .select(`
+          id,
+          note,
+          created_at,
+          created_by_name
+        `)
+        .eq("intake_id", input.intakeId)
+        .order("created_at", { ascending: false });
+
+      if (error) {
+        // If table doesn't exist, return empty array
+        console.warn("Notes table error:", error.message);
+        return { notes: [] };
+      }
+
+      return { notes: notes || [] };
+    }),
+
+  // Add a new note to an intake
+  createNote: adminProcedure
+    .input(z.object({
+      intakeId: z.number(),
+      note: z.string().min(1).max(5000),
+    }))
+    .mutation(async ({ input, ctx }) => {
+      const supabase = getSupabaseAdmin();
+
+      const { data, error } = await supabase
+        .from("intake_notes")
+        .insert({
+          intake_id: input.intakeId,
+          note: input.note,
+          created_by_id: ctx.user.id,
+          created_by_name: ctx.user.name || ctx.user.email || "Admin",
+        })
+        .select()
+        .single();
+
+      if (error) throw new Error(error.message);
+      return { note: data };
+    }),
+
+  // Delete a note
+  deleteNote: adminProcedure
+    .input(z.object({ noteId: z.number() }))
+    .mutation(async ({ input }) => {
+      const supabase = getSupabaseAdmin();
+
+      const { error } = await supabase
+        .from("intake_notes")
+        .delete()
+        .eq("id", input.noteId);
+
+      if (error) throw new Error(error.message);
+      return { success: true };
+    }),
+
   // Get dashboard stats
   getStats: adminProcedure.query(async () => {
     const supabase = getSupabaseAdmin();

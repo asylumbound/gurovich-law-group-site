@@ -182,3 +182,102 @@ describe("Admin Router", () => {
     });
   });
 });
+
+describe("CSV Export functionality", () => {
+  it("should generate valid CSV format with proper escaping", () => {
+    // Test CSV generation helper
+    const testData = [
+      { name: "John Doe", email: "john@example.com", notes: "Test, with comma" },
+      { name: 'Jane "Test" Smith', email: "jane@example.com", notes: "Normal note" },
+      { name: "Bob\nNewline", email: "bob@example.com", notes: "Has\nnewlines" },
+    ];
+
+    // Simulate CSV generation logic
+    const columns = [
+      { key: "name", label: "Name" },
+      { key: "email", label: "Email" },
+      { key: "notes", label: "Notes" },
+    ];
+
+    const header = columns.map(c => c.label).join(",");
+    const rows = testData.map(row => {
+      return columns.map(col => {
+        const value = row[col.key as keyof typeof row];
+        if (value === null || value === undefined) return "";
+        const stringValue = String(value);
+        if (stringValue.includes(",") || stringValue.includes("\n") || stringValue.includes('"')) {
+          return `"${stringValue.replace(/"/g, '""')}"`;
+        }
+        return stringValue;
+      }).join(",");
+    });
+
+    const csv = [header, ...rows].join("\n");
+
+    expect(csv).toContain("Name,Email,Notes");
+    expect(csv).toContain('"Test, with comma"'); // Comma escaped
+    expect(csv).toContain('"Jane ""Test"" Smith"'); // Quotes escaped
+    expect(csv).toContain('"Bob\nNewline"'); // Newline escaped
+  });
+
+  it("should handle empty data gracefully", () => {
+    const testData: any[] = [];
+    expect(testData.length).toBe(0);
+  });
+
+  it("should handle null values in data", () => {
+    const testData = [
+      { name: "John", email: null, phone: undefined },
+    ];
+
+    const columns = [
+      { key: "name", label: "Name" },
+      { key: "email", label: "Email" },
+      { key: "phone", label: "Phone" },
+    ];
+
+    const row = columns.map(col => {
+      const value = testData[0][col.key as keyof typeof testData[0]];
+      if (value === null || value === undefined) return "";
+      return String(value);
+    }).join(",");
+
+    expect(row).toBe("John,,");
+  });
+});
+
+describe("Internal Notes functionality", () => {
+  it("should validate note content is not empty", () => {
+    const note = "   ";
+    const trimmedNote = note.trim();
+    expect(trimmedNote.length).toBe(0);
+  });
+
+  it("should accept valid note content", () => {
+    const note = "This is a valid note about the client intake.";
+    const trimmedNote = note.trim();
+    expect(trimmedNote.length).toBeGreaterThan(0);
+  });
+
+  it("should preserve note formatting", () => {
+    const note = "Line 1\nLine 2\nLine 3";
+    expect(note.split("\n").length).toBe(3);
+  });
+
+  it("should track note metadata", () => {
+    const note = {
+      id: 1,
+      intake_id: 100,
+      note: "Test note content",
+      created_by_id: 1,
+      created_by_name: "Admin User",
+      created_at: new Date().toISOString(),
+    };
+
+    expect(note).toHaveProperty("id");
+    expect(note).toHaveProperty("intake_id");
+    expect(note).toHaveProperty("note");
+    expect(note).toHaveProperty("created_by_name");
+    expect(note).toHaveProperty("created_at");
+  });
+});

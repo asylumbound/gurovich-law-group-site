@@ -7,27 +7,30 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger, DialogFooter } from "@/components/ui/dialog";
 import { Textarea } from "@/components/ui/textarea";
+import { Label } from "@/components/ui/label";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { toast } from "sonner";
 import { 
   Search, 
-  Filter, 
   ChevronLeft, 
   ChevronRight,
   Phone,
   Mail,
   MapPin,
   Calendar,
-  AlertCircle,
   CheckCircle,
   Clock,
   Users,
   FileText,
   MessageSquare,
-  ExternalLink,
   Loader2,
   Shield,
+  Download,
+  Plus,
+  Trash2,
+  StickyNote,
 } from "lucide-react";
 import { Link } from "wouter";
 
@@ -57,6 +60,73 @@ const practiceAreaLabels: Record<string, string> = {
   civil_litigation: "Civil Litigation",
 };
 
+// CSV Export helper function
+function downloadCSV(data: any[], filename: string) {
+  if (data.length === 0) {
+    toast.error("No data to export");
+    return;
+  }
+
+  // Define column headers and their display names
+  const columns = [
+    { key: "id", label: "ID" },
+    { key: "first_name", label: "First Name" },
+    { key: "last_name", label: "Last Name" },
+    { key: "email", label: "Email" },
+    { key: "phone", label: "Phone" },
+    { key: "address", label: "Address" },
+    { key: "city", label: "City" },
+    { key: "state", label: "State" },
+    { key: "zip", label: "ZIP" },
+    { key: "practice_area", label: "Practice Area" },
+    { key: "issue_type_name", label: "Issue Type" },
+    { key: "urgency", label: "Urgency" },
+    { key: "status", label: "Status" },
+    { key: "incident_date", label: "Incident Date" },
+    { key: "summary", label: "Summary" },
+    { key: "preferred_contact_method", label: "Preferred Contact" },
+    { key: "preferred_language", label: "Language" },
+    { key: "how_heard", label: "How Heard" },
+    { key: "admin_notes", label: "Admin Notes" },
+    { key: "created_at", label: "Created At" },
+    { key: "updated_at", label: "Updated At" },
+  ];
+
+  // Create CSV header
+  const header = columns.map(c => c.label).join(",");
+
+  // Create CSV rows
+  const rows = data.map(row => {
+    return columns.map(col => {
+      const value = row[col.key];
+      if (value === null || value === undefined) return "";
+      // Escape quotes and wrap in quotes if contains comma or newline
+      const stringValue = String(value);
+      if (stringValue.includes(",") || stringValue.includes("\n") || stringValue.includes('"')) {
+        return `"${stringValue.replace(/"/g, '""')}"`;
+      }
+      return stringValue;
+    }).join(",");
+  });
+
+  // Combine header and rows
+  const csv = [header, ...rows].join("\n");
+
+  // Create and download file
+  const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement("a");
+  link.setAttribute("href", url);
+  link.setAttribute("download", filename);
+  link.style.visibility = "hidden";
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+  URL.revokeObjectURL(url);
+
+  toast.success(`Exported ${data.length} records to ${filename}`);
+}
+
 export default function AdminDashboard() {
   const { user, loading: authLoading, isAuthenticated } = useAuth();
   const [search, setSearch] = useState("");
@@ -66,6 +136,9 @@ export default function AdminDashboard() {
   const [page, setPage] = useState(1);
   const [selectedIntakeId, setSelectedIntakeId] = useState<number | null>(null);
   const [newNote, setNewNote] = useState("");
+  const [isExporting, setIsExporting] = useState(false);
+  const [notesDialogOpen, setNotesDialogOpen] = useState(false);
+  const [notesIntakeId, setNotesIntakeId] = useState<number | null>(null);
 
   // Check authentication and admin role
   if (authLoading) {
@@ -129,6 +202,12 @@ export default function AdminDashboard() {
     setSelectedIntakeId={setSelectedIntakeId}
     newNote={newNote}
     setNewNote={setNewNote}
+    isExporting={isExporting}
+    setIsExporting={setIsExporting}
+    notesDialogOpen={notesDialogOpen}
+    setNotesDialogOpen={setNotesDialogOpen}
+    notesIntakeId={notesIntakeId}
+    setNotesIntakeId={setNotesIntakeId}
   />;
 }
 
@@ -147,6 +226,12 @@ function AdminDashboardContent({
   setSelectedIntakeId,
   newNote,
   setNewNote,
+  isExporting,
+  setIsExporting,
+  notesDialogOpen,
+  setNotesDialogOpen,
+  notesIntakeId,
+  setNotesIntakeId,
 }: {
   search: string;
   setSearch: (v: string) => void;
@@ -162,7 +247,15 @@ function AdminDashboardContent({
   setSelectedIntakeId: (v: number | null) => void;
   newNote: string;
   setNewNote: (v: string) => void;
+  isExporting: boolean;
+  setIsExporting: (v: boolean) => void;
+  notesDialogOpen: boolean;
+  setNotesDialogOpen: (v: boolean) => void;
+  notesIntakeId: number | null;
+  setNotesIntakeId: (v: number | null) => void;
 }) {
+  const utils = trpc.useUtils();
+
   // Fetch stats
   const { data: stats, isLoading: statsLoading } = trpc.admin.getStats.useQuery();
 
@@ -182,18 +275,65 @@ function AdminDashboardContent({
     { enabled: !!selectedIntakeId }
   );
 
+  // Fetch notes for notes dialog
+  const { data: notesData, isLoading: notesLoading, refetch: refetchNotes } = trpc.admin.getNotes.useQuery(
+    { intakeId: notesIntakeId! },
+    { enabled: !!notesIntakeId }
+  );
+
+  // CSV Export query
+  const exportQuery = trpc.admin.exportCSV.useQuery(
+    {
+      status: statusFilter !== "all" ? statusFilter as any : undefined,
+      practice_area: practiceAreaFilter !== "all" ? practiceAreaFilter : undefined,
+      urgency: urgencyFilter !== "all" ? urgencyFilter as any : undefined,
+    },
+    { enabled: false }
+  );
+
   // Update status mutation
   const updateStatusMutation = trpc.admin.updateStatus.useMutation({
     onSuccess: () => {
       refetch();
+      toast.success("Status updated successfully");
+    },
+    onError: (error) => {
+      toast.error(`Failed to update status: ${error.message}`);
     },
   });
 
-  // Add note mutation
+  // Add note mutation (legacy - appends to admin_notes field)
   const addNoteMutation = trpc.admin.addNote.useMutation({
     onSuccess: () => {
       setNewNote("");
       refetch();
+      toast.success("Note added successfully");
+    },
+    onError: (error) => {
+      toast.error(`Failed to add note: ${error.message}`);
+    },
+  });
+
+  // Create note mutation (new notes table)
+  const createNoteMutation = trpc.admin.createNote.useMutation({
+    onSuccess: () => {
+      setNewNote("");
+      refetchNotes();
+      toast.success("Note added successfully");
+    },
+    onError: (error) => {
+      toast.error(`Failed to add note: ${error.message}`);
+    },
+  });
+
+  // Delete note mutation
+  const deleteNoteMutation = trpc.admin.deleteNote.useMutation({
+    onSuccess: () => {
+      refetchNotes();
+      toast.success("Note deleted");
+    },
+    onError: (error) => {
+      toast.error(`Failed to delete note: ${error.message}`);
     },
   });
 
@@ -207,6 +347,39 @@ function AdminDashboardContent({
     }
   };
 
+  const handleCreateNote = () => {
+    if (newNote.trim() && notesIntakeId) {
+      createNoteMutation.mutate({ intakeId: notesIntakeId, note: newNote.trim() });
+    }
+  };
+
+  const handleDeleteNote = (noteId: number) => {
+    if (confirm("Are you sure you want to delete this note?")) {
+      deleteNoteMutation.mutate({ noteId });
+    }
+  };
+
+  const handleExportCSV = async () => {
+    setIsExporting(true);
+    try {
+      const result = await exportQuery.refetch();
+      if (result.data?.data) {
+        const timestamp = new Date().toISOString().split("T")[0];
+        downloadCSV(result.data.data, `intakes-export-${timestamp}.csv`);
+      }
+    } catch (error) {
+      toast.error("Failed to export data");
+    } finally {
+      setIsExporting(false);
+    }
+  };
+
+  const openNotesDialog = (intakeId: number) => {
+    setNotesIntakeId(intakeId);
+    setNotesDialogOpen(true);
+    setNewNote("");
+  };
+
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
       {/* Header */}
@@ -217,9 +390,23 @@ function AdminDashboardContent({
               <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Admin Dashboard</h1>
               <p className="text-sm text-gray-500 dark:text-gray-400">Manage client intakes and case submissions</p>
             </div>
-            <Button asChild variant="outline">
-              <Link href="/">← Back to Site</Link>
-            </Button>
+            <div className="flex items-center gap-3">
+              <Button 
+                variant="outline" 
+                onClick={handleExportCSV}
+                disabled={isExporting}
+              >
+                {isExporting ? (
+                  <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                ) : (
+                  <Download className="h-4 w-4 mr-2" />
+                )}
+                Export CSV
+              </Button>
+              <Button asChild variant="outline">
+                <Link href="/">← Back to Site</Link>
+              </Button>
+            </div>
           </div>
         </div>
       </header>
@@ -285,7 +472,7 @@ function AdminDashboardContent({
           <Card>
             <CardContent className="p-4">
               <div className="flex items-center gap-2">
-                <AlertCircle className="h-5 w-5 text-red-500" />
+                <div className="h-5 w-5 rounded-full bg-red-500" />
                 <div>
                   <p className="text-sm text-gray-500">Emergency</p>
                   <p className="text-2xl font-bold">{statsLoading ? "-" : stats?.byUrgency?.emergency || 0}</p>
@@ -355,10 +542,14 @@ function AdminDashboardContent({
         {/* Intakes Table */}
         <Card>
           <CardHeader>
-            <CardTitle>Client Intakes</CardTitle>
-            <CardDescription>
-              {intakesData?.total || 0} total intakes
-            </CardDescription>
+            <div className="flex items-center justify-between">
+              <div>
+                <CardTitle>Client Intakes</CardTitle>
+                <CardDescription>
+                  {intakesData?.total || 0} total intakes
+                </CardDescription>
+              </div>
+            </div>
           </CardHeader>
           <CardContent>
             {intakesLoading ? (
@@ -398,35 +589,38 @@ function AdminDashboardContent({
                         </td>
                         <td className="py-3 px-4">
                           {intake.phone && (
-                            <div className="text-sm flex items-center gap-1">
+                            <a href={`tel:${intake.phone}`} className="flex items-center gap-1 text-sm text-blue-600 hover:underline">
                               <Phone className="h-3 w-3" />
-                              <a href={`tel:${intake.phone}`} className="hover:underline">{intake.phone}</a>
-                            </div>
+                              {intake.phone}
+                            </a>
                           )}
                           {intake.email && (
-                            <div className="text-sm flex items-center gap-1">
+                            <a href={`mailto:${intake.email}`} className="flex items-center gap-1 text-sm text-blue-600 hover:underline">
                               <Mail className="h-3 w-3" />
-                              <a href={`mailto:${intake.email}`} className="hover:underline">{intake.email}</a>
-                            </div>
+                              {intake.email}
+                            </a>
                           )}
                         </td>
                         <td className="py-3 px-4">
-                          <div className="font-medium">{practiceAreaLabels[intake.practice_area || ""] || intake.practice_area}</div>
-                          <div className="text-sm text-gray-500">{intake.issue_type_name}</div>
+                          <div className="text-sm">{practiceAreaLabels[intake.practice_area] || intake.practice_area}</div>
+                          {intake.issue_type_name && (
+                            <div className="text-xs text-gray-500">{intake.issue_type_name}</div>
+                          )}
                         </td>
                         <td className="py-3 px-4">
-                          <Badge className={urgencyColors[intake.urgency || "normal"]}>
-                            {intake.urgency === "emergency" ? "🚨 " : intake.urgency === "high" ? "⚠️ " : ""}
-                            {intake.urgency?.charAt(0).toUpperCase() + (intake.urgency?.slice(1) || "")}
+                          <Badge className={urgencyColors[intake.urgency] || ""}>
+                            {intake.urgency}
                           </Badge>
                         </td>
                         <td className="py-3 px-4">
-                          <Select 
-                            value={intake.status || "submitted"} 
-                            onValueChange={(v) => handleStatusChange(intake.id, v)}
+                          <Select
+                            value={intake.status}
+                            onValueChange={(value) => handleStatusChange(intake.id, value)}
                           >
                             <SelectTrigger className="w-[130px] h-8">
-                              <SelectValue />
+                              <Badge className={statusColors[intake.status] || ""}>
+                                {intake.status}
+                              </Badge>
                             </SelectTrigger>
                             <SelectContent>
                               <SelectItem value="submitted">New</SelectItem>
@@ -437,46 +631,142 @@ function AdminDashboardContent({
                             </SelectContent>
                           </Select>
                         </td>
-                        <td className="py-3 px-4 text-sm text-gray-500">
-                          {intake.created_at ? new Date(intake.created_at).toLocaleDateString() : "-"}
+                        <td className="py-3 px-4">
+                          <div className="flex items-center gap-1 text-sm text-gray-500">
+                            <Calendar className="h-3 w-3" />
+                            {new Date(intake.created_at).toLocaleDateString()}
+                          </div>
                         </td>
                         <td className="py-3 px-4">
-                          <Dialog>
-                            <DialogTrigger asChild>
-                              <Button 
-                                variant="outline" 
-                                size="sm"
-                                onClick={() => setSelectedIntakeId(intake.id)}
-                              >
-                                <ExternalLink className="h-4 w-4 mr-1" />
-                                View
-                              </Button>
-                            </DialogTrigger>
-                            <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto">
-                              <DialogHeader>
-                                <DialogTitle>
-                                  Intake Details: {intake.first_name} {intake.last_name}
-                                </DialogTitle>
-                                <DialogDescription>
-                                  Submitted on {intake.created_at ? new Date(intake.created_at).toLocaleString() : "Unknown"}
-                                </DialogDescription>
-                              </DialogHeader>
-                              
-                              {intakeLoading ? (
-                                <div className="flex justify-center py-8">
-                                  <Loader2 className="h-8 w-8 animate-spin" />
-                                </div>
-                              ) : selectedIntake ? (
-                                <IntakeDetails 
-                                  intake={selectedIntake} 
-                                  newNote={newNote}
-                                  setNewNote={setNewNote}
-                                  onAddNote={() => handleAddNote(selectedIntake.id)}
-                                  isAddingNote={addNoteMutation.isPending}
-                                />
-                              ) : null}
-                            </DialogContent>
-                          </Dialog>
+                          <div className="flex items-center gap-2">
+                            <Dialog>
+                              <DialogTrigger asChild>
+                                <Button 
+                                  variant="outline" 
+                                  size="sm"
+                                  onClick={() => setSelectedIntakeId(intake.id)}
+                                >
+                                  View
+                                </Button>
+                              </DialogTrigger>
+                              <DialogContent className="max-w-3xl max-h-[80vh] overflow-y-auto">
+                                <DialogHeader>
+                                  <DialogTitle>
+                                    Intake Details - {selectedIntake?.first_name} {selectedIntake?.last_name}
+                                  </DialogTitle>
+                                  <DialogDescription>
+                                    Submitted on {selectedIntake?.created_at ? new Date(selectedIntake.created_at).toLocaleString() : ""}
+                                  </DialogDescription>
+                                </DialogHeader>
+                                {intakeLoading ? (
+                                  <div className="flex justify-center py-8">
+                                    <Loader2 className="h-8 w-8 animate-spin text-primary" />
+                                  </div>
+                                ) : selectedIntake ? (
+                                  <div className="space-y-6">
+                                    {/* Contact Info */}
+                                    <div>
+                                      <h3 className="font-semibold mb-2">Contact Information</h3>
+                                      <div className="grid grid-cols-2 gap-4 text-sm">
+                                        <div><span className="text-gray-500">Name:</span> {selectedIntake.first_name} {selectedIntake.last_name}</div>
+                                        <div><span className="text-gray-500">Email:</span> {selectedIntake.email}</div>
+                                        <div><span className="text-gray-500">Phone:</span> {selectedIntake.phone}</div>
+                                        <div><span className="text-gray-500">Language:</span> {selectedIntake.preferred_language}</div>
+                                        <div className="col-span-2"><span className="text-gray-500">Address:</span> {selectedIntake.address}, {selectedIntake.city}, {selectedIntake.state} {selectedIntake.zip}</div>
+                                      </div>
+                                    </div>
+
+                                    {/* Case Info */}
+                                    <div>
+                                      <h3 className="font-semibold mb-2">Case Information</h3>
+                                      <div className="grid grid-cols-2 gap-4 text-sm">
+                                        <div><span className="text-gray-500">Practice Area:</span> {practiceAreaLabels[selectedIntake.practice_area] || selectedIntake.practice_area}</div>
+                                        <div><span className="text-gray-500">Issue Type:</span> {selectedIntake.issue_type?.name || "N/A"}</div>
+                                        <div><span className="text-gray-500">Urgency:</span> <Badge className={urgencyColors[selectedIntake.urgency] || ""}>{selectedIntake.urgency}</Badge></div>
+                                        <div><span className="text-gray-500">Incident Date:</span> {selectedIntake.incident_date ? new Date(selectedIntake.incident_date).toLocaleDateString() : "N/A"}</div>
+                                      </div>
+                                      {selectedIntake.summary && (
+                                        <div className="mt-4">
+                                          <span className="text-gray-500">Summary:</span>
+                                          <p className="mt-1 text-sm bg-gray-50 dark:bg-gray-800 p-3 rounded">{selectedIntake.summary}</p>
+                                        </div>
+                                      )}
+                                    </div>
+
+                                    {/* Parties */}
+                                    {selectedIntake.parties && selectedIntake.parties.length > 0 && (
+                                      <div>
+                                        <h3 className="font-semibold mb-2">Involved Parties</h3>
+                                        <div className="space-y-2">
+                                          {selectedIntake.parties.map((party: any, idx: number) => (
+                                            <div key={idx} className="text-sm bg-gray-50 dark:bg-gray-800 p-3 rounded">
+                                              <div><span className="text-gray-500">Role:</span> {party.role}</div>
+                                              <div><span className="text-gray-500">Name:</span> {party.name || "Unknown"}</div>
+                                              {party.contact_info && <div><span className="text-gray-500">Contact:</span> {party.contact_info}</div>}
+                                            </div>
+                                          ))}
+                                        </div>
+                                      </div>
+                                    )}
+
+                                    {/* Uploads */}
+                                    {selectedIntake.uploads && selectedIntake.uploads.length > 0 && (
+                                      <div>
+                                        <h3 className="font-semibold mb-2">Uploaded Files</h3>
+                                        <div className="space-y-2">
+                                          {selectedIntake.uploads.map((upload: any, idx: number) => (
+                                            <a 
+                                              key={idx} 
+                                              href={upload.file_url} 
+                                              target="_blank" 
+                                              rel="noopener noreferrer"
+                                              className="flex items-center gap-2 text-sm text-blue-600 hover:underline"
+                                            >
+                                              <FileText className="h-4 w-4" />
+                                              {upload.file_name}
+                                            </a>
+                                          ))}
+                                        </div>
+                                      </div>
+                                    )}
+
+                                    {/* Admin Notes (legacy) */}
+                                    <div>
+                                      <h3 className="font-semibold mb-2">Admin Notes</h3>
+                                      {selectedIntake.admin_notes ? (
+                                        <pre className="text-sm bg-gray-50 dark:bg-gray-800 p-3 rounded whitespace-pre-wrap">{selectedIntake.admin_notes}</pre>
+                                      ) : (
+                                        <p className="text-sm text-gray-500">No notes yet.</p>
+                                      )}
+                                      <div className="mt-3 flex gap-2">
+                                        <Textarea
+                                          placeholder="Add a note..."
+                                          value={newNote}
+                                          onChange={(e) => setNewNote(e.target.value)}
+                                          className="flex-1"
+                                          rows={2}
+                                        />
+                                        <Button 
+                                          onClick={() => handleAddNote(selectedIntake.id)}
+                                          disabled={!newNote.trim() || addNoteMutation.isPending}
+                                        >
+                                          {addNoteMutation.isPending ? <Loader2 className="h-4 w-4 animate-spin" /> : "Add"}
+                                        </Button>
+                                      </div>
+                                    </div>
+                                  </div>
+                                ) : null}
+                              </DialogContent>
+                            </Dialog>
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              onClick={() => openNotesDialog(intake.id)}
+                              title="Manage Notes"
+                            >
+                              <StickyNote className="h-4 w-4" />
+                            </Button>
+                          </div>
                         </td>
                       </tr>
                     ))}
@@ -495,7 +785,7 @@ function AdminDashboardContent({
                   <Button
                     variant="outline"
                     size="sm"
-                    onClick={() => setPage(Math.max(1, page - 1))}
+                    onClick={() => setPage(page - 1)}
                     disabled={page === 1}
                   >
                     <ChevronLeft className="h-4 w-4" />
@@ -504,8 +794,8 @@ function AdminDashboardContent({
                   <Button
                     variant="outline"
                     size="sm"
-                    onClick={() => setPage(Math.min(intakesData.totalPages, page + 1))}
-                    disabled={page === intakesData.totalPages}
+                    onClick={() => setPage(page + 1)}
+                    disabled={page >= intakesData.totalPages}
                   >
                     Next
                     <ChevronRight className="h-4 w-4" />
@@ -516,202 +806,92 @@ function AdminDashboardContent({
           </CardContent>
         </Card>
       </main>
-    </div>
-  );
-}
 
-function IntakeDetails({ 
-  intake, 
-  newNote, 
-  setNewNote, 
-  onAddNote,
-  isAddingNote,
-}: { 
-  intake: any; 
-  newNote: string;
-  setNewNote: (v: string) => void;
-  onAddNote: () => void;
-  isAddingNote: boolean;
-}) {
-  return (
-    <Tabs defaultValue="contact" className="w-full">
-      <TabsList className="grid w-full grid-cols-4">
-        <TabsTrigger value="contact">Contact</TabsTrigger>
-        <TabsTrigger value="case">Case Info</TabsTrigger>
-        <TabsTrigger value="files">Files ({intake.uploads?.length || 0})</TabsTrigger>
-        <TabsTrigger value="notes">Notes</TabsTrigger>
-      </TabsList>
-
-      <TabsContent value="contact" className="space-y-4">
-        <div className="grid grid-cols-2 gap-4">
-          <div>
-            <label className="text-sm font-medium text-gray-500">Full Name</label>
-            <p className="font-medium">{intake.first_name} {intake.last_name}</p>
-          </div>
-          <div>
-            <label className="text-sm font-medium text-gray-500">Phone</label>
-            <p>{intake.phone || "Not provided"}</p>
-          </div>
-          <div>
-            <label className="text-sm font-medium text-gray-500">Email</label>
-            <p>{intake.email || "Not provided"}</p>
-          </div>
-          <div>
-            <label className="text-sm font-medium text-gray-500">Location</label>
-            <p>{intake.city}, {intake.state}</p>
-          </div>
-          <div>
-            <label className="text-sm font-medium text-gray-500">Preferred Contact</label>
-            <p className="capitalize">{intake.preferred_contact_method}</p>
-          </div>
-          <div>
-            <label className="text-sm font-medium text-gray-500">Preferred Language</label>
-            <p>
-              {intake.preferred_language === "en" ? "English" : 
-               intake.preferred_language === "es" ? "Spanish" :
-               intake.preferred_language === "hy" ? "Armenian" :
-               intake.preferred_language === "ru" ? "Russian" : "Ukrainian"}
-            </p>
-          </div>
-          <div>
-            <label className="text-sm font-medium text-gray-500">Is Affected Person</label>
-            <p>{intake.is_affected_person ? "Yes" : "No"}</p>
-          </div>
-          {!intake.is_affected_person && intake.relationship_to_affected && (
-            <div>
-              <label className="text-sm font-medium text-gray-500">Relationship</label>
-              <p>{intake.relationship_to_affected}</p>
-            </div>
-          )}
-        </div>
-      </TabsContent>
-
-      <TabsContent value="case" className="space-y-4">
-        <div className="grid grid-cols-2 gap-4">
-          <div>
-            <label className="text-sm font-medium text-gray-500">Practice Area</label>
-            <p className="font-medium">{practiceAreaLabels[intake.practice_area] || intake.practice_area}</p>
-          </div>
-          <div>
-            <label className="text-sm font-medium text-gray-500">Issue Type</label>
-            <p>{intake.issue_type?.name || "Unknown"}</p>
-          </div>
-          <div>
-            <label className="text-sm font-medium text-gray-500">Urgency</label>
-            <Badge className={urgencyColors[intake.urgency || "normal"]}>
-              {intake.urgency?.charAt(0).toUpperCase() + (intake.urgency?.slice(1) || "")}
-            </Badge>
-          </div>
-          <div>
-            <label className="text-sm font-medium text-gray-500">Incident Date</label>
-            <p>{intake.incident_date || (intake.incident_date_unknown ? "Unknown" : "Not provided")}</p>
-          </div>
-          <div>
-            <label className="text-sm font-medium text-gray-500">Incident Location</label>
-            <p>{intake.incident_city ? `${intake.incident_city}, ${intake.incident_state}` : "Not provided"}</p>
-          </div>
-          <div>
-            <label className="text-sm font-medium text-gray-500">Agency Involved</label>
-            <p>{intake.agency_involved ? `Yes - ${intake.agency_name || "Unknown"}` : "No"}</p>
-          </div>
-        </div>
-        
-        <div>
-          <label className="text-sm font-medium text-gray-500">Summary</label>
-          <p className="mt-1 p-3 bg-gray-50 dark:bg-gray-800 rounded-lg">{intake.summary}</p>
-        </div>
-
-        {intake.additional_notes && (
-          <div>
-            <label className="text-sm font-medium text-gray-500">Additional Notes</label>
-            <p className="mt-1 p-3 bg-gray-50 dark:bg-gray-800 rounded-lg">{intake.additional_notes}</p>
-          </div>
-        )}
-
-        {/* Practice-specific details */}
-        {intake.practice_details && (
-          <div>
-            <label className="text-sm font-medium text-gray-500 block mb-2">Practice-Specific Details</label>
-            <div className="p-3 bg-gray-50 dark:bg-gray-800 rounded-lg">
-              <pre className="text-sm whitespace-pre-wrap">
-                {JSON.stringify(intake.practice_details, null, 2)}
-              </pre>
-            </div>
-          </div>
-        )}
-
-        {/* Parties */}
-        {intake.parties && intake.parties.length > 0 && (
-          <div>
-            <label className="text-sm font-medium text-gray-500 block mb-2">Related Parties</label>
+      {/* Notes Dialog */}
+      <Dialog open={notesDialogOpen} onOpenChange={setNotesDialogOpen}>
+        <DialogContent className="max-w-lg">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <MessageSquare className="h-5 w-5" />
+              Internal Notes
+            </DialogTitle>
+            <DialogDescription>
+              Add and manage internal notes for this intake. Notes are only visible to admin users.
+            </DialogDescription>
+          </DialogHeader>
+          
+          <div className="space-y-4">
+            {/* Add new note */}
             <div className="space-y-2">
-              {intake.parties.map((party: any, idx: number) => (
-                <div key={idx} className="p-3 bg-gray-50 dark:bg-gray-800 rounded-lg">
-                  <p className="font-medium">{party.name} ({party.role})</p>
-                  {party.contact_info && <p className="text-sm text-gray-500">{party.contact_info}</p>}
+              <Label htmlFor="new-note">Add New Note</Label>
+              <Textarea
+                id="new-note"
+                placeholder="Enter your note here..."
+                value={newNote}
+                onChange={(e) => setNewNote(e.target.value)}
+                rows={3}
+              />
+              <Button 
+                onClick={handleCreateNote}
+                disabled={!newNote.trim() || createNoteMutation.isPending}
+                className="w-full"
+              >
+                {createNoteMutation.isPending ? (
+                  <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                ) : (
+                  <Plus className="h-4 w-4 mr-2" />
+                )}
+                Add Note
+              </Button>
+            </div>
+
+            {/* Notes list */}
+            <div className="space-y-2">
+              <Label>Previous Notes</Label>
+              {notesLoading ? (
+                <div className="flex justify-center py-4">
+                  <Loader2 className="h-6 w-6 animate-spin text-primary" />
                 </div>
-              ))}
+              ) : notesData?.notes && notesData.notes.length > 0 ? (
+                <ScrollArea className="h-[300px] rounded border p-3">
+                  <div className="space-y-3">
+                    {notesData.notes.map((note: any) => (
+                      <div key={note.id} className="bg-gray-50 dark:bg-gray-800 p-3 rounded-lg">
+                        <div className="flex items-start justify-between gap-2">
+                          <div className="flex-1">
+                            <p className="text-sm whitespace-pre-wrap">{note.note}</p>
+                            <div className="mt-2 text-xs text-gray-500">
+                              {note.created_by_name} • {new Date(note.created_at).toLocaleString()}
+                            </div>
+                          </div>
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => handleDeleteNote(note.id)}
+                            className="text-red-500 hover:text-red-700 hover:bg-red-50"
+                          >
+                            <Trash2 className="h-4 w-4" />
+                          </Button>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </ScrollArea>
+              ) : (
+                <div className="text-center py-8 text-gray-500 border rounded">
+                  No notes yet. Add your first note above.
+                </div>
+              )}
             </div>
           </div>
-        )}
-      </TabsContent>
 
-      <TabsContent value="files" className="space-y-4">
-        {intake.uploads && intake.uploads.length > 0 ? (
-          <div className="space-y-2">
-            {intake.uploads.map((upload: any) => (
-              <div key={upload.id} className="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-800 rounded-lg">
-                <div className="flex items-center gap-3">
-                  <FileText className="h-5 w-5 text-gray-400" />
-                  <div>
-                    <p className="font-medium">{upload.file_name}</p>
-                    <p className="text-sm text-gray-500">
-                      {upload.tag} • {(upload.file_size / 1024).toFixed(1)} KB
-                    </p>
-                  </div>
-                </div>
-                <Button variant="outline" size="sm" asChild>
-                  <a href={`https://txeynebsnznkoqkhmuag.supabase.co/storage/v1/object/public/GUROVICH/${upload.file_path}`} target="_blank" rel="noopener noreferrer">
-                    <ExternalLink className="h-4 w-4 mr-1" />
-                    View
-                  </a>
-                </Button>
-              </div>
-            ))}
-          </div>
-        ) : (
-          <p className="text-center text-gray-500 py-4">No files uploaded</p>
-        )}
-      </TabsContent>
-
-      <TabsContent value="notes" className="space-y-4">
-        {intake.admin_notes && (
-          <div className="p-3 bg-gray-50 dark:bg-gray-800 rounded-lg whitespace-pre-wrap text-sm">
-            {intake.admin_notes}
-          </div>
-        )}
-        
-        <div className="space-y-2">
-          <Textarea
-            placeholder="Add a note..."
-            value={newNote}
-            onChange={(e) => setNewNote(e.target.value)}
-            rows={3}
-          />
-          <Button 
-            onClick={onAddNote} 
-            disabled={!newNote.trim() || isAddingNote}
-            className="w-full"
-          >
-            {isAddingNote ? (
-              <Loader2 className="h-4 w-4 animate-spin mr-2" />
-            ) : (
-              <MessageSquare className="h-4 w-4 mr-2" />
-            )}
-            Add Note
-          </Button>
-        </div>
-      </TabsContent>
-    </Tabs>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setNotesDialogOpen(false)}>
+              Close
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+    </div>
   );
 }
