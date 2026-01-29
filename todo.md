@@ -202,3 +202,21 @@
 - [x] Seed 35 KC Templates with elements and evidence type requirements
 - [x] Seed 56 KC Template Assignments linking KCs to templates
 - [x] Verify 16 Evidence Types already seeded from migration
+
+## System Audit (Completed)
+- [x] Analyze repository structure and codebase health
+- [x] Audit Supabase database schema, size, indexes, and RLS policies
+- [x] Audit Supabase storage buckets and access controls
+- [x] Map tRPC router architecture and API endpoints
+- [x] Analyze Terminal RAG architecture and data isolation
+- [x] Measure frontend bundle sizes and performance
+- [x] Document deployment requirements and CI/CD gaps
+- [x] Write SYSTEM_AUDIT/00_EXEC_SUMMARY.md
+- [x] Write SYSTEM_AUDIT/01_REPO_INVENTORY.md
+- [x] Write SYSTEM_AUDIT/02_DB_SUPABASE_AUDIT.md
+- [x] Write SYSTEM_AUDIT/03_STORAGE_AUDIT.md
+- [x] Write SYSTEM_AUDIT/04_API_ROUTER_MAP.md
+- [x] Write SYSTEM_AUDIT/05_TERMINAL_ARCHITECTURE.md
+- [x] Write SYSTEM_AUDIT/06_PERFORMANCE_BUNDLE_REPORT.md
+- [x] Write SYSTEM_AUDIT/07_DEPLOYMENT_SUMMARY.md
+- [x] Write SYSTEM_AUDIT/08_REMEDIATION_PLAN.md
