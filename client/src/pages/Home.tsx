@@ -14,8 +14,8 @@ export default function Home() {
       <PracticeAreas />
       <Statistics />
       <About />
-      <NoFeeGuarantee />
       <BadgeCarousel />
+      <NoFeeGuarantee />
       <Testimonials />
       <Contact />
     </>
