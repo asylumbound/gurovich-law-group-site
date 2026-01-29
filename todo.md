@@ -75,3 +75,4 @@
 - [x] Fix double header/top bar on onboarding page
 - [x] Update footer logo with white version
 - [x] Add static password protection to admin dashboard (password: &&77GAbriel)
+- [x] Add INTAKE menu item to top navigation (right of BLOG, links to /onboarding)

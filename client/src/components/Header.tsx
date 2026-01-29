@@ -20,6 +20,7 @@ export default function Header() {
     { label: t("nav.team"), href: "/team" },
     { label: t("nav.reviews"), href: "/reviews" },
     { label: t("nav.blog"), href: "/blog" },
+    { label: "INTAKE", href: "/onboarding" },
   ];
 
   const handleContactClick = () => {
