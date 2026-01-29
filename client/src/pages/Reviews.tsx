@@ -3,8 +3,7 @@ import { Link } from "wouter";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Star, Phone, ArrowUpDown } from "lucide-react";
-import Header from "@/components/Header";
-import Footer from "@/components/Footer";
+
 import reviewsData from "@/content/reviews/reviews.json";
 
 /**
@@ -111,8 +110,6 @@ export default function Reviews() {
 
   return (
     <>
-      <Header />
-      <main className="min-h-screen bg-background">
         {/* Hero Section */}
         <section className="bg-secondary py-16 md:py-20">
           <div className="container">
@@ -223,8 +220,6 @@ export default function Reviews() {
             </p>
           </div>
         </section>
-      </main>
-      <Footer />
     </>
   );
 }

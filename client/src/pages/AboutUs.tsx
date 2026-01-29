@@ -2,8 +2,8 @@ import { Link } from "wouter";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Phone, Scale, Heart, Shield, Users, Award, Clock, Globe } from "lucide-react";
-import Header from "@/components/Header";
-import Footer from "@/components/Footer";
+
+
 
 /**
  * About Us Page - Gurovich Law Group
@@ -46,8 +46,6 @@ const firmStats = [
 export default function AboutUs() {
   return (
     <>
-      <Header />
-      <main className="min-h-screen bg-background">
         {/* Hero Section */}
         <section className="relative bg-secondary py-20 md:py-28 overflow-hidden">
           {/* Background Pattern */}
@@ -320,8 +318,6 @@ export default function AboutUs() {
             </motion.div>
           </div>
         </section>
-      </main>
-      <Footer />
     </>
   );
 }

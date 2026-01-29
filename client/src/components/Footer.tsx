@@ -11,7 +11,7 @@ const practiceAreas = [
 const quickLinks = [
   { label: "Home", href: "/" },
   { label: "Our Team", href: "/our-team" },
-  { label: "Testimonials", href: "/testimonials" },
+  { label: "Testimonials", href: "/reviews" },
   { label: "Blog", href: "/blog" },
   { label: "Contact Us", href: "/contact" },
 ];
@@ -28,16 +28,16 @@ export default function Footer() {
     <footer className="bg-secondary text-secondary-foreground">
       <div className="container py-16">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12">
-          {/* Brand */}
+          {/* Brand with Full Logo */}
           <div>
-            <Link href="/" className="inline-block">
+            <Link href="/" className="inline-block mb-6">
               <img
-                src="/images/logo.png"
+                src="/images/gurovich-logo-full.png"
                 alt="Gurovich Law Group"
-                className="h-16 w-auto brightness-0 invert"
+                className="h-20 w-auto"
               />
             </Link>
-            <p className="font-body text-white/70 mt-4 text-sm leading-relaxed">
+            <p className="font-body text-white/70 text-sm leading-relaxed">
               Gurovich Law Group provides vigorous advocacy for clients facing
               life's most serious legal challenges. We fight for your rights.
             </p>
