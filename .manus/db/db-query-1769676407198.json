@@ -1,0 +1,40 @@
+{
+  "query": "SELECT COUNT(*) as total, code, COUNT(*) as count FROM statutes GROUP BY code ORDER BY code;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway03.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 2QmWxs7iH8DQva8.5d87819da4f6 --database J2wS2ZoP78AcJaejkgQxeA --execute SELECT COUNT(*) as total, code, COUNT(*) as count FROM statutes GROUP BY code ORDER BY code;",
+  "rows": [
+    {
+      "total": "14",
+      "code": "CC",
+      "count": "14"
+    },
+    {
+      "total": "18",
+      "code": "CCP",
+      "count": "18"
+    },
+    {
+      "total": "2",
+      "code": "FEHA",
+      "count": "2"
+    },
+    {
+      "total": "10",
+      "code": "LC",
+      "count": "10"
+    },
+    {
+      "total": "14",
+      "code": "PC",
+      "count": "14"
+    },
+    {
+      "total": "2",
+      "code": "VC",
+      "count": "2"
+    }
+  ],
+  "messages": [],
+  "stdout": "total\tcode\tcount\n14\tCC\t14\n18\tCCP\t18\n2\tFEHA\t2\n10\tLC\t10\n14\tPC\t14\n2\tVC\t2\n",
+  "stderr": "",
+  "execution_time_ms": 61
+}

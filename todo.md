@@ -135,3 +135,15 @@
 - [x] Add Terminal button to admin dashboard
 - [x] Add deep-link support for /terminal?intakeId=X
 - [x] Write unit tests for terminal procedures (15 tests passing)
+
+## Terminal Database & API Integration
+- [x] Run database migration 004_terminal_rag.sql (6 tables created)
+- [x] Seed California statutes for Personal Injury (10 statutes)
+- [x] Seed California statutes for Criminal Defense (14 statutes)
+- [x] Seed California statutes for Employment Law (12 statutes)
+- [x] Seed California statutes for Tenant Rights (12 statutes)
+- [x] Seed California statutes for Civil Litigation (12 statutes)
+- [x] Research CourtListener API v4 endpoints and authentication
+- [x] Update terminal-legal-tools.ts with proper CourtListener integration
+- [x] Test statute search functionality
+- [x] Test case law search functionality (54 tests passing)

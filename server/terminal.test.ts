@@ -151,7 +151,8 @@ describe("Terminal Legal Tools", () => {
     });
 
     it("should include court filter when provided", async () => {
-      await searchCourtListener("test query", "ca9");
+      // The implementation uses mapCourtToId which requires specific court names
+      await searchCourtListener("test query", "ninth circuit");
       
       expect(global.fetch).toHaveBeenCalledWith(
         expect.stringContaining("court=ca9"),

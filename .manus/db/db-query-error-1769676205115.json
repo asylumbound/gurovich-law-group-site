@@ -1,0 +1,12 @@
+{
+  "query": "CREATE TABLE IF NOT EXISTS intake_access (\n  id SERIAL PRIMARY KEY,\n  intake_id INTEGER NOT NULL REFERENCES intakes(id) ON DELETE CASCADE,\n  user_id INTEGER NOT NULL,\n  role intake_access_role NOT NULL DEFAULT 'viewer',\n  created_at TIMESTAMPTZ DEFAULT NOW() NOT NULL,\n  updated_at TIMESTAMPTZ DEFAULT NOW() NOT NULL,\n  UNIQUE(intake_id, user_id)\n);\n\nCREATE INDEX IF NOT EXISTS idx_intake_access_intake_id ON intake_access(intake_id);\nCREATE INDEX IF NOT EXISTS idx_intake_access_user_id ON intake_access(user_id);",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway03.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 2QmWxs7iH8DQva8.5d87819da4f6 --database J2wS2ZoP78AcJaejkgQxeA --execute CREATE TABLE IF NOT EXISTS intake_access (\n  id SERIAL PRIMARY KEY,\n  intake_id INTEGER NOT NULL REFERENCES intakes(id) ON DELETE CASCADE,\n  user_id INTEGER NOT NULL,\n  role intake_access_role NOT NULL DEFAULT 'viewer',\n  created_at TIMESTAMPTZ DEFAULT NOW() NOT NULL,\n  updated_at TIMESTAMPTZ DEFAULT NOW() NOT NULL,\n  UNIQUE(intake_id, user_id)\n);\n\nCREATE INDEX IF NOT EXISTS idx_intake_access_intake_id ON intake_access(intake_id);\nCREATE INDEX IF NOT EXISTS idx_intake_access_user_id ON intake_access(user_id);",
+  "returncode": 1,
+  "logs": [
+    "ERROR 1064 (42000) at line 1: You have an error in your SQL syntax; check the manual that corresponds to your TiDB version for the right syntax to use line 5 column 26 near \"intake_access_role NOT NULL DEFAULT 'viewer',",
+    "  created_at TIMESTAMPTZ DEFAULT NOW() NOT NULL,",
+    "  updated_at TIMESTAMPTZ DEFAULT NOW() NOT NULL,",
+    "  UNIQUE(intake_id, user_id)",
+    ")\""
+  ]
+}

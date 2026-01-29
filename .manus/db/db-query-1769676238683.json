@@ -1,0 +1,9 @@
+{
+  "query": "CREATE TABLE IF NOT EXISTS upload_text (\n  id INT AUTO_INCREMENT PRIMARY KEY,\n  upload_id INTEGER NOT NULL REFERENCES intake_uploads(id) ON DELETE CASCADE,\n  intake_id INTEGER NOT NULL REFERENCES intakes(id) ON DELETE CASCADE,\n  text_content TEXT NOT NULL,\n  word_count INTEGER,\n  extracted_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,\n  UNIQUE(upload_id)\n);\n\nCREATE INDEX IF NOT EXISTS idx_upload_text_intake_id ON upload_text(intake_id);\nCREATE INDEX IF NOT EXISTS idx_upload_text_upload_id ON upload_text(upload_id);",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway03.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 2QmWxs7iH8DQva8.5d87819da4f6 --database J2wS2ZoP78AcJaejkgQxeA --execute CREATE TABLE IF NOT EXISTS upload_text (\n  id INT AUTO_INCREMENT PRIMARY KEY,\n  upload_id INTEGER NOT NULL REFERENCES intake_uploads(id) ON DELETE CASCADE,\n  intake_id INTEGER NOT NULL REFERENCES intakes(id) ON DELETE CASCADE,\n  text_content TEXT NOT NULL,\n  word_count INTEGER,\n  extracted_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,\n  UNIQUE(upload_id)\n);\n\nCREATE INDEX IF NOT EXISTS idx_upload_text_intake_id ON upload_text(intake_id);\nCREATE INDEX IF NOT EXISTS idx_upload_text_upload_id ON upload_text(upload_id);",
+  "rows": [],
+  "messages": [],
+  "stdout": "",
+  "stderr": "",
+  "execution_time_ms": 1310
+}

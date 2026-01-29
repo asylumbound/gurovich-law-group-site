@@ -1,0 +1,9 @@
+{
+  "query": "CREATE TABLE IF NOT EXISTS terminal_messages (\n  id VARCHAR(36) PRIMARY KEY,\n  session_id VARCHAR(36) NOT NULL REFERENCES terminal_sessions(id) ON DELETE CASCADE,\n  role VARCHAR(20) NOT NULL,\n  content TEXT NOT NULL,\n  citations JSON,\n  suggested_actions JSON,\n  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL\n);\n\nCREATE INDEX IF NOT EXISTS idx_terminal_messages_session_id ON terminal_messages(session_id);\nCREATE INDEX IF NOT EXISTS idx_terminal_messages_created_at ON terminal_messages(created_at);",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway03.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 2QmWxs7iH8DQva8.5d87819da4f6 --database J2wS2ZoP78AcJaejkgQxeA --execute CREATE TABLE IF NOT EXISTS terminal_messages (\n  id VARCHAR(36) PRIMARY KEY,\n  session_id VARCHAR(36) NOT NULL REFERENCES terminal_sessions(id) ON DELETE CASCADE,\n  role VARCHAR(20) NOT NULL,\n  content TEXT NOT NULL,\n  citations JSON,\n  suggested_actions JSON,\n  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL\n);\n\nCREATE INDEX IF NOT EXISTS idx_terminal_messages_session_id ON terminal_messages(session_id);\nCREATE INDEX IF NOT EXISTS idx_terminal_messages_created_at ON terminal_messages(created_at);",
+  "rows": [],
+  "messages": [],
+  "stdout": "",
+  "stderr": "",
+  "execution_time_ms": 1233
+}
