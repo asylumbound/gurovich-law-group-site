@@ -147,3 +147,10 @@
 - [x] Update terminal-legal-tools.ts with proper CourtListener integration
 - [x] Test statute search functionality
 - [x] Test case law search functionality (54 tests passing)
+
+## Terminal Enhancements
+- [x] Configure CourtListener API token (validated)
+- [x] Configure OpenAI API key for terminal RAG (validated)
+- [x] Add global site header/top bar to Terminal page
+- [x] Update terminal-legal-tools.ts to use authenticated CourtListener API
+- [x] Test authenticated CourtListener search (58 tests passing)

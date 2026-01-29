@@ -37,6 +37,7 @@ import {
   RefreshCw,
 } from "lucide-react";
 import { Link } from "wouter";
+import Header from "@/components/Header";
 
 // Citation type colors
 const citationColors: Record<string, string> = {
@@ -312,7 +313,12 @@ export default function Terminal() {
   }
   
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex flex-col">
+      {/* Global Site Header */}
+      <Header />
+      
+      {/* Terminal Content */}
+      <div className="flex-1 flex">
       {/* Session Sidebar */}
       <div className="w-64 bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700 flex flex-col">
         <div className="p-4 border-b border-gray-200 dark:border-gray-700">
@@ -668,6 +674,7 @@ export default function Terminal() {
               </>
             )}
           </div>
+        </div>
         </div>
       </div>
     </div>

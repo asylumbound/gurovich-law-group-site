@@ -160,12 +160,20 @@ export async function searchCourtListener(
     const url = `${COURTLISTENER_API_URL}/search/?${params.toString()}`;
     console.log("CourtListener search URL:", url);
     
-    const response = await fetch(url, {
-      headers: {
-        "Accept": "application/json",
-        "User-Agent": "Gurovich-Law-Group-Terminal/1.0",
-      },
-    });
+    // Get API token from environment for authenticated requests (higher rate limits)
+    const apiToken = process.env.COURTLISTENER_API_TOKEN;
+    
+    const headers: Record<string, string> = {
+      "Accept": "application/json",
+      "User-Agent": "Gurovich-Law-Group-Terminal/1.0",
+    };
+    
+    // Add authentication header if token is available
+    if (apiToken) {
+      headers["Authorization"] = `Token ${apiToken}`;
+    }
+    
+    const response = await fetch(url, { headers });
     
     if (!response.ok) {
       console.error("CourtListener API error:", response.status, response.statusText);
