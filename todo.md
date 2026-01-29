@@ -32,3 +32,16 @@
 - [x] Add CSV export functionality for intake data
 - [x] Add internal notes feature for intake records
 - [x] Update tests for new features
+
+## Onboarding Step 3 Bug Fix - Issue Types Dropdown
+- [x] Verify issue_types table has all required subcategories for each practice area
+- [x] Seed Criminal Defense issue types (14 options including Other)
+- [x] Seed Personal Injury issue types (9 options including Other)
+- [x] Seed Employment Law issue types (7 options including Other)
+- [x] Seed Tenant Rights issue types (7 options including Other)
+- [x] Seed Civil Litigation issue types (6 options including Other)
+- [x] Fix frontend to properly fetch and display issue types per practice area
+- [x] Add loading state and error handling for empty issue types
+- [x] Make Specific Issue Type a required field
+- [x] Update documentation in /docs/ONBOARDING_SPEC.md
+- [x] Test all practice areas and verify dropdown functionality

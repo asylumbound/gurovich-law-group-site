@@ -9,8 +9,9 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 import { trpc } from "@/lib/trpc";
-import { Loader2, Scale, AlertCircle, Car, Briefcase, Home, Gavel } from "lucide-react";
+import { Loader2, Scale, AlertCircle, Car, Briefcase, Home, Gavel, AlertTriangle } from "lucide-react";
 import type { PracticeArea } from "@shared/onboard-validation";
 
 interface Step2Data {
@@ -28,7 +29,7 @@ interface Step2MatterProps {
 const PRACTICE_AREAS = [
   { value: "personal_injury", label: "Personal Injury", icon: Car, description: "Car accidents, slip & fall, medical malpractice" },
   { value: "criminal_defense", label: "Criminal Defense", icon: Gavel, description: "DUI, misdemeanors, felonies, expungement" },
-  { value: "employment", label: "Employment Law", icon: Briefcase, description: "Wrongful termination, discrimination, wage disputes" },
+  { value: "employment_law", label: "Employment Law", icon: Briefcase, description: "Wrongful termination, discrimination, wage disputes" },
   { value: "tenant_rights", label: "Tenant Rights", icon: Home, description: "Eviction defense, habitability, security deposits" },
   { value: "civil_litigation", label: "Civil Litigation", icon: Scale, description: "Contract disputes, debt collection, business disputes" },
 ];
@@ -41,26 +42,39 @@ const URGENCY_LEVELS = [
 ];
 
 export default function Step2Matter({ data, onChange }: Step2MatterProps) {
-  // Fetch issue types from database
-  const { data: issueTypes, isLoading: isLoadingTypes } = trpc.onboard.getIssueTypes.useQuery(
-    { practice_area: data.practice_area || "personal_injury" },
-    { enabled: !!data.practice_area }
+  // Fetch issue types from database when practice area is selected
+  const { 
+    data: issueTypes, 
+    isLoading: isLoadingTypes,
+    error: issueTypesError,
+    refetch: refetchIssueTypes
+  } = trpc.onboard.getIssueTypes.useQuery(
+    { practice_area: data.practice_area! },
+    { 
+      enabled: !!data.practice_area,
+      retry: 2,
+    }
   );
-
-  // Filter issue types by selected practice area
-  const filteredIssueTypes = issueTypes?.filter(
-    (type) => type.practice_area === data.practice_area
-  ) || [];
 
   // Reset issue_type_id when practice area changes
   useEffect(() => {
-    if (data.practice_area && data.issue_type_id) {
-      const isValidType = filteredIssueTypes.some(t => t.id === data.issue_type_id);
+    if (data.practice_area && data.issue_type_id && issueTypes) {
+      const isValidType = issueTypes.some(t => t.id === data.issue_type_id);
       if (!isValidType) {
         onChange({ ...data, issue_type_id: undefined });
       }
     }
-  }, [data.practice_area, filteredIssueTypes]);
+  }, [data.practice_area, issueTypes]);
+
+  // Refetch when practice area changes
+  useEffect(() => {
+    if (data.practice_area) {
+      refetchIssueTypes();
+    }
+  }, [data.practice_area]);
+
+  // Check if issue types are empty (after loading)
+  const hasNoIssueTypes = !isLoadingTypes && !issueTypesError && (!issueTypes || issueTypes.length === 0);
 
   return (
     <div className="space-y-8">
@@ -107,27 +121,59 @@ export default function Step2Matter({ data, onChange }: Step2MatterProps) {
           <Label htmlFor="issue_type">
             Specific Issue Type <span className="text-red-500">*</span>
           </Label>
-          {isLoadingTypes ? (
-            <div className="flex items-center gap-2 text-gray-500">
+          
+          {/* Loading State */}
+          {isLoadingTypes && (
+            <div className="flex items-center gap-2 text-gray-500 p-3 bg-gray-50 rounded-lg">
               <Loader2 className="w-4 h-4 animate-spin" />
-              Loading options...
+              <span>Loading issue types...</span>
             </div>
-          ) : (
+          )}
+          
+          {/* Error State */}
+          {issueTypesError && (
+            <Alert variant="destructive">
+              <AlertTriangle className="h-4 w-4" />
+              <AlertDescription>
+                Failed to load issue types. Please try selecting the practice area again or contact support.
+              </AlertDescription>
+            </Alert>
+          )}
+          
+          {/* Empty State - Admin Error */}
+          {hasNoIssueTypes && (
+            <Alert variant="destructive">
+              <AlertTriangle className="h-4 w-4" />
+              <AlertDescription>
+                No issue types configured for this practice area. Please contact the administrator.
+              </AlertDescription>
+            </Alert>
+          )}
+          
+          {/* Success State - Show Dropdown */}
+          {!isLoadingTypes && !issueTypesError && issueTypes && issueTypes.length > 0 && (
             <Select
               value={data.issue_type_id?.toString() || ""}
               onValueChange={(value) => onChange({ ...data, issue_type_id: parseInt(value) })}
             >
-              <SelectTrigger>
+              <SelectTrigger className={!data.issue_type_id ? "text-gray-500" : ""}>
                 <SelectValue placeholder="Select the specific issue" />
               </SelectTrigger>
               <SelectContent>
-                {filteredIssueTypes.map((type) => (
+                {issueTypes.map((type) => (
                   <SelectItem key={type.id} value={type.id.toString()}>
-                    {type.label}
+                    {type.name}
                   </SelectItem>
                 ))}
               </SelectContent>
             </Select>
+          )}
+          
+          {/* Helper text */}
+          {!isLoadingTypes && !issueTypesError && issueTypes && issueTypes.length > 0 && !data.issue_type_id && (
+            <p className="text-sm text-amber-600">
+              Please select a specific issue type to continue.
+            </p>
           )}
         </div>
       )}
