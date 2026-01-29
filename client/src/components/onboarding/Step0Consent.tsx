@@ -7,7 +7,7 @@ interface Step0Data {
   consent_no_attorney_relationship: boolean;
   consent_contact: boolean;
   preferred_contact_method: "phone" | "email" | "text";
-  preferred_language: "en" | "es" | "hy" | "ru" | "uk";
+  preferred_language: "en" | "es" | "ru" | "uk";
 }
 
 interface Step0ConsentProps {
@@ -18,7 +18,6 @@ interface Step0ConsentProps {
 const LANGUAGES = [
   { value: "en", label: "English" },
   { value: "es", label: "Español" },
-  { value: "hy", label: "Հայերdelays" },
   { value: "ru", label: "Русский" },
   { value: "uk", label: "Українська" },
 ];
@@ -127,7 +126,7 @@ export default function Step0Consent({ data, onChange }: Step0ConsentProps) {
         <RadioGroup
           value={data.preferred_language}
           onValueChange={(value) =>
-            onChange({ ...data, preferred_language: value as "en" | "es" | "hy" | "ru" | "uk" })
+            onChange({ ...data, preferred_language: value as "en" | "es" | "ru" | "uk" })
           }
           className="grid grid-cols-2 md:grid-cols-3 gap-4"
         >

@@ -76,3 +76,5 @@
 - [x] Update footer logo with white version
 - [x] Add static password protection to admin dashboard (password: &&77GAbriel)
 - [x] Add INTAKE menu item to top navigation (right of BLOG, links to /onboarding)
+- [x] Remove Armenian from onboarding preferred language options
+- [x] Ensure all onboarding steps scroll to top when navigating

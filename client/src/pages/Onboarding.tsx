@@ -40,7 +40,7 @@ export default function Onboarding() {
     consent_no_attorney_relationship: boolean;
     consent_contact: boolean;
     preferred_contact_method: "phone" | "email" | "text";
-    preferred_language: "en" | "es" | "hy" | "ru" | "uk";
+    preferred_language: "en" | "es" | "ru" | "uk";
   }>({
     consent_no_attorney_relationship: false,
     consent_contact: false,
@@ -292,6 +292,8 @@ export default function Onboarding() {
 
     if (currentStep < STEPS.length - 1) {
       setCurrentStep(currentStep + 1);
+      // Scroll to top of page when navigating to next step
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     }
   };
 
@@ -299,6 +301,8 @@ export default function Onboarding() {
   const handlePrevious = () => {
     if (currentStep > 0) {
       setCurrentStep(currentStep - 1);
+      // Scroll to top of page when navigating to previous step
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     }
   };
 
