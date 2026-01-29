@@ -289,3 +289,8 @@
 - [x] Add "Create Task" button to Terminal UI (via suggestedActions)
 - [x] Add "Save as Draft" button to Terminal UI (via suggestedActions)
 - [x] handleQuickAction supports createTask and saveDraft actions
+
+## Signed URL Frontend Integration (Completed)
+- [x] Update Admin Dashboard file download buttons to use getFileDownloadUrl
+- [x] Update Terminal citation panel to use getFileDownloadUrl for UPLOAD citations
+- [x] Test file downloads work correctly with signed URLs (60 tests passing)

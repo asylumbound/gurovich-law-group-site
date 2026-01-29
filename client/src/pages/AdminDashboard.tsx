@@ -128,6 +128,49 @@ function downloadCSV(data: any[], filename: string) {
   toast.success(`Exported ${data.length} records to ${filename}`);
 }
 
+// FileDownloadButton component for secure file downloads
+function FileDownloadButton({ intakeId, storagePath, fileName }: { intakeId: number; storagePath: string; fileName: string }) {
+  const [isDownloading, setIsDownloading] = useState(false);
+  const getDownloadUrlMutation = trpc.admin.getFileDownloadUrl.useMutation();
+
+  const handleDownload = async () => {
+    if (!storagePath) {
+      toast.error("File path not available");
+      return;
+    }
+    
+    setIsDownloading(true);
+    try {
+      const result = await getDownloadUrlMutation.mutateAsync({
+        intakeId,
+        storagePath,
+      });
+      
+      // Open signed URL in new tab
+      window.open(result.url, "_blank");
+    } catch (error: any) {
+      toast.error(error.message || "Failed to get download URL");
+    } finally {
+      setIsDownloading(false);
+    }
+  };
+
+  return (
+    <button
+      onClick={handleDownload}
+      disabled={isDownloading}
+      className="flex items-center gap-2 text-sm text-blue-600 hover:underline disabled:opacity-50"
+    >
+      {isDownloading ? (
+        <Loader2 className="h-4 w-4 animate-spin" />
+      ) : (
+        <FileText className="h-4 w-4" />
+      )}
+      {fileName}
+    </button>
+  );
+}
+
 // Static admin password - stored in sessionStorage after successful login
 const ADMIN_PASSWORD = "&&77GAbriel";
 const ADMIN_AUTH_KEY = "glg_admin_authenticated";
@@ -842,16 +885,12 @@ function AdminDashboardContent({
                                         <h3 className="font-semibold mb-2">Uploaded Files</h3>
                                         <div className="space-y-2">
                                           {selectedIntake.uploads.map((upload: any, idx: number) => (
-                                            <a 
-                                              key={idx} 
-                                              href={upload.file_url} 
-                                              target="_blank" 
-                                              rel="noopener noreferrer"
-                                              className="flex items-center gap-2 text-sm text-blue-600 hover:underline"
-                                            >
-                                              <FileText className="h-4 w-4" />
-                                              {upload.file_name}
-                                            </a>
+                                            <FileDownloadButton
+                                              key={idx}
+                                              intakeId={selectedIntake.id}
+                                              storagePath={upload.storage_path || upload.file_path}
+                                              fileName={upload.file_name}
+                                            />
                                           ))}
                                         </div>
                                       </div>

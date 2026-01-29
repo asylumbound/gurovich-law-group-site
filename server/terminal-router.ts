@@ -989,7 +989,7 @@ Guidelines:
   getFileDownloadUrl: adminProcedure
     .input(z.object({
       intakeId: z.number(),
-      uploadId: z.number(),
+      storagePath: z.string(),
     }))
     .mutation(async ({ input, ctx }) => {
       const supabase = getSupabaseAdmin();
@@ -1003,12 +1003,12 @@ Guidelines:
         });
       }
       
-      // Get the upload record and verify it belongs to the intake
+      // Verify the file belongs to the intake
       const { data: upload, error } = await supabase
         .from("intake_uploads")
         .select("id, storage_path, file_path, file_name")
-        .eq("id", input.uploadId)
         .eq("intake_id", input.intakeId)
+        .or(`storage_path.eq.${input.storagePath},file_path.eq.${input.storagePath}`)
         .single();
       
       if (error || !upload) {
@@ -1019,8 +1019,7 @@ Guidelines:
       }
       
       // Get signed URL (1 hour expiry)
-      const storagePath = upload.storage_path || upload.file_path;
-      const signedUrl = await getSignedDownloadUrl(storagePath, 3600);
+      const signedUrl = await getSignedDownloadUrl(input.storagePath, 3600);
       
       if (!signedUrl) {
         throw new TRPCError({
@@ -1031,7 +1030,7 @@ Guidelines:
       
       return { 
         url: signedUrl,
-        fileName: upload.file_name,
+        fileName: upload.file_name as string,
       };
     }),
 

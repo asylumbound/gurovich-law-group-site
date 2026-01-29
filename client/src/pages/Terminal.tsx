@@ -53,6 +53,54 @@ const citationColors: Record<string, string> = {
   CASELAW: "bg-rose-100 text-rose-800 dark:bg-rose-900 dark:text-rose-200",
 };
 
+// CitationBadge component for clickable citations with secure file downloads
+function CitationBadge({ citation, intakeId }: { citation: any; intakeId: number }) {
+  const [isDownloading, setIsDownloading] = useState(false);
+  const getDownloadUrlMutation = trpc.terminal.getFileDownloadUrl.useMutation();
+
+  const handleClick = async () => {
+    // Only handle UPLOAD citations
+    if (citation.type !== "UPLOAD" || !citation.storage_path) {
+      return;
+    }
+
+    setIsDownloading(true);
+    try {
+      const result = await getDownloadUrlMutation.mutateAsync({
+        intakeId,
+        storagePath: citation.storage_path,
+      });
+      window.open(result.url, "_blank");
+    } catch (error: any) {
+      toast.error(error.message || "Failed to get download URL");
+    } finally {
+      setIsDownloading(false);
+    }
+  };
+
+  const isClickable = citation.type === "UPLOAD" && citation.storage_path;
+  const badgeContent = citation.type === "UPLOAD" && citation.file_name
+    ? `📄 ${citation.file_name}`
+    : citation.type === "STATUTE" && citation.citation
+    ? `⚖️ ${citation.citation}`
+    : citation.type === "CASELAW" && citation.citation
+    ? `📚 ${citation.citation}`
+    : `${citation.type} #${citation.id}`;
+
+  return (
+    <Badge
+      variant="secondary"
+      className={`text-xs ${citationColors[citation.type] || ""} ${isClickable ? "cursor-pointer hover:opacity-80" : ""}`}
+      onClick={isClickable ? handleClick : undefined}
+    >
+      {isDownloading ? (
+        <Loader2 className="h-3 w-3 animate-spin mr-1" />
+      ) : null}
+      {badgeContent}
+    </Badge>
+  );
+}
+
 // Static admin password - same as AdminDashboard
 const ADMIN_PASSWORD = "&&77GAbriel";
 const ADMIN_AUTH_KEY = "glg_admin_authenticated";
@@ -857,19 +905,11 @@ export default function Terminal() {
                                 <p className="text-xs font-medium mb-2 text-gray-500">Citations:</p>
                                 <div className="flex flex-wrap gap-1">
                                   {message.citations.map((citation, idx) => (
-                                    <Badge
+                                    <CitationBadge
                                       key={idx}
-                                      variant="secondary"
-                                      className={`text-xs ${citationColors[citation.type] || ""}`}
-                                    >
-                                      {citation.type === "UPLOAD" && citation.file_name
-                                        ? `📄 ${citation.file_name}`
-                                        : citation.type === "STATUTE" && citation.citation
-                                        ? `⚖️ ${citation.citation}`
-                                        : citation.type === "CASELAW" && citation.citation
-                                        ? `📚 ${citation.citation}`
-                                        : `${citation.type} #${citation.id}`}
-                                    </Badge>
+                                      citation={citation}
+                                      intakeId={selectedIntakeId!}
+                                    />
                                   ))}
                                 </div>
                               </div>
