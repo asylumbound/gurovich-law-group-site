@@ -52,7 +52,7 @@ If you are facing criminal charges, the stakes are higher than you may realize. 
     category: "Criminal Defense",
     author: "Gurovich Law Group",
     readTime: "8 min read",
-    image: "/images/blog/criminal-defense.jpg"
+    image: "/images/blog-hidden-penalties.png"
   },
   {
     id: "2",
