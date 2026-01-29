@@ -1,6 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Phone } from "lucide-react";
 import { motion } from "framer-motion";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 /**
  * Hero Marquee Component — 2-Column Layout
@@ -26,6 +27,8 @@ import { motion } from "framer-motion";
  */
 
 export default function Hero() {
+  const { t } = useLanguage();
+
   return (
     <section className="relative min-h-[70vh] lg:min-h-[80vh] overflow-hidden">
       {/* ============================================
@@ -109,7 +112,7 @@ export default function Hero() {
                 className="font-display text-3xl sm:text-4xl md:text-4xl lg:text-5xl xl:text-6xl font-bold text-white leading-[1.1] tracking-wide"
                 style={{ textShadow: '2px 2px 8px rgba(0,0,0,0.5)' }}
               >
-                VIGOROUS ADVOCACY
+                {t("hero.title")}
               </motion.h1>
 
               {/* Subheadline */}
@@ -120,7 +123,7 @@ export default function Hero() {
                 className="font-heading text-xs sm:text-sm md:text-sm lg:text-base xl:text-lg text-white mt-2 md:mt-3 tracking-[0.1em] sm:tracking-[0.12em] md:tracking-[0.15em] uppercase"
                 style={{ textShadow: '1px 1px 4px rgba(0,0,0,0.5)' }}
               >
-                For Life's Most Serious Legal Challenges
+                {t("hero.subtitle")}
               </motion.h2>
 
               {/* Divider Line */}
@@ -139,10 +142,7 @@ export default function Hero() {
                 className="font-body text-sm md:text-sm lg:text-base xl:text-lg text-white/95 mt-4 md:mt-5 leading-relaxed"
                 style={{ textShadow: '1px 1px 3px rgba(0,0,0,0.4)' }}
               >
-                High-stakes matters demand clear strategy and experienced execution.
-                The Gurovich Law Group represents clients in personal injury,
-                tenants' rights, criminal defense, and civil litigation with
-                disciplined case-building and sophisticated advocacy.
+                {t("hero.description")}
               </motion.p>
 
               {/* CTA Button - Only Call Button */}
@@ -159,7 +159,7 @@ export default function Hero() {
                     className="bg-primary hover:bg-primary/90 text-primary-foreground font-heading font-semibold text-sm md:text-base px-4 sm:px-5 md:px-6 py-4 md:py-5 shadow-lg whitespace-nowrap"
                   >
                     <Phone className="mr-2 h-4 w-4" />
-                    CALL TODAY: 818.401.4725
+                    {t("hero.callToday")} 818.401.4725
                   </Button>
                 </a>
               </motion.div>

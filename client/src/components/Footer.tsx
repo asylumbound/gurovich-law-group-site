@@ -1,20 +1,7 @@
-import { Link, useLocation } from "wouter";
+import { useLocation } from "wouter";
 import { Facebook, Twitter, Linkedin, Instagram } from "lucide-react";
 import { useContactModal } from "@/contexts/ContactModalContext";
-
-const practiceAreas = [
-  { label: "Personal Injury", href: "/practice-areas/personal-injury" },
-  { label: "Criminal Defense", href: "/practice-areas/criminal-defense" },
-  { label: "Employment Law", href: "/practice-areas/employment-law" },
-  { label: "Civil Litigation", href: "/practice-areas/civil-litigation" },
-];
-
-const quickLinks = [
-  { label: "Home", href: "/" },
-  { label: "Our Team", href: "/team" },
-  { label: "Testimonials", href: "/reviews" },
-  { label: "Blog", href: "/blog" },
-];
+import { useLanguage } from "@/contexts/LanguageContext";
 
 const socialLinks = [
   { icon: Facebook, href: "#", label: "Facebook" },
@@ -42,6 +29,21 @@ function ScrollToTopLink({ href, children, className }: { href: string; children
 
 export default function Footer() {
   const { openContactModal } = useContactModal();
+  const { t } = useLanguage();
+
+  const practiceAreas = [
+    { label: t("practice.personalInjury"), href: "/practice-areas/personal-injury" },
+    { label: t("practice.criminalDefense"), href: "/practice-areas/criminal-defense" },
+    { label: t("practice.employmentLaw"), href: "/practice-areas/employment-law" },
+    { label: t("practice.civilLitigation"), href: "/practice-areas/civil-litigation" },
+  ];
+
+  const quickLinks = [
+    { label: t("nav.home"), href: "/" },
+    { label: t("nav.team"), href: "/team" },
+    { label: t("nav.reviews"), href: "/reviews" },
+    { label: t("nav.blog"), href: "/blog" },
+  ];
 
   return (
     <footer className="bg-secondary text-secondary-foreground" role="contentinfo">
@@ -57,8 +59,7 @@ export default function Footer() {
               />
             </ScrollToTopLink>
             <p className="font-body text-white/70 text-sm leading-relaxed">
-              Gurovich Law Group provides vigorous advocacy for clients facing
-              life's most serious legal challenges. We fight for your rights.
+              {t("footer.description")}
             </p>
             <div className="flex gap-4 mt-6" role="list" aria-label="Social media links">
               {socialLinks.map((social) => (
@@ -78,7 +79,7 @@ export default function Footer() {
           {/* Practice Areas */}
           <nav aria-label="Practice Areas">
             <h4 className="font-heading text-lg font-semibold text-white mb-6">
-              Practice Areas
+              {t("nav.practiceAreas")}
             </h4>
             <ul className="space-y-3" role="list">
               {practiceAreas.map((item) => (
@@ -97,7 +98,7 @@ export default function Footer() {
           {/* Quick Links */}
           <nav aria-label="Quick Links">
             <h4 className="font-heading text-lg font-semibold text-white mb-6">
-              Quick Links
+              {t("footer.quickLinks")}
             </h4>
             <ul className="space-y-3" role="list">
               {quickLinks.map((item) => (
@@ -115,7 +116,7 @@ export default function Footer() {
                   onClick={openContactModal}
                   className="font-body text-white/70 hover:text-primary transition-colors text-sm focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:ring-offset-secondary rounded"
                 >
-                  Contact Us
+                  {t("footer.contactUs")}
                 </button>
               </li>
             </ul>
@@ -124,7 +125,7 @@ export default function Footer() {
           {/* Contact */}
           <div>
             <h4 className="font-heading text-lg font-semibold text-white mb-6">
-              Contact Us
+              {t("footer.contactUs")}
             </h4>
             <address className="space-y-4 font-body text-sm text-white/70 not-italic">
               <p>
@@ -150,7 +151,7 @@ export default function Footer() {
                   kg@gurovichlaw.com
                 </a>
               </p>
-              <p>Mon-Fri: 9:00 AM - 5:00 PM</p>
+              <p>{t("contact.hoursValue")}</p>
             </address>
           </div>
         </div>
@@ -160,8 +161,7 @@ export default function Footer() {
       <div className="border-t border-white/10">
         <div className="container py-6 flex flex-col md:flex-row justify-between items-center gap-4">
           <p className="font-body text-sm text-white/50">
-            © {new Date().getFullYear()} Gurovich Law Group, APC. All rights
-            reserved.
+            {t("footer.copyright")}
           </p>
           <div className="flex items-center gap-6 flex-wrap justify-center">
             {/* Payment Icons */}
@@ -174,19 +174,19 @@ export default function Footer() {
               href="/privacy"
               className="font-body text-sm text-white/50 hover:text-white transition-colors focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:ring-offset-secondary rounded"
             >
-              Privacy Policy
+              {t("footer.privacy")}
             </ScrollToTopLink>
             <ScrollToTopLink
               href="/terms"
               className="font-body text-sm text-white/50 hover:text-white transition-colors focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:ring-offset-secondary rounded"
             >
-              Terms of Service
+              {t("footer.terms")}
             </ScrollToTopLink>
             <ScrollToTopLink
               href="/disclaimer"
               className="font-body text-sm text-white/50 hover:text-white transition-colors focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:ring-offset-secondary rounded"
             >
-              Disclaimer
+              {t("footer.disclaimer")}
             </ScrollToTopLink>
           </div>
         </div>

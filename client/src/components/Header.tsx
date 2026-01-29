@@ -3,20 +3,23 @@ import { Phone, Mail, Menu, X } from "lucide-react";
 import { useState, useEffect } from "react";
 import { Link, useLocation } from "wouter";
 import { useContactModal } from "@/contexts/ContactModalContext";
-
-const navItems = [
-  { label: "Home", href: "/" },
-  { label: "About Us", href: "/about" },
-  { label: "Practice Areas", href: "/practice-areas" },
-  { label: "Our Team", href: "/team" },
-  { label: "Reviews", href: "/reviews" },
-  { label: "Blog", href: "/blog" },
-];
+import { useLanguage } from "@/contexts/LanguageContext";
+import { LanguageSelector } from "./LanguageSelector";
 
 export default function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [location] = useLocation();
   const { openContactModal } = useContactModal();
+  const { t } = useLanguage();
+
+  const navItems = [
+    { label: t("nav.home"), href: "/" },
+    { label: t("nav.about"), href: "/about" },
+    { label: t("nav.practiceAreas"), href: "/practice-areas" },
+    { label: t("nav.team"), href: "/team" },
+    { label: t("nav.reviews"), href: "/reviews" },
+    { label: t("nav.blog"), href: "/blog" },
+  ];
 
   const handleContactClick = () => {
     setMobileMenuOpen(false);
@@ -69,8 +72,11 @@ export default function Header() {
               <span className="hidden md:inline">kg@gurovichlaw.com</span>
             </a>
           </div>
-          <div className="text-xs text-muted-foreground" aria-label="Business hours">
-            Mon-Fri 9:00 AM - 5:00 PM
+          <div className="flex items-center gap-4">
+            <LanguageSelector />
+            <div className="text-xs text-muted-foreground hidden sm:block" aria-label="Business hours">
+              {t("header.hours")}
+            </div>
           </div>
         </div>
       </div>
@@ -121,7 +127,7 @@ export default function Header() {
               className="bg-primary hover:bg-primary/90 text-primary-foreground font-heading font-semibold px-6 focus:ring-2 focus:ring-primary focus:ring-offset-2"
               aria-label="Open contact form"
             >
-              CONTACT US
+              {t("nav.contact")}
             </Button>
           </div>
 
@@ -171,7 +177,7 @@ export default function Header() {
                 className="w-full bg-primary hover:bg-primary/90 text-primary-foreground font-heading font-semibold focus:ring-2 focus:ring-primary focus:ring-offset-2"
                 aria-label="Open contact form"
               >
-                CONTACT US
+                {t("nav.contact")}
               </Button>
             </div>
           </div>

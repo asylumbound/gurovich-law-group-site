@@ -1,37 +1,7 @@
 import { motion } from "framer-motion";
 import { ChevronRight } from "lucide-react";
 import { Link } from "wouter";
-
-const practiceAreas = [
-  {
-    icon: "/images/personal-injury-LOGO.png",
-    title: "Personal Injury",
-    description:
-      "Aggressive representation for accident victims. We fight for maximum compensation for your injuries and losses.",
-    href: "/practice-areas/personal-injury",
-  },
-  {
-    icon: "/images/criminal-defense.png",
-    title: "Criminal Defense",
-    description:
-      "Protecting your rights and freedom. Experienced defense for all criminal charges from misdemeanors to felonies.",
-    href: "/practice-areas/criminal-defense",
-  },
-  {
-    icon: "/images/tenants-rights.png",
-    title: "Employment Law",
-    description:
-      "Standing up for workers' rights. We handle discrimination, harassment, wrongful termination, and wage disputes.",
-    href: "/practice-areas/employment-law",
-  },
-  {
-    icon: "/images/civillitigation.png",
-    title: "Civil Litigation",
-    description:
-      "Resolving complex disputes. From landlord-tenant issues to business conflicts, we advocate for your interests.",
-    href: "/practice-areas/civil-litigation",
-  },
-];
+import { useLanguage } from "@/contexts/LanguageContext";
 
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -53,6 +23,35 @@ const itemVariants = {
 };
 
 export default function PracticeAreas() {
+  const { t } = useLanguage();
+
+  const practiceAreas = [
+    {
+      icon: "/images/personal-injury-LOGO.png",
+      title: t("practice.personalInjury"),
+      description: t("practice.personalInjuryDesc"),
+      href: "/practice-areas/personal-injury",
+    },
+    {
+      icon: "/images/criminal-defense.png",
+      title: t("practice.criminalDefense"),
+      description: t("practice.criminalDefenseDesc"),
+      href: "/practice-areas/criminal-defense",
+    },
+    {
+      icon: "/images/tenants-rights.png",
+      title: t("practice.employmentLaw"),
+      description: t("practice.employmentLawDesc"),
+      href: "/practice-areas/employment-law",
+    },
+    {
+      icon: "/images/civillitigation.png",
+      title: t("practice.civilLitigation"),
+      description: t("practice.civilLitigationDesc"),
+      href: "/practice-areas/civil-litigation",
+    },
+  ];
+
   return (
     <section className="py-20 lg:py-28 bg-muted/30">
       <div className="container">
@@ -64,14 +63,13 @@ export default function PracticeAreas() {
           className="text-center mb-16"
         >
           <span className="font-heading text-sm font-semibold text-primary uppercase tracking-widest">
-            Our Expertise
+            {t("practice.subtitle")}
           </span>
           <h2 className="font-display text-3xl md:text-4xl lg:text-5xl font-bold text-foreground mt-4">
-            Practice Areas
+            {t("practice.title")}
           </h2>
           <p className="font-body text-lg text-muted-foreground mt-4 max-w-2xl mx-auto">
-            With decades of combined experience, our attorneys provide skilled
-            representation across a wide range of legal matters.
+            {t("practice.description")}
           </p>
         </motion.div>
 
@@ -101,7 +99,7 @@ export default function PracticeAreas() {
                     {area.description}
                   </p>
                   <div className="mt-6 flex items-center text-primary font-heading text-sm font-semibold group-hover:gap-2 transition-all">
-                    Learn More
+                    {t("practice.learnMore")}
                     <ChevronRight className="w-4 h-4 ml-1 group-hover:translate-x-1 transition-transform" />
                   </div>
                 </div>

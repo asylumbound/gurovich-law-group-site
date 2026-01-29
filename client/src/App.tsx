@@ -5,6 +5,7 @@ import { Route, Switch } from "wouter";
 import ErrorBoundary from "./components/ErrorBoundary";
 import { ThemeProvider } from "./contexts/ThemeContext";
 import { ContactModalProvider } from "./contexts/ContactModalContext";
+import { LanguageProvider } from "./contexts/LanguageContext";
 import Layout from "./components/Layout";
 import CookieConsent from "./components/CookieConsent";
 import AccessibilityWidget from "./components/AccessibilityWidget";
@@ -59,30 +60,32 @@ function App() {
         defaultTheme="light"
         // switchable
       >
-        <ContactModalProvider>
-          <TooltipProvider>
-            {/* Skip to Main Content Link - WCAG 2.4.1 Bypass Blocks */}
-            <a 
-              href="#main-content" 
-              className="skip-to-main"
-              onClick={(e) => {
-                e.preventDefault();
-                const main = document.getElementById('main-content');
-                if (main) {
-                  main.focus();
-                  main.scrollIntoView();
-                }
-              }}
-            >
-              Skip to main content
-            </a>
-            
-            <Toaster />
-            <Router />
-            <CookieConsent />
-            <AccessibilityWidget />
-          </TooltipProvider>
-        </ContactModalProvider>
+        <LanguageProvider>
+          <ContactModalProvider>
+            <TooltipProvider>
+              {/* Skip to Main Content Link - WCAG 2.4.1 Bypass Blocks */}
+              <a 
+                href="#main-content" 
+                className="skip-to-main"
+                onClick={(e) => {
+                  e.preventDefault();
+                  const main = document.getElementById('main-content');
+                  if (main) {
+                    main.focus();
+                    main.scrollIntoView();
+                  }
+                }}
+              >
+                Skip to main content
+              </a>
+              
+              <Toaster />
+              <Router />
+              <CookieConsent />
+              <AccessibilityWidget />
+            </TooltipProvider>
+          </ContactModalProvider>
+        </LanguageProvider>
       </ThemeProvider>
     </ErrorBoundary>
   );

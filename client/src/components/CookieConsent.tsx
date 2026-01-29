@@ -2,12 +2,14 @@ import { useState, useEffect } from "react";
 import { Link } from "wouter";
 import { X, Cookie } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 const COOKIE_CONSENT_KEY = "gurovich-cookie-consent";
 
 export default function CookieConsent() {
   const [isVisible, setIsVisible] = useState(false);
   const [isAnimating, setIsAnimating] = useState(false);
+  const { t } = useLanguage();
 
   useEffect(() => {
     // Check if user has already made a choice
@@ -59,14 +61,13 @@ export default function CookieConsent() {
                 <Cookie className="w-6 h-6 text-primary" />
               </div>
               <div className="text-sm text-white/80">
-                <p className="font-medium text-white mb-1">We Value Your Privacy</p>
+                <p className="font-medium text-white mb-1">{t("cookie.title")}</p>
                 <p className="leading-relaxed">
-                  We use cookies to enhance your browsing experience, analyze site traffic, and personalize content. 
-                  By clicking "Accept All", you consent to our use of cookies. Read our{" "}
+                  {t("cookie.description")}{" "}
                   <Link href="/privacy" className="text-primary hover:underline">
-                    Privacy Policy
+                    {t("cookie.privacyLink")}
                   </Link>{" "}
-                  for more information.
+                  {t("cookie.moreInfo")}
                 </p>
               </div>
             </div>
@@ -79,14 +80,14 @@ export default function CookieConsent() {
                 onClick={handleReject}
                 className="flex-1 md:flex-none border-white/20 text-white hover:bg-white/10"
               >
-                Reject All
+                {t("cookie.rejectAll")}
               </Button>
               <Button
                 size="sm"
                 onClick={handleAccept}
                 className="flex-1 md:flex-none bg-primary hover:bg-primary/90"
               >
-                Accept All
+                {t("cookie.acceptAll")}
               </Button>
             </div>
 

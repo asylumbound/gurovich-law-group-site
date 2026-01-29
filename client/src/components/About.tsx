@@ -3,18 +3,20 @@ import { motion } from "framer-motion";
 import { CheckCircle } from "lucide-react";
 import { Link } from "wouter";
 import { useContactModal } from "@/contexts/ContactModalContext";
-
-const highlights = [
-  "Over 20 years of combined legal experience",
-  "Personalized attention to every case",
-  "Aggressive representation in and out of court",
-  "No fees unless we win your case",
-  "Multilingual staff (English, Spanish, Russian)",
-  "Available 24/7 for emergencies",
-];
+import { useLanguage } from "@/contexts/LanguageContext";
 
 export default function About() {
   const { openContactModal } = useContactModal();
+  const { t } = useLanguage();
+
+  const highlights = [
+    t("about.experience"),
+    t("about.personalized"),
+    t("about.aggressive"),
+    t("about.noFees"),
+    t("about.multilingual"),
+    t("about.available"),
+  ];
 
   return (
     <section className="py-20 lg:py-28 bg-background">
@@ -59,16 +61,13 @@ export default function About() {
             transition={{ duration: 0.6 }}
           >
             <span className="font-heading text-sm font-semibold text-primary uppercase tracking-widest">
-              About Our Firm
+              {t("about.subtitle")}
             </span>
             <h2 className="font-display text-3xl md:text-4xl lg:text-5xl font-bold text-foreground mt-4 leading-tight">
-              Dedicated Legal Advocates Fighting for You
+              {t("about.title")}
             </h2>
             <p className="font-body text-lg text-muted-foreground mt-6 leading-relaxed">
-              At Gurovich Law Group, we understand that legal challenges can be
-              overwhelming. Our team of experienced attorneys is committed to
-              providing compassionate yet aggressive representation to protect
-              your rights and secure the best possible outcome for your case.
+              {t("about.description")}
             </p>
 
             <div className="mt-8 grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -95,7 +94,7 @@ export default function About() {
                   size="lg"
                   className="bg-primary hover:bg-primary/90 text-primary-foreground font-heading font-semibold"
                 >
-                  Meet Our Team
+                  {t("about.meetTeam")}
                 </Button>
               </Link>
               <Button
@@ -104,7 +103,7 @@ export default function About() {
                 onClick={openContactModal}
                 className="border-primary text-primary hover:bg-primary/5 font-heading font-semibold"
               >
-                Schedule Consultation
+                {t("about.schedule")}
               </Button>
             </div>
           </motion.div>
