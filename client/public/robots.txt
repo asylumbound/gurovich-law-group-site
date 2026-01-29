@@ -1,0 +1,12 @@
+# Robots.txt for Gurovich Law Group
+# https://www.gurovich.law
+
+User-agent: *
+Allow: /
+
+# Disallow admin and internal pages
+Disallow: /admin
+Disallow: /api/
+
+# Sitemap location
+Sitemap: https://www.gurovich.law/sitemap.xml
