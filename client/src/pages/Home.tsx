@@ -12,10 +12,10 @@ export default function Home() {
     <>
       <Hero />
       <PracticeAreas />
+      <NoFeeGuarantee />
       <Statistics />
       <About />
       <BadgeCarousel />
-      <NoFeeGuarantee />
       <Testimonials />
       <Contact />
     </>
