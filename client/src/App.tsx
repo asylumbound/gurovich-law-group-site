@@ -30,9 +30,11 @@ import OnboardingSuccess from "./pages/OnboardingSuccess";
 
 // Lazy imports for heavy admin/internal pages (auth required, loaded on demand)
 const AdminDashboard = lazy(() => import("./pages/AdminDashboard"));
-const Terminal = lazy(() => import("./pages/Terminal"));
+// QUARANTINED: Terminal causing production build issues
+// const Terminal = lazy(() => import("./pages/Terminal"));
 const Onboarding = lazy(() => import("./pages/Onboarding"));
-const ComponentShowcase = lazy(() => import("./pages/ComponentShowcase"));
+// QUARANTINED: ComponentShowcase imports AIChatBox which uses Streamdown/mermaid
+// const ComponentShowcase = lazy(() => import("./pages/ComponentShowcase"));
 
 // Loading fallback component for lazy-loaded routes
 function PageLoader() {
@@ -59,19 +61,19 @@ function Router() {
   // make sure to consider if you need authentication for certain routes
   return (
     <Switch>
-      {/* Terminal has its own layout, render outside Layout - LAZY LOADED */}
-      <Route path="/terminal">
+      {/* QUARANTINED: Terminal route disabled for production debugging */}
+      {/* <Route path="/terminal">
         <Suspense fallback={<PageLoader />}>
           <Terminal />
         </Suspense>
-      </Route>
+      </Route> */}
       
-      {/* Component Showcase - LAZY LOADED (dev only) */}
-      <Route path="/components">
+      {/* QUARANTINED: Component Showcase disabled - imports mermaid via AIChatBox */}
+      {/* <Route path="/components">
         <Suspense fallback={<PageLoader />}>
           <ComponentShowcase />
         </Suspense>
-      </Route>
+      </Route> */}
       
       {/* All other routes use the standard Layout */}
       <Route>

@@ -319,3 +319,12 @@
 - [ ] Build dashboard component showing MISSING/PARTIAL/SATISFIED status
 - [ ] Add evidence linking to proof matrix entries
 - [ ] Visual progress indicators per KC and overall case
+
+
+## Production White Screen Fix (URGENT)
+- [x] Identified root cause: mermaid/streamdown library causing JS error in production
+- [x] Quarantined Terminal route (uses Streamdown with mermaid)
+- [x] Quarantined ComponentShowcase route (imports AIChatBox which uses Streamdown)
+- [x] Verified clean build without mermaid chunks (only 10 JS files now)
+- [x] All 71 tests passing
+- [ ] TODO: Fix mermaid import issue and restore Terminal/ComponentShowcase routes
