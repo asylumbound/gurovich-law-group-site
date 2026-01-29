@@ -114,7 +114,7 @@ export default function ClientIntakeForm({ practiceArea, serviceType }: ClientIn
     await new Promise((resolve) => setTimeout(resolve, 1000));
 
     // Open mailto link
-    window.location.href = `mailto:kg@gurovichlaw.com?subject=${subject}&body=${body}`;
+    window.location.href = `mailto:info@gurovichlaw.com?subject=${subject}&body=${body}`;
 
     setIsSubmitting(false);
     setIsSubmitted(true);
@@ -141,8 +141,8 @@ export default function ClientIntakeForm({ practiceArea, serviceType }: ClientIn
         </p>
         <p className="text-sm text-green-600">
           If your email client didn't open, please email us directly at{" "}
-          <a href="mailto:kg@gurovichlaw.com" className="font-semibold underline">
-            kg@gurovichlaw.com
+          <a href="mailto:info@gurovichlaw.com" className="font-semibold underline">
+            info@gurovichlaw.com
           </a>
         </p>
         <Button

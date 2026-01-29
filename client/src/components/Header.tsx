@@ -66,12 +66,12 @@ export default function Header() {
               <span className="hidden sm:inline">(818) 401-4725</span>
             </a>
             <a
-              href="mailto:kg@gurovichlaw.com"
+              href="mailto:info@gurovichlaw.com"
               className="flex items-center gap-2 hover:text-primary transition-colors focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:ring-offset-secondary rounded"
-              aria-label="Email us at kg@gurovichlaw.com"
+              aria-label="Email us at info@gurovichlaw.com"
             >
               <Mail className="h-4 w-4" aria-hidden="true" />
-              <span className="hidden md:inline">kg@gurovichlaw.com</span>
+              <span className="hidden md:inline">info@gurovichlaw.com</span>
             </a>
           </div>
           <div className="flex items-center gap-4">

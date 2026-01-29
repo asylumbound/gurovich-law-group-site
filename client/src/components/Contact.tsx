@@ -16,14 +16,14 @@ const contactInfo = [
   {
     icon: Mail,
     label: "Email",
-    value: "kg@gurovichlaw.com",
-    href: "mailto:kg@gurovichlaw.com",
+    value: "info@gurovichlaw.com",
+    href: "mailto:info@gurovichlaw.com",
   },
   {
     icon: MapPin,
     label: "Address",
-    value: "15233 Ventura Blvd, Suite 500, Sherman Oaks, CA 91403",
-    href: "https://maps.google.com/?q=15233+Ventura+Blvd+Sherman+Oaks+CA",
+    value: "15250 Ventura Blvd. Suite 700, Sherman Oaks, CA 91403",
+    href: "https://maps.google.com/?q=15250+Ventura+Blvd+Sherman+Oaks+CA",
   },
   {
     icon: Clock,
@@ -68,7 +68,7 @@ export default function Contact() {
     await new Promise((resolve) => setTimeout(resolve, 800));
 
     // Open mailto link
-    window.location.href = `mailto:kg@gurovichlaw.com?subject=${subject}&body=${body}`;
+    window.location.href = `mailto:info@gurovichlaw.com?subject=${subject}&body=${body}`;
 
     toast.success("Your inquiry has been prepared. Please complete sending the email from your email client.");
     setFormData({ name: "", email: "", phone: "", message: "" });

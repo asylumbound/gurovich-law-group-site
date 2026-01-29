@@ -97,7 +97,7 @@ export default function ContactModal({ open, onOpenChange }: ContactModalProps) 
     await new Promise((resolve) => setTimeout(resolve, 800));
 
     // Open mailto link
-    window.location.href = `mailto:kg@gurovichlaw.com?subject=${subject}&body=${body}`;
+    window.location.href = `mailto:info@gurovichlaw.com?subject=${subject}&body=${body}`;
 
     setIsSubmitting(false);
     setIsSubmitted(true);
@@ -138,8 +138,8 @@ export default function ContactModal({ open, onOpenChange }: ContactModalProps) 
             </DialogDescription>
             <p className="text-sm text-muted-foreground mb-6">
               If your email client didn't open, please email us directly at{" "}
-              <a href="mailto:kg@gurovichlaw.com" className="font-semibold text-primary underline">
-                kg@gurovichlaw.com
+              <a href="mailto:info@gurovichlaw.com" className="font-semibold text-primary underline">
+                info@gurovichlaw.com
               </a>
             </p>
             <Button onClick={handleClose} variant="outline">
@@ -165,11 +165,11 @@ export default function ContactModal({ open, onOpenChange }: ContactModalProps) 
                 (818) 401-4725
               </a>
               <a
-                href="mailto:kg@gurovichlaw.com"
+                href="mailto:info@gurovichlaw.com"
                 className="flex items-center gap-2 text-sm text-muted-foreground hover:text-primary transition-colors"
               >
                 <Mail className="w-4 h-4" />
-                kg@gurovichlaw.com
+                info@gurovichlaw.com
               </a>
             </div>
 

@@ -345,3 +345,13 @@
 - Main site: 9 JS chunks, 637 KB main bundle, NO mermaid
 - Terminal: 353 JS chunks, 3.2 MB mermaid bundle (lazy loaded)
 - Both builds pass all 71 tests
+
+
+## Contact Info Update (Completed)
+- [x] Update Header component with new contact info
+- [x] Update Footer component with new address
+- [x] Update Contact page/section
+- [x] Update JSON-LD structured data
+- [x] Update any hardcoded email/phone references
+- [x] Updated 37 email references to info@gurovichlaw.com
+- [x] Updated 10 address references to 15250 Ventura Blvd. Suite 700, Sherman Oaks, CA 91403

@@ -3,7 +3,7 @@
  * Gurovich Law Group
  * 
  * Features: Contact form with validation, Google Map, contact info
- * Form sends to: kg@gurovichlaw.com
+ * Form sends to: info@gurovichlaw.com
  */
 
 import { useState } from "react";
@@ -97,7 +97,7 @@ export default function Contact() {
     );
 
     // Open mailto link
-    window.location.href = `mailto:kg@gurovichlaw.com?subject=${subject}&body=${body}`;
+    window.location.href = `mailto:info@gurovichlaw.com?subject=${subject}&body=${body}`;
 
     // Show success message
     setTimeout(() => {
@@ -151,13 +151,13 @@ export default function Contact() {
               </div>
             </a>
             
-            <a href="mailto:kg@gurovichlaw.com" className="group">
+            <a href="mailto:info@gurovichlaw.com" className="group">
               <div className="bg-white rounded-xl p-6 shadow-md hover:shadow-lg transition-all h-full">
                 <div className="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center mb-4 group-hover:bg-primary/20 transition-colors">
                   <Mail className="w-6 h-6 text-primary" />
                 </div>
                 <h3 className="font-semibold text-slate-900 mb-1">Email</h3>
-                <p className="text-primary font-medium">kg@gurovichlaw.com</p>
+                <p className="text-primary font-medium">info@gurovichlaw.com</p>
               </div>
             </a>
             
@@ -167,7 +167,7 @@ export default function Contact() {
                   <MapPin className="w-6 h-6 text-primary" />
                 </div>
                 <h3 className="font-semibold text-slate-900 mb-1">Address</h3>
-                <p className="text-slate-600 text-sm">15233 Ventura Blvd, Suite 500<br />Sherman Oaks, CA 91403</p>
+                <p className="text-slate-600 text-sm">15250 Ventura Blvd. Suite 700<br />Sherman Oaks, CA 91403</p>
               </div>
             </a>
             
@@ -379,10 +379,10 @@ export default function Contact() {
                       Text: (818) 401-4725
                     </Button>
                   </a>
-                  <a href="mailto:kg@gurovichlaw.com" className="block">
+                  <a href="mailto:info@gurovichlaw.com" className="block">
                     <Button variant="outline" className="w-full border-white text-white hover:bg-white hover:text-slate-900 justify-start">
                       <Mail className="w-5 h-5 mr-3" />
-                      Email: kg@gurovichlaw.com
+                      Email: info@gurovichlaw.com
                     </Button>
                   </a>
                 </div>

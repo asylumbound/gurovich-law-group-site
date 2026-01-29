@@ -177,13 +177,13 @@ export default function Disclaimer() {
             </p>
             <div className="bg-muted/50 p-6 rounded-lg">
               <p className="font-semibold text-foreground">Gurovich Law Group, APC</p>
-              <p className="text-muted-foreground">15233 Ventura Blvd, Suite 500</p>
+              <p className="text-muted-foreground">15250 Ventura Blvd. Suite 700</p>
               <p className="text-muted-foreground">Sherman Oaks, CA 91403</p>
               <p className="text-muted-foreground mt-2">
                 Phone: <a href="tel:8184014725" className="text-primary hover:underline">(818) 401-4725</a>
               </p>
               <p className="text-muted-foreground">
-                Email: <a href="mailto:kg@gurovichlaw.com" className="text-primary hover:underline">kg@gurovichlaw.com</a>
+                Email: <a href="mailto:info@gurovichlaw.com" className="text-primary hover:underline">info@gurovichlaw.com</a>
               </p>
             </div>
           </section>

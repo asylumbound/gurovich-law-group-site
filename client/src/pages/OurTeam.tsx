@@ -43,7 +43,7 @@ const teamMembers: TeamMember[] = [
     languages: ["English", "Russian", "Ukrainian"],
     education: ["J.D., Law School", "B.A., Political Science"],
     credentials: ["California State Bar", "U.S. District Court, Central District of California"],
-    email: "kg@gurovichlaw.com",
+    email: "info@gurovichlaw.com",
   },
   {
     id: "rita-skuratovsky",

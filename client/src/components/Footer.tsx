@@ -129,7 +129,7 @@ export default function Footer() {
             </h4>
             <address className="space-y-4 font-body text-sm text-white/70 not-italic">
               <p>
-                15233 Ventura Blvd, Suite 500
+                15250 Ventura Blvd. Suite 700
                 <br />
                 Sherman Oaks, CA 91403
               </p>
@@ -144,11 +144,11 @@ export default function Footer() {
               </p>
               <p>
                 <a
-                  href="mailto:kg@gurovichlaw.com"
+                  href="mailto:info@gurovichlaw.com"
                   className="hover:text-primary transition-colors focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:ring-offset-secondary rounded"
-                  aria-label="Email us at kg@gurovichlaw.com"
+                  aria-label="Email us at info@gurovichlaw.com"
                 >
-                  kg@gurovichlaw.com
+                  info@gurovichlaw.com
                 </a>
               </p>
               <p>{t("contact.hoursValue")}</p>

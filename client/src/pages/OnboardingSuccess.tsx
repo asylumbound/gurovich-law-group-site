@@ -94,11 +94,11 @@ export default function OnboardingSuccess() {
                 </a>
                 <span className="hidden sm:block text-gray-500">|</span>
                 <a 
-                  href="mailto:kg@gurovichlaw.com" 
+                  href="mailto:info@gurovichlaw.com" 
                   className="flex items-center gap-2 hover:text-primary transition-colors"
                 >
                   <Mail className="w-5 h-5" />
-                  <span>kg@gurovichlaw.com</span>
+                  <span>info@gurovichlaw.com</span>
                 </a>
               </div>
             </div>

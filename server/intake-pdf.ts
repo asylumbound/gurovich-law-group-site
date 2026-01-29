@@ -413,7 +413,7 @@ export function generateIntakePDF(intake: IntakeData): Buffer {
   doc.setFontSize(8);
   doc.setTextColor(128, 128, 128);
   doc.text("CONFIDENTIAL - Attorney-Client Privileged Information", margin, footerY);
-  doc.text("Gurovich Law Group | (818) 401-4725 | kg@gurovichlaw.com", margin, footerY + 4);
+  doc.text("Gurovich Law Group | (818) 401-4725 | info@gurovichlaw.com", margin, footerY + 4);
   doc.text(`Page 1 of ${doc.getNumberOfPages()}`, pageWidth - margin - 20, footerY);
 
   // Return as Buffer

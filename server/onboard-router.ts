@@ -514,7 +514,7 @@ export const onboardRouter = router({
         .eq("id", intake.issue_type_id)
         .single();
 
-      // Send email notification to kg@gurovichlaw.com
+      // Send email notification to info@gurovichlaw.com
       const practiceAreaLabels: Record<string, string> = {
         personal_injury: "Personal Injury",
         criminal_defense: "Criminal Defense",
