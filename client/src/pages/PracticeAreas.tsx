@@ -49,9 +49,20 @@ export default function PracticeAreas() {
                   <div className="group bg-white rounded-xl shadow-md hover:shadow-xl transition-all duration-300 overflow-hidden cursor-pointer h-full">
                     {/* Card Header */}
                     <div className="bg-slate-800 p-6 flex items-center gap-4">
-                      <div className="w-14 h-14 rounded-lg bg-primary/20 flex items-center justify-center">
-                        <IconComponent className="w-7 h-7 text-primary" />
-                      </div>
+                      {/* Custom image icon on desktop, Lucide icon on mobile */}
+                      {area.iconImage ? (
+                        <div className="w-14 h-14 md:w-16 md:h-16 rounded-lg bg-white/10 flex items-center justify-center overflow-hidden">
+                          <img 
+                            src={area.iconImage} 
+                            alt={area.title}
+                            className="w-12 h-12 md:w-14 md:h-14 object-contain"
+                          />
+                        </div>
+                      ) : (
+                        <div className="w-14 h-14 rounded-lg bg-primary/20 flex items-center justify-center">
+                          <IconComponent className="w-7 h-7 text-primary" />
+                        </div>
+                      )}
                       <h2 className="text-2xl font-bold text-white group-hover:text-primary transition-colors">
                         {area.title}
                       </h2>

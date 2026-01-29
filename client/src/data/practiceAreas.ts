@@ -17,6 +17,7 @@ export interface PracticeArea {
   slug: string;
   title: string;
   icon: string;
+  iconImage?: string;
   description: string;
   heroDescription: string;
   subPages: SubPage[];
@@ -27,6 +28,7 @@ export const practiceAreas: PracticeArea[] = [
     slug: "personal-injury",
     title: "Personal Injury",
     icon: "Shield",
+    iconImage: "/images/personal-injury-LOGO.png",
     description: "Aggressive representation for accident victims. We fight for maximum compensation for your injuries and losses.",
     heroDescription: "When you've been injured due to someone else's negligence, you deserve an advocate who will fight tirelessly for your rights. Our personal injury attorneys have recovered millions of dollars for clients across California, handling everything from car accidents to catastrophic injuries.",
     subPages: [
@@ -134,6 +136,7 @@ export const practiceAreas: PracticeArea[] = [
     slug: "civil-litigation",
     title: "Civil Litigation",
     icon: "Scale",
+    iconImage: "/images/civillitigation.png",
     description: "Resolving complex disputes. From landlord-tenant issues to business conflicts, we advocate for your interests.",
     heroDescription: "Civil disputes require strategic thinking and aggressive advocacy. Whether you're facing a business conflict, property dispute, or need to enforce your legal rights, our litigation team has the courtroom experience and negotiation skills to protect your interests and achieve favorable outcomes.",
     subPages: [
@@ -213,6 +216,7 @@ export const practiceAreas: PracticeArea[] = [
     slug: "employment-law",
     title: "Employment Law",
     icon: "Briefcase",
+    iconImage: "/images/tenants-rights.png",
     description: "Standing up for workers' rights. We handle discrimination, harassment, wrongful termination, and wage disputes.",
     heroDescription: "California has some of the strongest worker protection laws in the nation, but employers don't always follow them. Our employment law attorneys fight for employees who have been wrongfully terminated, discriminated against, harassed, or denied fair wages. We level the playing field against employers and their legal teams.",
     subPages: [
@@ -292,6 +296,7 @@ export const practiceAreas: PracticeArea[] = [
     slug: "criminal-defense",
     title: "Criminal Defense",
     icon: "Gavel",
+    iconImage: "/images/criminal-defense.png",
     description: "Protecting your rights and freedom. Experienced defense for all criminal charges from misdemeanors to felonies.",
     heroDescription: "Being charged with a crime is one of the most stressful experiences you can face. Your freedom, reputation, and future are on the line. Our criminal defense attorneys have decades of combined experience defending clients against all types of charges. We fight aggressively to protect your rights at every stage.",
     subPages: [

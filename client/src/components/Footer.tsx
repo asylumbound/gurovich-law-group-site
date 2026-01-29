@@ -32,7 +32,7 @@ export default function Footer() {
           <div>
             <Link href="/" className="inline-block mb-6">
               <img
-                src="/images/gurovich-logo-full.png"
+                src="/images/footerlogo.png"
                 alt="Gurovich Law Group"
                 className="h-20 w-auto"
               />

@@ -1,39 +1,35 @@
 import { motion } from "framer-motion";
-import { Scale, Shield, Briefcase, Home, ChevronRight } from "lucide-react";
+import { ChevronRight } from "lucide-react";
 import { Link } from "wouter";
 
 const practiceAreas = [
   {
-    icon: Scale,
+    icon: "/images/personal-injury-LOGO.png",
     title: "Personal Injury",
     description:
       "Aggressive representation for accident victims. We fight for maximum compensation for your injuries and losses.",
     href: "/practice-areas/personal-injury",
-    color: "text-red-600",
   },
   {
-    icon: Shield,
+    icon: "/images/criminal-defense.png",
     title: "Criminal Defense",
     description:
       "Protecting your rights and freedom. Experienced defense for all criminal charges from misdemeanors to felonies.",
     href: "/practice-areas/criminal-defense",
-    color: "text-blue-600",
   },
   {
-    icon: Briefcase,
+    icon: "/images/tenants-rights.png",
     title: "Employment Law",
     description:
       "Standing up for workers' rights. We handle discrimination, harassment, wrongful termination, and wage disputes.",
     href: "/practice-areas/employment-law",
-    color: "text-amber-600",
   },
   {
-    icon: Home,
+    icon: "/images/civillitigation.png",
     title: "Civil Litigation",
     description:
       "Resolving complex disputes. From landlord-tenant issues to business conflicts, we advocate for your interests.",
     href: "/practice-areas/civil-litigation",
-    color: "text-emerald-600",
   },
 ];
 
@@ -90,10 +86,12 @@ export default function PracticeAreas() {
             <motion.div key={area.title} variants={itemVariants}>
               <Link href={area.href}>
                 <div className="group bg-card rounded-xl p-8 shadow-sm hover:shadow-xl transition-all duration-300 border border-border hover:border-primary/20 h-full flex flex-col">
-                  <div
-                    className={`w-16 h-16 rounded-xl bg-muted flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300 ${area.color}`}
-                  >
-                    <area.icon className="w-8 h-8" />
+                  <div className="w-16 h-16 rounded-xl bg-secondary/10 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300 overflow-hidden">
+                    <img
+                      src={area.icon}
+                      alt={`${area.title} icon`}
+                      className="w-12 h-12 object-contain"
+                    />
                   </div>
                   <h3 className="font-heading text-xl font-semibold text-foreground mb-3">
                     {area.title}

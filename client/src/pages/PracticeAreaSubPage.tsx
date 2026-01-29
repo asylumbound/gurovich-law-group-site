@@ -3,12 +3,14 @@
  * Gurovich Law Group
  * 
  * Shows detailed information about a specific service within a practice area
+ * Includes client intake form to capture leads directly related to the legal issue
  */
 
 import { Link, useParams } from "wouter";
 import { getPracticeAreaBySlug, getSubPageBySlug } from "@/data/practiceAreas";
 import { Shield, Scale, Briefcase, Gavel, Phone, ChevronRight, CheckCircle, ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import ClientIntakeForm from "@/components/ClientIntakeForm";
 
 const iconMap: Record<string, React.ElementType> = {
   Shield,
@@ -57,9 +59,20 @@ export default function PracticeAreaSubPage() {
           </nav>
 
           <div className="flex items-center gap-3 mb-4">
-            <div className="w-12 h-12 rounded-lg bg-primary/20 flex items-center justify-center">
-              <IconComponent className="w-6 h-6 text-primary" />
-            </div>
+            {/* Custom image icon if available */}
+            {area.iconImage ? (
+              <div className="w-12 h-12 rounded-lg bg-white/10 flex items-center justify-center overflow-hidden">
+                <img 
+                  src={area.iconImage} 
+                  alt={area.title}
+                  className="w-8 h-8 object-contain"
+                />
+              </div>
+            ) : (
+              <div className="w-12 h-12 rounded-lg bg-primary/20 flex items-center justify-center">
+                <IconComponent className="w-6 h-6 text-primary" />
+              </div>
+            )}
             <span className="text-primary font-medium">{area.title}</span>
           </div>
           
@@ -112,6 +125,17 @@ export default function PracticeAreaSubPage() {
                 </div>
               </div>
 
+              {/* Client Intake Form - Integrated directly on the page */}
+              <div className="mt-12" id="intake-form">
+                <h2 className="text-2xl font-bold text-slate-900 mb-6">
+                  Get Help With Your {subPage.title} Case
+                </h2>
+                <ClientIntakeForm 
+                  practiceArea={area.title} 
+                  serviceType={subPage.title} 
+                />
+              </div>
+
               {/* Back Link */}
               <div className="mt-10">
                 <Link href={`/practice-areas/${area.slug}`}>
@@ -125,23 +149,23 @@ export default function PracticeAreaSubPage() {
 
             {/* Sidebar */}
             <div className="lg:col-span-1">
-              {/* Contact Card */}
+              {/* Quick Contact Card */}
               <div className="bg-slate-800 rounded-2xl p-6 text-white mb-8 sticky top-24">
-                <h3 className="text-xl font-bold mb-3">Free Consultation</h3>
+                <h3 className="text-xl font-bold mb-3">Need Immediate Help?</h3>
                 <p className="text-slate-300 text-sm mb-6">
                   Have questions about your {subPage.title.toLowerCase()} case? 
-                  Contact us today for a free, confidential consultation.
+                  Call us now or fill out the form below for a free consultation.
                 </p>
                 <div className="space-y-3">
-                  <Link href="/contact">
-                    <Button size="lg" className="w-full bg-primary hover:bg-primary/90">
-                      Schedule Consultation
-                    </Button>
-                  </Link>
                   <a href="tel:818-401-4725" className="block">
-                    <Button size="lg" variant="outline" className="w-full border-white text-white hover:bg-white hover:text-slate-900">
+                    <Button size="lg" className="w-full bg-primary hover:bg-primary/90">
                       <Phone className="w-5 h-5 mr-2" />
                       (818) 401-4725
+                    </Button>
+                  </a>
+                  <a href="#intake-form" className="block">
+                    <Button size="lg" variant="outline" className="w-full border-white text-white hover:bg-white hover:text-slate-900">
+                      Fill Out Form Below
                     </Button>
                   </a>
                 </div>

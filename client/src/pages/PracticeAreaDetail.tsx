@@ -51,9 +51,20 @@ export default function PracticeAreaDetail() {
           </nav>
 
           <div className="flex items-center gap-4 mb-6">
-            <div className="w-16 h-16 rounded-xl bg-primary/20 flex items-center justify-center">
-              <IconComponent className="w-8 h-8 text-primary" />
-            </div>
+            {/* Custom image icon on desktop */}
+            {area.iconImage ? (
+              <div className="w-16 h-16 md:w-20 md:h-20 rounded-xl bg-white/10 flex items-center justify-center overflow-hidden">
+                <img 
+                  src={area.iconImage} 
+                  alt={area.title}
+                  className="w-12 h-12 md:w-16 md:h-16 object-contain"
+                />
+              </div>
+            ) : (
+              <div className="w-16 h-16 rounded-xl bg-primary/20 flex items-center justify-center">
+                <IconComponent className="w-8 h-8 text-primary" />
+              </div>
+            )}
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold">
               {area.title}
             </h1>
