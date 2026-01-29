@@ -19,8 +19,16 @@ export default function About() {
   ];
 
   return (
-    <section className="py-20 lg:py-28 bg-background">
-      <div className="container">
+    <section className="relative py-20 lg:py-28 overflow-hidden">
+      {/* Hero Background Image */}
+      <div 
+        className="absolute inset-0 bg-cover bg-center bg-no-repeat"
+        style={{ backgroundImage: "url('/images/about-firm-hero-bg.png')" }}
+      />
+      {/* Dark Overlay for text readability */}
+      <div className="absolute inset-0 bg-secondary/70" />
+      
+      <div className="container relative z-10">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 items-center">
           {/* Image Side */}
           <motion.div
@@ -63,10 +71,10 @@ export default function About() {
             <span className="font-heading text-sm font-semibold text-primary uppercase tracking-widest">
               {t("about.subtitle")}
             </span>
-            <h2 className="font-display text-3xl md:text-4xl lg:text-5xl font-bold text-foreground mt-4 leading-tight">
+            <h2 className="font-display text-3xl md:text-4xl lg:text-5xl font-bold text-white mt-4 leading-tight">
               {t("about.title")}
             </h2>
-            <p className="font-body text-lg text-muted-foreground mt-6 leading-relaxed">
+            <p className="font-body text-lg text-gray-200 mt-6 leading-relaxed">
               {t("about.description")}
             </p>
 
@@ -81,7 +89,7 @@ export default function About() {
                   className="flex items-start gap-3"
                 >
                   <CheckCircle className="w-5 h-5 text-primary flex-shrink-0 mt-0.5" />
-                  <span className="font-body text-sm text-foreground">
+                  <span className="font-body text-sm text-white">
                     {item}
                   </span>
                 </motion.div>
@@ -101,7 +109,7 @@ export default function About() {
                 size="lg"
                 variant="outline"
                 onClick={openContactModal}
-                className="border-primary text-primary hover:bg-primary/5 font-heading font-semibold"
+                className="border-white text-white hover:bg-white/10 font-heading font-semibold"
               >
                 {t("about.schedule")}
               </Button>
