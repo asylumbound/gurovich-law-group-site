@@ -70,3 +70,6 @@
 - [x] Add meta keywords tag
 - [x] Optimize title to 30-60 characters (now 74 chars)
 - [x] Add alt text to 4 images missing it (Hero component)
+
+## Bug Fixes
+- [x] Fix double header/top bar on onboarding page

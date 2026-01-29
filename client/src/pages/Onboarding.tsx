@@ -6,8 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { toast } from "sonner";
 import { Check, ChevronLeft, ChevronRight, Loader2, Save } from "lucide-react";
-import Header from "@/components/Header";
-import Footer from "@/components/Footer";
+// Header and Footer are provided by Layout component in App.tsx
 
 // Step components
 import Step0Consent from "@/components/onboarding/Step0Consent";
@@ -355,9 +354,7 @@ export default function Onboarding() {
   }
 
   return (
-    <>
-      <Header />
-      <div className="min-h-screen bg-gray-50 pt-24 pb-12">
+    <div className="min-h-screen bg-gray-50 pt-24 pb-12">
         <div className="container max-w-4xl mx-auto px-4">
           {/* Header */}
           <div className="text-center mb-8">
@@ -534,8 +531,6 @@ export default function Onboarding() {
             </a>
           </p>
         </div>
-      </div>
-      <Footer />
-    </>
+    </div>
   );
 }
