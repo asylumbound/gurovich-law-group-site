@@ -95,9 +95,9 @@ export default function Header() {
             aria-label="Gurovich Law Group - Go to homepage"
           >
             <img
-              src="/images/logo.png"
+              src="/images/glg-logo-new.png"
               alt="Gurovich Law Group Logo"
-              className="h-12 w-auto"
+              className="h-14 w-auto"
             />
           </Link>
 
