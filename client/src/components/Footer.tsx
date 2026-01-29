@@ -53,7 +53,7 @@ export default function Footer() {
           <div>
             <ScrollToTopLink href="/" className="inline-block mb-6">
               <img
-                src="/images/glg-logo-white.png"
+                src="/logo-wht.png"
                 alt="Gurovich Law Group - Return to Homepage"
                 className="h-16 w-auto"
               />

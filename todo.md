@@ -73,3 +73,4 @@
 
 ## Bug Fixes
 - [x] Fix double header/top bar on onboarding page
+- [x] Update footer logo with white version
