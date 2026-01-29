@@ -242,7 +242,7 @@ Remember, safety should always be your top priority. Contact us for a free consu
     category: "Personal Injury",
     author: "Gurovich Law Group",
     readTime: "5 min read",
-    image: "/images/blog/accident-checklist.jpg"
+    image: "/images/blog-10-things-accident.png"
   },
   {
     id: "6",
