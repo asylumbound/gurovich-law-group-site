@@ -127,6 +127,10 @@ function downloadCSV(data: any[], filename: string) {
   toast.success(`Exported ${data.length} records to ${filename}`);
 }
 
+// Static admin password - stored in sessionStorage after successful login
+const ADMIN_PASSWORD = "&&77GAbriel";
+const ADMIN_AUTH_KEY = "glg_admin_authenticated";
+
 export default function AdminDashboard() {
   const { user, loading: authLoading, isAuthenticated } = useAuth();
   const [search, setSearch] = useState("");
@@ -139,8 +143,67 @@ export default function AdminDashboard() {
   const [isExporting, setIsExporting] = useState(false);
   const [notesDialogOpen, setNotesDialogOpen] = useState(false);
   const [notesIntakeId, setNotesIntakeId] = useState<number | null>(null);
+  
+  // Static password protection
+  const [isAdminAuthenticated, setIsAdminAuthenticated] = useState(() => {
+    if (typeof window !== "undefined") {
+      return sessionStorage.getItem(ADMIN_AUTH_KEY) === "true";
+    }
+    return false;
+  });
+  const [passwordInput, setPasswordInput] = useState("");
+  const [passwordError, setPasswordError] = useState("");
 
-  // Check authentication and admin role
+  const handlePasswordSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (passwordInput === ADMIN_PASSWORD) {
+      sessionStorage.setItem(ADMIN_AUTH_KEY, "true");
+      setIsAdminAuthenticated(true);
+      setPasswordError("");
+      toast.success("Welcome to the Admin Dashboard");
+    } else {
+      setPasswordError("Incorrect password. Please try again.");
+      setPasswordInput("");
+    }
+  };
+
+  // Static password protection - show password screen if not authenticated
+  if (!isAdminAuthenticated) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900 p-4">
+        <Card className="w-full max-w-md">
+          <CardHeader className="text-center">
+            <Shield className="h-12 w-12 mx-auto text-primary mb-4" />
+            <CardTitle>Admin Dashboard</CardTitle>
+            <CardDescription>Enter the admin password to continue.</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <form onSubmit={handlePasswordSubmit} className="space-y-4">
+              <div className="space-y-2">
+                <Label htmlFor="admin-password">Password</Label>
+                <Input
+                  id="admin-password"
+                  type="password"
+                  placeholder="Enter admin password"
+                  value={passwordInput}
+                  onChange={(e) => setPasswordInput(e.target.value)}
+                  autoFocus
+                />
+                {passwordError && (
+                  <p className="text-sm text-red-500">{passwordError}</p>
+                )}
+              </div>
+              <Button type="submit" className="w-full">
+                Access Dashboard
+              </Button>
+            </form>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
+
+  // Check OAuth authentication and admin role (optional secondary check)
   if (authLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900">
@@ -149,6 +212,9 @@ export default function AdminDashboard() {
     );
   }
 
+  // Note: OAuth login is optional - static password is the primary protection
+  // Uncomment below if you want to require OAuth login as well
+  /*
   if (!isAuthenticated) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900">
@@ -186,6 +252,7 @@ export default function AdminDashboard() {
       </div>
     );
   }
+  */
 
   return <AdminDashboardContent 
     search={search}
