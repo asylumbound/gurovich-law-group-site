@@ -103,7 +103,7 @@ export default function Hero() {
           
           {/* LEFT COLUMN: All text + CTAs - content MUST NOT exceed this column */}
           <div className="flex flex-col justify-center px-4 sm:px-6 md:px-8 lg:px-12 xl:px-16 py-12 md:py-16 lg:py-20">
-            <div className="max-w-lg lg:max-w-xl">
+            <div className="max-w-sm sm:max-w-md md:max-w-lg lg:max-w-md xl:max-w-lg">
               {/* Headline */}
               <motion.h1
                 initial={{ opacity: 0, y: 20 }}
