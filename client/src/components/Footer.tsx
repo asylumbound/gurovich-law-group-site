@@ -134,13 +134,18 @@ export default function Footer() {
                 Sherman Oaks, CA 91403
               </p>
               <p>
+                <span className="text-white/50">Office: </span>
                 <a
                   href="tel:8184014725"
                   className="hover:text-primary transition-colors focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:ring-offset-secondary rounded"
                   aria-label="Call us at (818) 401-4725"
                 >
-                  (818) 401-4725
+                  818-401-4725
                 </a>
+              </p>
+              <p>
+                <span className="text-white/50">Fax: </span>
+                <span>818-401-0700</span>
               </p>
               <p>
                 <a
