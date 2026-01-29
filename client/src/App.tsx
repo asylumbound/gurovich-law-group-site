@@ -22,8 +22,10 @@ import OurTeam from "./pages/OurTeam";
 import PrivacyPolicy from "./pages/PrivacyPolicy";
 import TermsOfService from "./pages/TermsOfService";
 import Disclaimer from "./pages/Disclaimer";
-
+import Onboarding from "./pages/Onboarding";
+import OnboardingSuccess from "./pages/OnboardingSuccess";
 function Router() {
+  // make sure to consider if you need authentication for certain routes
   return (
     <Layout>
       <Switch>
@@ -40,6 +42,8 @@ function Router() {
         <Route path={"/privacy"} component={PrivacyPolicy} />
         <Route path={"/terms"} component={TermsOfService} />
         <Route path={"/disclaimer"} component={Disclaimer} />
+        <Route path={"/onboarding"} component={Onboarding} />
+        <Route path={"/onboarding/success"} component={OnboardingSuccess} />
         <Route path={"/404"} component={NotFound} />
         {/* Final fallback route */}
         <Route component={NotFound} />
