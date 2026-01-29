@@ -45,3 +45,21 @@
 - [x] Make Specific Issue Type a required field
 - [x] Update documentation in /docs/ONBOARDING_SPEC.md
 - [x] Test all practice areas and verify dropdown functionality
+
+## Supabase Storage Structure - Client Folders Per Intake
+- [x] Verify bucket 'Gurovich' exists in Supabase
+- [x] Implement folder initialization on intake creation (.keep placeholder)
+- [x] Update upload code to use 'clients/{intake_id}/' path prefix
+- [x] Update intake_uploads table to store correct storage_path
+- [x] Add file naming with upload_id and sanitized filename
+- [x] Enforce max file size (10MB) and show UI errors
+- [x] Create /docs/STORAGE_LAYOUT.md documentation
+- [x] Add unit tests for sanitizeFilename and buildClientFilePath
+- [x] Test intake creation creates folder prefix
+- [x] Verify intake_uploads row matches storage path
+
+## PDF Export & Admin Link
+- [ ] Add admin link to footer (left of Disclaimer)
+- [ ] Implement PDF export for individual intake records
+- [ ] Include all intake data in PDF (contact, matter, facts, details)
+- [ ] Add download button to admin dashboard intake detail view

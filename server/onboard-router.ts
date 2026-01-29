@@ -4,6 +4,13 @@ import { getSupabaseAdmin } from "./supabase";
 import { nanoid } from "nanoid";
 import { notifyOwner } from "./_core/notification";
 import {
+  initializeClientFolder,
+  uploadClientFile,
+  deleteClientFile,
+  BUCKET_NAME,
+  sanitizeFilename,
+} from "./intake-storage";
+import {
   step0Schema,
   step1Schema,
   step2Schema,
@@ -54,6 +61,14 @@ export const onboardRouter = router({
         .single();
 
       if (error) throw new Error(error.message);
+
+      // Initialize client folder in Supabase storage
+      // This creates a .keep placeholder at clients/{intake_id}/.keep
+      await initializeClientFolder(data.id).catch((err) => {
+        console.error("Failed to initialize client folder:", err);
+        // Don't fail the intake creation if folder init fails
+      });
+
       return { intake: data, draftToken };
     }),
 
@@ -292,6 +307,7 @@ export const onboardRouter = router({
     }),
 
   // Upload file to Supabase storage
+  // Uses bucket "Gurovich" with path: clients/{intake_id}/{upload_id}-{sanitized_filename}
   uploadFile: publicProcedure
     .input(z.object({
       draftToken: z.string(),
@@ -303,6 +319,21 @@ export const onboardRouter = router({
     .mutation(async ({ input }) => {
       const supabase = getSupabaseAdmin();
       
+      // Validate file type (PNG/JPG/PDF only as per requirements)
+      const allowedTypes = [
+        "image/png",
+        "image/jpeg",
+        "image/jpg",
+        "application/pdf",
+        // Also allow common document types for flexibility
+        "image/gif",
+        "application/msword",
+        "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+      ];
+      if (!allowedTypes.includes(input.mimeType)) {
+        throw new Error(`File type not allowed: ${input.mimeType}. Allowed types: PNG, JPG, PDF`);
+      }
+      
       // Get intake ID
       const { data: intake, error: fetchError } = await supabase
         .from("intakes")
@@ -312,25 +343,32 @@ export const onboardRouter = router({
 
       if (fetchError) throw new Error(fetchError.message);
 
-      // Decode base64 and upload to storage
+      // Decode base64 and validate size (10MB max)
       const buffer = Buffer.from(input.fileData, "base64");
-      const filePath = `intakes/${intake.id}/${nanoid(16)}_${input.fileName}`;
+      const MAX_SIZE = 10 * 1024 * 1024; // 10MB
+      if (buffer.length > MAX_SIZE) {
+        throw new Error(`File too large: ${(buffer.length / 1024 / 1024).toFixed(2)}MB. Maximum size is 10MB.`);
+      }
 
-      const { error: uploadError } = await supabase.storage
-        .from("GUROVICH")
-        .upload(filePath, buffer, {
-          contentType: input.mimeType,
-        });
+      // Upload using the new storage helper
+      // Path: clients/{intake_id}/{upload_id}-{sanitized_filename}
+      const { uploadId, storagePath } = await uploadClientFile(
+        intake.id,
+        input.fileName,
+        buffer,
+        input.mimeType
+      );
 
-      if (uploadError) throw new Error(uploadError.message);
-
-      // Save metadata to database
+      // Save metadata to database with new schema
       const { data, error } = await supabase
         .from("intake_uploads")
         .insert({
           intake_id: intake.id,
-          file_path: filePath,
+          storage_bucket: BUCKET_NAME,
+          storage_path: storagePath,
+          file_path: storagePath, // Keep for backwards compatibility
           file_name: input.fileName,
+          original_filename: input.fileName,
           file_size: buffer.length,
           mime_type: input.mimeType,
           tag: input.tag,
@@ -339,7 +377,7 @@ export const onboardRouter = router({
         .single();
 
       if (error) throw new Error(error.message);
-      return { uploadId: data.id, filePath };
+      return { uploadId: data.id, filePath: storagePath };
     }),
 
   // Delete file from storage and database
@@ -370,10 +408,8 @@ export const onboardRouter = router({
 
       if (!upload) throw new Error("Upload not found");
 
-      // Delete from storage
-      await supabase.storage
-        .from("GUROVICH")
-        .remove([upload.file_path]);
+      // Delete from storage using the correct bucket
+      await deleteClientFile(upload.file_path);
 
       // Delete from database
       const { error } = await supabase
