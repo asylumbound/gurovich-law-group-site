@@ -108,7 +108,7 @@ export default function Header() {
               <Link
                 key={item.href}
                 href={item.href}
-                className={`font-heading text-sm font-medium transition-colors hover:text-primary focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 rounded px-1 uppercase tracking-[0.5em] ${
+                className={`font-heading text-sm font-medium transition-colors hover:text-primary focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 rounded px-1 uppercase ${
                   location === item.href
                     ? "text-primary"
                     : "text-foreground"
@@ -130,7 +130,7 @@ export default function Header() {
             >
               <Button 
                 onClick={handleContactClick}
-                className="bg-primary hover:bg-primary/80 text-primary-foreground font-heading font-semibold px-6 focus:ring-2 focus:ring-primary focus:ring-offset-2 shadow-lg hover:shadow-xl transition-all duration-200 uppercase tracking-[0.15em]"
+                className="bg-primary hover:bg-primary/80 text-primary-foreground font-heading font-semibold px-6 focus:ring-2 focus:ring-primary focus:ring-offset-2 shadow-lg hover:shadow-xl transition-all duration-200 uppercase"
                 aria-label="Open contact form"
               >
                 {t("nav.contact")}
@@ -167,7 +167,7 @@ export default function Header() {
                 <Link
                   key={item.href}
                   href={item.href}
-                  className={`block font-heading text-base font-medium transition-colors hover:text-primary focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 rounded px-2 py-1 uppercase tracking-[0.3em] ${
+                  className={`block font-heading text-base font-medium transition-colors hover:text-primary focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 rounded px-2 py-1 uppercase ${
                     location === item.href
                       ? "text-primary"
                       : "text-foreground"
@@ -186,7 +186,7 @@ export default function Header() {
               >
                 <Button 
                   onClick={handleContactClick}
-                  className="w-full bg-primary hover:bg-primary/80 text-primary-foreground font-heading font-semibold focus:ring-2 focus:ring-primary focus:ring-offset-2 shadow-lg hover:shadow-xl transition-all duration-200 uppercase tracking-[0.15em]"
+                  className="w-full bg-primary hover:bg-primary/80 text-primary-foreground font-heading font-semibold focus:ring-2 focus:ring-primary focus:ring-offset-2 shadow-lg hover:shadow-xl transition-all duration-200 uppercase"
                   aria-label="Open contact form"
                 >
                   {t("nav.contact")}
