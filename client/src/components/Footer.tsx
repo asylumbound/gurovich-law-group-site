@@ -143,7 +143,13 @@ export default function Footer() {
             © {new Date().getFullYear()} Gurovich Law Group, APC. All rights
             reserved.
           </p>
-          <div className="flex gap-6">
+          <div className="flex items-center gap-6">
+            {/* Payment Icons */}
+            <img
+              src="/images/payment-icons.webp"
+              alt="We accept American Express, MasterCard, Visa, Discover, and Cash"
+              className="h-6 w-auto"
+            />
             <Link
               href="/privacy"
               className="font-body text-sm text-white/50 hover:text-white transition-colors"
