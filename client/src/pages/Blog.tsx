@@ -3,6 +3,7 @@ import { Calendar, Clock, ArrowRight, User } from "lucide-react";
 import { blogPosts } from "@/data/blogPosts";
 import { motion } from "framer-motion";
 import { useContactModal } from "@/contexts/ContactModalContext";
+import { useState } from "react";
 
 export default function Blog() {
   const { openContactModal } = useContactModal();
@@ -36,69 +37,7 @@ export default function Blog() {
         <div className="container">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {blogPosts.map((post, index) => (
-              <motion.article
-                key={post.id}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, delay: index * 0.1 }}
-                className="bg-card rounded-lg overflow-hidden shadow-sm border border-border hover:shadow-md transition-shadow duration-300 flex flex-col"
-              >
-                {/* Card Image Placeholder */}
-                <div className="aspect-video bg-gradient-to-br from-secondary to-secondary/80 relative overflow-hidden">
-                  <div className="absolute inset-0 flex items-center justify-center">
-                    <span className="text-primary/20 font-heading text-6xl font-bold">
-                      GLG
-                    </span>
-                  </div>
-                  <div className="absolute top-4 left-4">
-                    <span className="bg-primary text-primary-foreground text-xs font-heading font-semibold px-3 py-1 rounded-full">
-                      {post.category}
-                    </span>
-                  </div>
-                </div>
-
-                {/* Card Content */}
-                <div className="p-6 flex flex-col flex-1">
-                  {/* Meta */}
-                  <div className="flex items-center gap-4 text-muted-foreground text-xs font-body mb-3">
-                    <span className="flex items-center gap-1">
-                      <Calendar className="h-3 w-3" />
-                      {post.date}
-                    </span>
-                    <span className="flex items-center gap-1">
-                      <Clock className="h-3 w-3" />
-                      {post.readTime}
-                    </span>
-                  </div>
-
-                  {/* Title */}
-                  <h2 className="font-heading text-xl font-bold text-foreground mb-3 line-clamp-2 hover:text-primary transition-colors">
-                    <Link href={`/blog/${post.slug}`}>
-                      {post.title}
-                    </Link>
-                  </h2>
-
-                  {/* Excerpt */}
-                  <p className="font-body text-muted-foreground text-sm line-clamp-3 mb-4 flex-1">
-                    {post.excerpt}
-                  </p>
-
-                  {/* Author & Read More */}
-                  <div className="flex items-center justify-between pt-4 border-t border-border">
-                    <span className="flex items-center gap-2 text-xs text-muted-foreground">
-                      <User className="h-3 w-3" />
-                      {post.author}
-                    </span>
-                    <Link
-                      href={`/blog/${post.slug}`}
-                      className="flex items-center gap-1 text-primary font-heading text-sm font-semibold hover:gap-2 transition-all"
-                    >
-                      Read More
-                      <ArrowRight className="h-4 w-4" />
-                    </Link>
-                  </div>
-                </div>
-              </motion.article>
+              <BlogCard key={post.id} post={post} index={index} />
             ))}
           </div>
         </div>
@@ -124,5 +63,84 @@ export default function Blog() {
         </div>
       </section>
     </main>
+  );
+}
+
+// Separate component to handle image loading state
+function BlogCard({ post, index }: { post: typeof blogPosts[0]; index: number }) {
+  const [imageError, setImageError] = useState(false);
+
+  return (
+    <motion.article
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.6, delay: index * 0.1 }}
+      className="bg-card rounded-lg overflow-hidden shadow-sm border border-border hover:shadow-md transition-shadow duration-300 flex flex-col"
+    >
+      {/* Card Image */}
+      <div className="aspect-video bg-gradient-to-br from-secondary to-secondary/80 relative overflow-hidden">
+        {!imageError && post.image ? (
+          <img
+            src={post.image}
+            alt={post.title}
+            className="w-full h-full object-cover"
+            onError={() => setImageError(true)}
+          />
+        ) : (
+          <div className="absolute inset-0 flex items-center justify-center">
+            <span className="text-primary/20 font-heading text-6xl font-bold">
+              GLG
+            </span>
+          </div>
+        )}
+        <div className="absolute top-4 left-4">
+          <span className="bg-primary text-primary-foreground text-xs font-heading font-semibold px-3 py-1 rounded-full">
+            {post.category}
+          </span>
+        </div>
+      </div>
+
+      {/* Card Content */}
+      <div className="p-6 flex flex-col flex-1">
+        {/* Meta */}
+        <div className="flex items-center gap-4 text-muted-foreground text-xs font-body mb-3">
+          <span className="flex items-center gap-1">
+            <Calendar className="h-3 w-3" />
+            {post.date}
+          </span>
+          <span className="flex items-center gap-1">
+            <Clock className="h-3 w-3" />
+            {post.readTime}
+          </span>
+        </div>
+
+        {/* Title */}
+        <h2 className="font-heading text-xl font-bold text-foreground mb-3 line-clamp-2 hover:text-primary transition-colors">
+          <Link href={`/blog/${post.slug}`}>
+            {post.title}
+          </Link>
+        </h2>
+
+        {/* Excerpt */}
+        <p className="font-body text-muted-foreground text-sm line-clamp-3 mb-4 flex-1">
+          {post.excerpt}
+        </p>
+
+        {/* Author & Read More */}
+        <div className="flex items-center justify-between pt-4 border-t border-border">
+          <span className="flex items-center gap-2 text-xs text-muted-foreground">
+            <User className="h-3 w-3" />
+            {post.author}
+          </span>
+          <Link
+            href={`/blog/${post.slug}`}
+            className="flex items-center gap-1 text-primary font-heading text-sm font-semibold hover:gap-2 transition-all"
+          >
+            Read More
+            <ArrowRight className="h-4 w-4" />
+          </Link>
+        </div>
+      </div>
+    </motion.article>
   );
 }

@@ -94,7 +94,7 @@ Contact us for a free consultation. We will handle the negotiations and fight to
     category: "Personal Injury",
     author: "Gurovich Law Group",
     readTime: "6 min read",
-    image: "/images/blog/insurance-adjusters.jpg"
+    image: "/images/blog-insurance-adjusters.png"
   },
   {
     id: "3",
