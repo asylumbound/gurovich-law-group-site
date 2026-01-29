@@ -316,7 +316,7 @@ export const onboardRouter = router({
       const filePath = `intakes/${intake.id}/${nanoid(16)}_${input.fileName}`;
 
       const { error: uploadError } = await supabase.storage
-        .from("intake-uploads")
+        .from("GUROVICH")
         .upload(filePath, buffer, {
           contentType: input.mimeType,
         });
@@ -371,7 +371,7 @@ export const onboardRouter = router({
 
       // Delete from storage
       await supabase.storage
-        .from("intake-uploads")
+        .from("GUROVICH")
         .remove([upload.file_path]);
 
       // Delete from database
