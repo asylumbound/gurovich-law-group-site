@@ -81,3 +81,7 @@
 - [x] Fix admin notes error - switched to use intake_notes table via createNote mutation
 - [x] Remove colored icons from admin dashboard stats cards (now gray)
 - [x] Fix document uploads - bucket 'Gurovich' created and configured with proper mime types
+
+## SEO Fixes - Round 2
+- [x] Reduce meta keywords from 10 to 5 focused keywords
+- [x] Ensure title is properly set to 30-60 characters (now 47 chars)
