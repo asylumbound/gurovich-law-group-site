@@ -220,3 +220,9 @@
 - [x] Write SYSTEM_AUDIT/06_PERFORMANCE_BUNDLE_REPORT.md
 - [x] Write SYSTEM_AUDIT/07_DEPLOYMENT_SUMMARY.md
 - [x] Write SYSTEM_AUDIT/08_REMEDIATION_PLAN.md
+
+## Database Index Migration (Completed)
+- [x] Create migration 009_add_indexes.sql
+- [x] Apply migration to Supabase (terminal_sessions, terminal_messages, upload_text, discovery_tasks, discovery_drafts)
+- [x] Verify indexes created successfully (12 indexes confirmed)
+- Note: case_memory and intake_notes tables don't exist in MySQL/TiDB - they are Supabase-only tables

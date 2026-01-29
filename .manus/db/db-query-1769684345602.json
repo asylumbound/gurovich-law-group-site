@@ -1,0 +1,9 @@
+{
+  "query": "CREATE INDEX IF NOT EXISTS idx_terminal_messages_session_id ON terminal_messages(session_id);\nCREATE INDEX IF NOT EXISTS idx_terminal_messages_session_created ON terminal_messages(session_id, created_at DESC);",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway03.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 2QmWxs7iH8DQva8.5d87819da4f6 --database J2wS2ZoP78AcJaejkgQxeA --execute CREATE INDEX IF NOT EXISTS idx_terminal_messages_session_id ON terminal_messages(session_id);\nCREATE INDEX IF NOT EXISTS idx_terminal_messages_session_created ON terminal_messages(session_id, created_at DESC);",
+  "rows": [],
+  "messages": [],
+  "stdout": "",
+  "stderr": "",
+  "execution_time_ms": 1176
+}
