@@ -157,14 +157,20 @@ export default function Contact() {
                     className="bg-background resize-none"
                   />
                 </div>
-                <Button
-                  type="submit"
-                  size="lg"
-                  className="w-full bg-primary hover:bg-primary/90 text-primary-foreground font-heading font-semibold"
-                  disabled={isSubmitting}
+                <motion.div
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
+                  transition={{ type: "spring", stiffness: 400, damping: 17 }}
                 >
-                  {isSubmitting ? "Sending..." : "Send Message"}
-                </Button>
+                  <Button
+                    type="submit"
+                    size="lg"
+                    className="w-full bg-primary hover:bg-primary/80 text-primary-foreground font-heading font-semibold shadow-lg hover:shadow-xl transition-all duration-200"
+                    disabled={isSubmitting}
+                  >
+                    {isSubmitting ? "Sending..." : "Send Message"}
+                  </Button>
+                </motion.div>
               </div>
               <p className="font-body text-xs text-muted-foreground mt-4 text-center">
                 By submitting this form, you agree to our privacy policy.

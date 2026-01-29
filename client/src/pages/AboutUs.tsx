@@ -78,19 +78,30 @@ export default function AboutUs() {
                 At Gurovich Law Group, we pride ourselves on our years of experience in criminal defense, personal injury, and employment law. Our team is dedicated to providing personalized attention while navigating the legal system.
               </p>
               <div className="mt-8 flex flex-col sm:flex-row gap-4">
-                <Button 
-                  size="lg" 
-                  onClick={openContactModal}
-                  className="bg-primary hover:bg-primary/90 text-primary-foreground font-heading font-semibold px-8"
+                <motion.div
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.98 }}
+                  transition={{ type: "spring", stiffness: 400, damping: 17 }}
                 >
-                  Get In Touch
-                </Button>
-                <a href="tel:8184014725">
-                  <Button size="lg" variant="outline" className="border-white text-white hover:bg-white/10 font-heading font-semibold px-8">
+                  <Button 
+                    size="lg" 
+                    onClick={openContactModal}
+                    className="bg-primary hover:bg-primary/80 text-primary-foreground font-heading font-semibold px-8 shadow-lg hover:shadow-xl transition-all duration-200"
+                  >
+                    Get In Touch
+                  </Button>
+                </motion.div>
+                <motion.a 
+                  href="tel:8184014725"
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.98 }}
+                  transition={{ type: "spring", stiffness: 400, damping: 17 }}
+                >
+                  <Button size="lg" variant="outline" className="border-white text-white hover:bg-white/10 font-heading font-semibold px-8 shadow-lg hover:shadow-xl transition-all duration-200">
                     <Phone className="mr-2 h-5 w-5" />
                     (818) 401-4725
                   </Button>
-                </a>
+                </motion.a>
               </div>
             </motion.div>
           </div>
@@ -311,20 +322,31 @@ export default function AboutUs() {
                 If you are facing legal issues or need guidance, we're here to help. Our experienced team combines deep legal knowledge with a personal touch. Let's discuss your situation and find the best path forward together.
               </p>
               <div className="mt-8 flex flex-col sm:flex-row gap-4 justify-center">
-                <Button 
-                  size="lg" 
-                  variant="secondary" 
-                  onClick={openContactModal}
-                  className="font-heading font-semibold px-8"
+                <motion.div
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.98 }}
+                  transition={{ type: "spring", stiffness: 400, damping: 17 }}
                 >
-                  Contact Us
-                </Button>
-                <a href="tel:8184014725">
-                  <Button size="lg" variant="outline" className="border-white text-white hover:bg-white/10 font-heading font-semibold px-8">
+                  <Button 
+                    size="lg" 
+                    variant="secondary" 
+                    onClick={openContactModal}
+                    className="font-heading font-semibold px-8 shadow-lg hover:shadow-xl transition-all duration-200"
+                  >
+                    Contact Us
+                  </Button>
+                </motion.div>
+                <motion.a 
+                  href="tel:8184014725"
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.98 }}
+                  transition={{ type: "spring", stiffness: 400, damping: 17 }}
+                >
+                  <Button size="lg" variant="outline" className="border-white text-white hover:bg-white/10 font-heading font-semibold px-8 shadow-lg hover:shadow-xl transition-all duration-200">
                     <Phone className="mr-2 h-5 w-5" />
                     (818) 401-4725
                   </Button>
-                </a>
+                </motion.a>
               </div>
             </motion.div>
           </div>

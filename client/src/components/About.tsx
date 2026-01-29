@@ -97,22 +97,34 @@ export default function About() {
             </div>
 
             <div className="mt-10 flex flex-col sm:flex-row gap-4">
-              <Link href="/team">
+              <motion.div
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.98 }}
+                transition={{ type: "spring", stiffness: 400, damping: 17 }}
+              >
+                <Link href="/team">
+                  <Button
+                    size="lg"
+                    className="bg-primary hover:bg-primary/80 text-primary-foreground font-heading font-semibold shadow-lg hover:shadow-xl transition-all duration-200"
+                  >
+                    {t("about.meetTeam")}
+                  </Button>
+                </Link>
+              </motion.div>
+              <motion.div
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.98 }}
+                transition={{ type: "spring", stiffness: 400, damping: 17 }}
+              >
                 <Button
                   size="lg"
-                  className="bg-primary hover:bg-primary/90 text-primary-foreground font-heading font-semibold"
+                  variant="outline"
+                  onClick={openContactModal}
+                  className="border-white text-white hover:bg-white/10 font-heading font-semibold shadow-lg hover:shadow-xl transition-all duration-200"
                 >
-                  {t("about.meetTeam")}
+                  {t("about.schedule")}
                 </Button>
-              </Link>
-              <Button
-                size="lg"
-                variant="outline"
-                onClick={openContactModal}
-                className="border-white text-white hover:bg-white/10 font-heading font-semibold"
-              >
-                {t("about.schedule")}
-              </Button>
+              </motion.div>
             </div>
           </motion.div>
         </div>

@@ -5,6 +5,7 @@ import { Link, useLocation } from "wouter";
 import { useContactModal } from "@/contexts/ContactModalContext";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { LanguageSelector } from "./LanguageSelector";
+import { motion } from "framer-motion";
 
 export default function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -95,7 +96,7 @@ export default function Header() {
             aria-label="Gurovich Law Group - Go to homepage"
           >
             <img
-              src="/images/glg-logo-header.png"
+              src="/images/glg-logo-header-flat.png"
               alt="Gurovich Law Group Logo"
               className="h-14 w-auto"
             />
@@ -107,7 +108,7 @@ export default function Header() {
               <Link
                 key={item.href}
                 href={item.href}
-                className={`font-heading text-sm font-medium transition-colors hover:text-primary focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 rounded px-1 ${
+                className={`font-heading text-sm font-medium transition-colors hover:text-primary focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 rounded px-1 uppercase tracking-[0.5em] ${
                   location === item.href
                     ? "text-primary"
                     : "text-foreground"
@@ -122,13 +123,19 @@ export default function Header() {
 
           {/* CTA Button */}
           <div className="hidden lg:block">
-            <Button 
-              onClick={handleContactClick}
-              className="bg-primary hover:bg-primary/90 text-primary-foreground font-heading font-semibold px-6 focus:ring-2 focus:ring-primary focus:ring-offset-2"
-              aria-label="Open contact form"
+            <motion.div
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.98 }}
+              transition={{ type: "spring", stiffness: 400, damping: 17 }}
             >
-              {t("nav.contact")}
-            </Button>
+              <Button 
+                onClick={handleContactClick}
+                className="bg-primary hover:bg-primary/80 text-primary-foreground font-heading font-semibold px-6 focus:ring-2 focus:ring-primary focus:ring-offset-2 shadow-lg hover:shadow-xl transition-all duration-200 uppercase tracking-[0.15em]"
+                aria-label="Open contact form"
+              >
+                {t("nav.contact")}
+              </Button>
+            </motion.div>
           </div>
 
           {/* Mobile Menu Button */}
@@ -160,7 +167,7 @@ export default function Header() {
                 <Link
                   key={item.href}
                   href={item.href}
-                  className={`block font-heading text-base font-medium transition-colors hover:text-primary focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 rounded px-2 py-1 ${
+                  className={`block font-heading text-base font-medium transition-colors hover:text-primary focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 rounded px-2 py-1 uppercase tracking-[0.3em] ${
                     location === item.href
                       ? "text-primary"
                       : "text-foreground"
@@ -172,13 +179,19 @@ export default function Header() {
                   {item.label}
                 </Link>
               ))}
-              <Button 
-                onClick={handleContactClick}
-                className="w-full bg-primary hover:bg-primary/90 text-primary-foreground font-heading font-semibold focus:ring-2 focus:ring-primary focus:ring-offset-2"
-                aria-label="Open contact form"
+              <motion.div
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+                transition={{ type: "spring", stiffness: 400, damping: 17 }}
               >
-                {t("nav.contact")}
-              </Button>
+                <Button 
+                  onClick={handleContactClick}
+                  className="w-full bg-primary hover:bg-primary/80 text-primary-foreground font-heading font-semibold focus:ring-2 focus:ring-primary focus:ring-offset-2 shadow-lg hover:shadow-xl transition-all duration-200 uppercase tracking-[0.15em]"
+                  aria-label="Open contact form"
+                >
+                  {t("nav.contact")}
+                </Button>
+              </motion.div>
             </div>
           </div>
         )}

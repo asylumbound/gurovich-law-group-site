@@ -48,9 +48,10 @@ export default function CallToday() {
             {/* Call button */}
             <motion.a
               href="tel:8184015725"
-              whileHover={{ scale: 1.02 }}
+              whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.98 }}
-              className="inline-flex items-center gap-4 bg-white px-8 py-4 rounded-sm shadow-lg hover:shadow-xl transition-shadow"
+              transition={{ type: "spring", stiffness: 400, damping: 17 }}
+              className="inline-flex items-center gap-4 bg-white px-8 py-4 rounded-sm shadow-lg hover:shadow-xl transition-all duration-200"
             >
               <Phone className="w-6 h-6" style={{ color: "#1A222B" }} />
               <span 

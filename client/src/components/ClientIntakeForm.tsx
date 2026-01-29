@@ -12,6 +12,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { CheckCircle, Loader2, Phone, Mail, AlertCircle } from "lucide-react";
+import { motion } from "framer-motion";
 
 interface ClientIntakeFormProps {
   practiceArea: string;
@@ -329,21 +330,27 @@ export default function ClientIntakeForm({ practiceArea, serviceType }: ClientIn
         </div>
 
         {/* Submit Button */}
-        <Button
-          type="submit"
-          size="lg"
-          className="w-full bg-primary hover:bg-primary/90"
-          disabled={isSubmitting}
+        <motion.div
+          whileHover={{ scale: 1.02 }}
+          whileTap={{ scale: 0.98 }}
+          transition={{ type: "spring", stiffness: 400, damping: 17 }}
         >
-          {isSubmitting ? (
-            <>
-              <Loader2 className="w-5 h-5 mr-2 animate-spin" />
-              Preparing Your Inquiry...
-            </>
-          ) : (
-            "Request Free Consultation"
-          )}
-        </Button>
+          <Button
+            type="submit"
+            size="lg"
+            className="w-full bg-primary hover:bg-primary/80 shadow-lg hover:shadow-xl transition-all duration-200"
+            disabled={isSubmitting}
+          >
+            {isSubmitting ? (
+              <>
+                <Loader2 className="w-5 h-5 mr-2 animate-spin" />
+                Preparing Your Inquiry...
+              </>
+            ) : (
+              "Request Free Consultation"
+            )}
+          </Button>
+        </motion.div>
 
         {/* Disclaimer */}
         <p className="text-xs text-slate-500 text-center">
