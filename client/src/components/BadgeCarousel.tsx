@@ -2,11 +2,14 @@
  * Badge Carousel Component
  * Gurovich Law Group
  * 
- * Auto-sliding infinite carousel showcasing credential badges and awards.
- * Uses CSS animation for smooth, continuous scrolling effect.
+ * Auto-sliding carousel showcasing credential badges and awards.
+ * Shows 6 badges at a time on desktop, auto-slides through all 13.
+ * FULL COLOR - no grayscale effects.
  */
 
-import { motion } from "framer-motion";
+import { useState, useEffect, useCallback } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 
 const badges = [
   { src: "/images/badges/AIoTL-2025.png", alt: "American Institute of Trial Lawyers - Litigator of the Year 2025" },
@@ -25,11 +28,49 @@ const badges = [
 ];
 
 export default function BadgeCarousel() {
-  // Duplicate badges for seamless infinite scroll
-  const duplicatedBadges = [...badges, ...badges];
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const [isHovered, setIsHovered] = useState(false);
+  
+  // Number of badges visible at different breakpoints
+  const getVisibleCount = () => {
+    if (typeof window === 'undefined') return 6;
+    if (window.innerWidth >= 1280) return 6; // xl
+    if (window.innerWidth >= 1024) return 5; // lg
+    if (window.innerWidth >= 768) return 4;  // md
+    if (window.innerWidth >= 640) return 3;  // sm
+    return 2; // mobile
+  };
+  
+  const [visibleCount, setVisibleCount] = useState(6);
+  
+  useEffect(() => {
+    const handleResize = () => {
+      setVisibleCount(getVisibleCount());
+    };
+    handleResize();
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
+  const maxIndex = badges.length - visibleCount;
+
+  const nextSlide = useCallback(() => {
+    setCurrentIndex((prev) => (prev >= maxIndex ? 0 : prev + 1));
+  }, [maxIndex]);
+
+  const prevSlide = useCallback(() => {
+    setCurrentIndex((prev) => (prev <= 0 ? maxIndex : prev - 1));
+  }, [maxIndex]);
+
+  // Auto-slide every 3 seconds (pauses on hover)
+  useEffect(() => {
+    if (isHovered) return;
+    const interval = setInterval(nextSlide, 3000);
+    return () => clearInterval(interval);
+  }, [nextSlide, isHovered]);
 
   return (
-    <section className="py-12 md:py-16 bg-white overflow-hidden">
+    <section className="py-12 md:py-16 bg-white">
       <div className="container mb-8">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -48,50 +89,69 @@ export default function BadgeCarousel() {
       </div>
 
       {/* Carousel Container */}
-      <div className="relative">
-        {/* Gradient fade on edges */}
-        <div className="absolute left-0 top-0 bottom-0 w-16 md:w-32 bg-gradient-to-r from-white to-transparent z-10 pointer-events-none" />
-        <div className="absolute right-0 top-0 bottom-0 w-16 md:w-32 bg-gradient-to-l from-white to-transparent z-10 pointer-events-none" />
+      <div 
+        className="relative container"
+        onMouseEnter={() => setIsHovered(true)}
+        onMouseLeave={() => setIsHovered(false)}
+      >
+        {/* Navigation Arrows */}
+        <button
+          onClick={prevSlide}
+          className="absolute left-0 top-1/2 -translate-y-1/2 z-10 bg-white/90 hover:bg-white shadow-lg rounded-full p-2 transition-all duration-200 hover:scale-110"
+          aria-label="Previous badges"
+        >
+          <ChevronLeft className="w-5 h-5 text-gray-700" />
+        </button>
         
-        {/* Scrolling track */}
-        <div className="flex animate-scroll">
-          {duplicatedBadges.map((badge, index) => (
-            <div
-              key={`${badge.alt}-${index}`}
-              className="flex-shrink-0 px-4 md:px-6 lg:px-8"
-            >
-              <div className="h-20 md:h-24 lg:h-28 flex items-center justify-center">
-                <img
-                  src={badge.src}
-                  alt={badge.alt}
-                  className="h-full w-auto object-contain max-w-[120px] md:max-w-[140px] lg:max-w-[160px] grayscale hover:grayscale-0 transition-all duration-300 opacity-70 hover:opacity-100"
-                />
+        <button
+          onClick={nextSlide}
+          className="absolute right-0 top-1/2 -translate-y-1/2 z-10 bg-white/90 hover:bg-white shadow-lg rounded-full p-2 transition-all duration-200 hover:scale-110"
+          aria-label="Next badges"
+        >
+          <ChevronRight className="w-5 h-5 text-gray-700" />
+        </button>
+
+        {/* Badges Track */}
+        <div className="overflow-hidden mx-8 md:mx-12">
+          <motion.div
+            className="flex"
+            animate={{ x: `-${currentIndex * (100 / visibleCount)}%` }}
+            transition={{ type: "spring", stiffness: 300, damping: 30 }}
+          >
+            {badges.map((badge, index) => (
+              <div
+                key={badge.alt}
+                className="flex-shrink-0 px-3 md:px-4 lg:px-6"
+                style={{ width: `${100 / visibleCount}%` }}
+              >
+                <div className="h-20 md:h-24 lg:h-28 flex items-center justify-center">
+                  <img
+                    src={badge.src}
+                    alt={badge.alt}
+                    className="h-full w-auto object-contain max-w-full"
+                  />
+                </div>
               </div>
-            </div>
+            ))}
+          </motion.div>
+        </div>
+
+        {/* Dot Indicators */}
+        <div className="flex justify-center gap-2 mt-6">
+          {Array.from({ length: maxIndex + 1 }).map((_, index) => (
+            <button
+              key={index}
+              onClick={() => setCurrentIndex(index)}
+              className={`w-2 h-2 rounded-full transition-all duration-200 ${
+                index === currentIndex 
+                  ? 'bg-primary w-6' 
+                  : 'bg-gray-300 hover:bg-gray-400'
+              }`}
+              aria-label={`Go to slide ${index + 1}`}
+            />
           ))}
         </div>
       </div>
-
-      {/* CSS Animation */}
-      <style>{`
-        @keyframes scroll {
-          0% {
-            transform: translateX(0);
-          }
-          100% {
-            transform: translateX(-50%);
-          }
-        }
-        
-        .animate-scroll {
-          animation: scroll 40s linear infinite;
-          width: fit-content;
-        }
-        
-        .animate-scroll:hover {
-          animation-play-state: paused;
-        }
-      `}</style>
     </section>
   );
 }
