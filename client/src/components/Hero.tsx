@@ -153,15 +153,21 @@ export default function Hero() {
                 className="mt-5 md:mt-6 lg:mt-8"
               >
                 {/* Call Button */}
-                <a href="tel:8184014725" className="inline-block">
+                <motion.a 
+                  href="tel:8184014725" 
+                  className="inline-block"
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.98 }}
+                  transition={{ type: "spring", stiffness: 400, damping: 17 }}
+                >
                   <Button
                     size="lg"
-                    className="bg-primary hover:bg-primary/90 text-primary-foreground font-heading font-semibold text-sm md:text-base px-4 sm:px-5 md:px-6 py-4 md:py-5 shadow-lg whitespace-nowrap"
+                    className="bg-primary hover:bg-primary/80 text-primary-foreground font-heading font-semibold text-sm md:text-base px-4 sm:px-5 md:px-6 py-4 md:py-5 shadow-lg hover:shadow-xl whitespace-nowrap transition-all duration-200"
                   >
                     <Phone className="mr-2 h-4 w-4" />
                     {t("hero.callToday")} 818.401.4725
                   </Button>
-                </a>
+                </motion.a>
               </motion.div>
             </div>
           </div>
