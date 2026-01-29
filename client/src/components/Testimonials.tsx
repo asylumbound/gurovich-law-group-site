@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { Star, Quote } from "lucide-react";
+import { Star } from "lucide-react";
 import {
   Carousel,
   CarouselContent,
@@ -82,7 +82,6 @@ export default function Testimonials() {
                   className="pl-4 md:basis-1/2 lg:basis-1/3"
                 >
                   <div className="bg-card rounded-xl p-8 shadow-sm border border-border h-full flex flex-col">
-                    <Quote className="w-10 h-10 text-primary/20 mb-4" />
                     <div className="flex gap-1 mb-4">
                       {[...Array(testimonial.rating)].map((_, i) => (
                         <Star
