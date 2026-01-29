@@ -328,3 +328,20 @@
 - [x] Verified clean build without mermaid chunks (only 10 JS files now)
 - [x] All 71 tests passing
 - [ ] TODO: Fix mermaid import issue and restore Terminal/ComponentShowcase routes
+
+
+## Terminal Subdomain Isolation (Completed)
+- [x] Analyze architecture options (multi-page build vs separate project)
+- [x] Create Terminal as standalone entry point with its own index.html
+- [x] Configure Vite for multi-page build with separate bundles
+- [x] Ensure Terminal bundle includes mermaid/streamdown, main site excludes them
+- [x] Update Terminal authentication to work on subdomain
+- [x] Configure CORS for API calls from subdomain
+- [x] Test main site build (no mermaid) - 9 files, 37 MB
+- [x] Test Terminal build (with mermaid) - 353 files, 50 MB
+- [x] Document subdomain deployment instructions
+
+### Build Results:
+- Main site: 9 JS chunks, 637 KB main bundle, NO mermaid
+- Terminal: 353 JS chunks, 3.2 MB mermaid bundle (lazy loaded)
+- Both builds pass all 71 tests

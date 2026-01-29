@@ -152,6 +152,9 @@ function vitePluginManusDebugCollector(): Plugin {
 
 const plugins = [react(), tailwindcss(), jsxLocPlugin(), vitePluginManusRuntime(), vitePluginManusDebugCollector()];
 
+// Check if we're building Terminal only (via VITE_BUILD_TARGET env var)
+const buildTarget = process.env.VITE_BUILD_TARGET || "main";
+
 export default defineConfig({
   plugins,
   resolve: {
@@ -165,9 +168,14 @@ export default defineConfig({
   root: path.resolve(import.meta.dirname, "client"),
   publicDir: path.resolve(import.meta.dirname, "client", "public"),
   build: {
-    outDir: path.resolve(import.meta.dirname, "dist/public"),
+    outDir: buildTarget === "terminal" 
+      ? path.resolve(import.meta.dirname, "dist/terminal")
+      : path.resolve(import.meta.dirname, "dist/public"),
     emptyOutDir: true,
     rollupOptions: {
+      input: buildTarget === "terminal"
+        ? path.resolve(import.meta.dirname, "client/terminal/index.html")
+        : path.resolve(import.meta.dirname, "client/index.html"),
       output: {
         manualChunks(id) {
           // Core React vendor chunk
@@ -190,7 +198,7 @@ export default defineConfig({
           if (id.includes('node_modules/@trpc') || id.includes('node_modules/@tanstack')) {
             return 'vendor-trpc';
           }
-          // Streamdown/Mermaid (heavy, only in Terminal)
+          // Streamdown/Mermaid (heavy, only in Terminal build)
           if (id.includes('node_modules/streamdown') || id.includes('node_modules/mermaid')) {
             return 'vendor-mermaid';
           }
