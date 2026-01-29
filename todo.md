@@ -181,3 +181,17 @@
 - [x] Create discovery_drafts table in Supabase (PostgreSQL)
 - [ ] Revert terminal-router.ts to use Supabase client (not Drizzle)
 - [ ] Test Terminal functionality with Supabase
+
+## Terminal Session Enhancements
+- [x] Add is_favorite column to terminal_sessions table
+- [x] Add deleted_at column for soft delete
+- [x] Create case_memory table for session summaries
+- [x] Update backend with favorite/unfavorite procedures
+- [x] Update backend with soft delete procedure
+- [x] Add PDF export procedure for sessions
+- [x] Commit session summaries to case_memory
+- [x] Update Terminal UI sidebar with chronological ordering
+- [x] Add favorite/unfavorite button to session items
+- [x] Add delete button to session items
+- [x] Add PDF download button
+- [ ] Test all session management features

@@ -11,6 +11,7 @@ import { Badge } from "@/components/ui/badge";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Textarea } from "@/components/ui/textarea";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger, DialogFooter } from "@/components/ui/dialog";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuSeparator } from "@/components/ui/dropdown-menu";
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
 import { toast } from "sonner";
@@ -35,6 +36,10 @@ import {
   CheckCircle,
   Clock,
   RefreshCw,
+  Star,
+  Download,
+  MoreVertical,
+  Undo2,
 } from "lucide-react";
 import { Link } from "wouter";
 import Header from "@/components/Header";
@@ -167,7 +172,7 @@ export default function Terminal() {
   
   const deleteSessionMutation = trpc.terminal.deleteSession.useMutation({
     onSuccess: () => {
-      toast.success("Session deleted");
+      toast.success("Session deleted permanently");
       sessionsQuery.refetch();
       if (currentSessionId) {
         setCurrentSessionId(null);
@@ -178,6 +183,108 @@ export default function Terminal() {
       toast.error(error.message);
     },
   });
+  
+  const toggleFavoriteMutation = trpc.terminal.toggleFavorite.useMutation({
+    onSuccess: (data) => {
+      toast.success(data.isFavorite ? "Added to favorites" : "Removed from favorites");
+      sessionsQuery.refetch();
+    },
+    onError: (error) => {
+      toast.error(error.message);
+    },
+  });
+  
+  const softDeleteMutation = trpc.terminal.softDeleteSession.useMutation({
+    onSuccess: () => {
+      toast.success("Session moved to trash");
+      sessionsQuery.refetch();
+      if (currentSessionId) {
+        setCurrentSessionId(null);
+        setMessages([]);
+      }
+    },
+    onError: (error) => {
+      toast.error(error.message);
+    },
+  });
+  
+  const restoreSessionMutation = trpc.terminal.restoreSession.useMutation({
+    onSuccess: () => {
+      toast.success("Session restored");
+      sessionsQuery.refetch();
+    },
+    onError: (error) => {
+      toast.error(error.message);
+    },
+  });
+  
+  const exportPDFQuery = trpc.terminal.exportSessionPDF.useQuery(
+    { sessionId: currentSessionId || "" },
+    { enabled: false }
+  );
+  
+  // Handle PDF export
+  const handleExportPDF = async () => {
+    if (!currentSessionId) return;
+    
+    try {
+      const result = await exportPDFQuery.refetch();
+      if (result.data) {
+        // Generate PDF content as HTML
+        const pdfData = result.data;
+        const htmlContent = `
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>${pdfData.title}</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 40px; line-height: 1.6; }
+    h1 { color: #1a365d; border-bottom: 2px solid #1a365d; padding-bottom: 10px; }
+    .meta { color: #666; margin-bottom: 20px; }
+    .message { margin: 20px 0; padding: 15px; border-radius: 8px; }
+    .user { background: #e3f2fd; border-left: 4px solid #1976d2; }
+    .assistant { background: #f5f5f5; border-left: 4px solid #4caf50; }
+    .role { font-weight: bold; margin-bottom: 5px; }
+    .timestamp { font-size: 12px; color: #999; }
+    .citations { margin-top: 10px; font-size: 12px; color: #666; }
+  </style>
+</head>
+<body>
+  <h1>${pdfData.title}</h1>
+  <div class="meta">
+    <p><strong>Client:</strong> ${pdfData.clientName}</p>
+    <p><strong>Practice Area:</strong> ${pdfData.practiceArea}</p>
+    <p><strong>Date:</strong> ${new Date(pdfData.sessionDate).toLocaleString()}</p>
+  </div>
+  ${pdfData.messages.map(m => `
+    <div class="message ${m.role}">
+      <div class="role">${m.role === 'user' ? 'User' : 'Assistant'}</div>
+      <div class="content">${m.content.replace(/\n/g, '<br>')}</div>
+      <div class="timestamp">${new Date(m.timestamp).toLocaleString()}</div>
+      ${m.citations && m.citations.length > 0 ? `<div class="citations">Citations: ${m.citations.map((c: any) => c.citation || c.type).join(', ')}</div>` : ''}
+    </div>
+  `).join('')}
+</body>
+</html>`;
+        
+        // Create blob and download
+        const blob = new Blob([htmlContent], { type: 'text/html' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `${pdfData.title.replace(/[^a-z0-9]/gi, '_')}_session.html`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+        
+        toast.success("Session exported successfully");
+      }
+    } catch (error) {
+      toast.error("Failed to export session");
+    }
+  };
   
   // Scroll to bottom when messages change
   useEffect(() => {
@@ -351,33 +458,73 @@ export default function Terminal() {
           {selectedIntakeId ? (
             sessionsQuery.data && sessionsQuery.data.length > 0 ? (
               <div className="space-y-1">
-                {sessionsQuery.data.map((session) => (
+                {sessionsQuery.data.map((session: any) => (
                   <div
                     key={session.id}
-                    className={`p-2 rounded-lg cursor-pointer flex items-center justify-between group ${
+                    className={`p-2 rounded-lg cursor-pointer flex items-center gap-2 group ${
                       currentSessionId === session.id
                         ? "bg-primary/10 text-primary"
                         : "hover:bg-gray-100 dark:hover:bg-gray-700"
                     }`}
                     onClick={() => loadSession(session.id)}
                   >
-                    <div className="truncate flex-1">
+                    {/* Favorite indicator */}
+                    {session.isFavorite && (
+                      <Star className="h-3 w-3 text-yellow-500 fill-yellow-500 flex-shrink-0" />
+                    )}
+                    
+                    <div className="truncate flex-1 min-w-0">
                       <p className="text-sm font-medium truncate">{session.title || "Untitled"}</p>
                       <p className="text-xs text-gray-500">
-                        {new Date(session.created_at).toLocaleDateString()}
+                        {new Date(session.createdAt || session.created_at).toLocaleDateString()}
                       </p>
                     </div>
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      className="h-6 w-6 opacity-0 group-hover:opacity-100"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        deleteSessionMutation.mutate({ sessionId: session.id });
-                      }}
-                    >
-                      <Trash2 className="h-3 w-3" />
-                    </Button>
+                    
+                    {/* Session actions dropdown */}
+                    <DropdownMenu>
+                      <DropdownMenuTrigger asChild>
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          className="h-6 w-6 opacity-0 group-hover:opacity-100 flex-shrink-0"
+                          onClick={(e) => e.stopPropagation()}
+                        >
+                          <MoreVertical className="h-3 w-3" />
+                        </Button>
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent align="end" className="w-40">
+                        <DropdownMenuItem
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            toggleFavoriteMutation.mutate({ sessionId: session.id });
+                          }}
+                        >
+                          <Star className={`h-4 w-4 mr-2 ${session.isFavorite ? 'fill-yellow-500 text-yellow-500' : ''}`} />
+                          {session.isFavorite ? 'Unfavorite' : 'Favorite'}
+                        </DropdownMenuItem>
+                        <DropdownMenuItem
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            loadSession(session.id);
+                            handleExportPDF();
+                          }}
+                        >
+                          <Download className="h-4 w-4 mr-2" />
+                          Export PDF
+                        </DropdownMenuItem>
+                        <DropdownMenuSeparator />
+                        <DropdownMenuItem
+                          className="text-red-600"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            softDeleteMutation.mutate({ sessionId: session.id });
+                          }}
+                        >
+                          <Trash2 className="h-4 w-4 mr-2" />
+                          Delete
+                        </DropdownMenuItem>
+                      </DropdownMenuContent>
+                    </DropdownMenu>
                   </div>
                 ))}
               </div>
@@ -491,6 +638,16 @@ export default function Terminal() {
                 )}
                 Process Uploads
               </Button>
+              {currentSessionId && (
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={handleExportPDF}
+                >
+                  <Download className="h-4 w-4 mr-2" />
+                  Export Session
+                </Button>
+              )}
               <Button variant="outline" size="sm" asChild>
                 <Link href="/admin">
                   <ChevronRight className="h-4 w-4 mr-1" />

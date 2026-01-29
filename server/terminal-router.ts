@@ -302,6 +302,7 @@ Guidelines:
     .input(z.object({
       intakeId: z.number().optional(),
       limit: z.number().min(1).max(50).default(20),
+      includeDeleted: z.boolean().default(false),
     }))
     .query(async ({ input, ctx }) => {
       const supabase = getSupabaseAdmin();
@@ -311,8 +312,14 @@ Guidelines:
         .from("terminal_sessions")
         .select("*")
         .eq("user_id", userId)
+        .order("is_favorite", { ascending: false })
         .order("updated_at", { ascending: false })
         .limit(input.limit);
+      
+      // Filter out soft-deleted sessions unless explicitly requested
+      if (!input.includeDeleted) {
+        query = query.is("deleted_at", null);
+      }
       
       if (input.intakeId) {
         query = query.eq("intake_id", input.intakeId);
@@ -325,7 +332,14 @@ Guidelines:
         return [];
       }
       
-      return sessions || [];
+      return (sessions || []).map(s => ({
+        ...s,
+        isFavorite: s.is_favorite || false,
+        deletedAt: s.deleted_at,
+        intakeId: s.intake_id,
+        createdAt: s.created_at,
+        updatedAt: s.updated_at,
+      }));
     }),
 
   /**
@@ -678,6 +692,294 @@ Guidelines:
           file_name: u.file_name,
         })),
       };
+    }),
+
+  /**
+   * Toggle favorite status for a session
+   */
+  toggleFavorite: adminProcedure
+    .input(z.object({
+      sessionId: z.string().uuid(),
+    }))
+    .mutation(async ({ input, ctx }) => {
+      const supabase = getSupabaseAdmin();
+      const userId = String(ctx.user.id);
+      
+      // Get current favorite status
+      const { data: sessions } = await supabase
+        .from("terminal_sessions")
+        .select("is_favorite")
+        .eq("id", input.sessionId)
+        .eq("user_id", userId)
+        .limit(1);
+      
+      if (!sessions || sessions.length === 0) {
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "Session not found",
+        });
+      }
+      
+      const newFavoriteStatus = !sessions[0].is_favorite;
+      
+      const { error } = await supabase
+        .from("terminal_sessions")
+        .update({ is_favorite: newFavoriteStatus })
+        .eq("id", input.sessionId)
+        .eq("user_id", userId);
+      
+      if (error) {
+        throw new TRPCError({
+          code: "INTERNAL_SERVER_ERROR",
+          message: "Failed to update favorite status",
+        });
+      }
+      
+      return { success: true, isFavorite: newFavoriteStatus };
+    }),
+
+  /**
+   * Soft delete a session (sets deleted_at timestamp)
+   */
+  softDeleteSession: adminProcedure
+    .input(z.object({
+      sessionId: z.string().uuid(),
+    }))
+    .mutation(async ({ input, ctx }) => {
+      const supabase = getSupabaseAdmin();
+      const userId = String(ctx.user.id);
+      
+      const { error } = await supabase
+        .from("terminal_sessions")
+        .update({ deleted_at: new Date().toISOString() })
+        .eq("id", input.sessionId)
+        .eq("user_id", userId);
+      
+      if (error) {
+        throw new TRPCError({
+          code: "INTERNAL_SERVER_ERROR",
+          message: "Failed to delete session",
+        });
+      }
+      
+      return { success: true };
+    }),
+
+  /**
+   * Restore a soft-deleted session
+   */
+  restoreSession: adminProcedure
+    .input(z.object({
+      sessionId: z.string().uuid(),
+    }))
+    .mutation(async ({ input, ctx }) => {
+      const supabase = getSupabaseAdmin();
+      const userId = String(ctx.user.id);
+      
+      const { error } = await supabase
+        .from("terminal_sessions")
+        .update({ deleted_at: null })
+        .eq("id", input.sessionId)
+        .eq("user_id", userId);
+      
+      if (error) {
+        throw new TRPCError({
+          code: "INTERNAL_SERVER_ERROR",
+          message: "Failed to restore session",
+        });
+      }
+      
+      return { success: true };
+    }),
+
+  /**
+   * Export session as PDF data (returns HTML content for PDF generation)
+   */
+  exportSessionPDF: adminProcedure
+    .input(z.object({
+      sessionId: z.string().uuid(),
+    }))
+    .query(async ({ input, ctx }) => {
+      const supabase = getSupabaseAdmin();
+      const userId = String(ctx.user.id);
+      
+      // Get session
+      const { data: sessions } = await supabase
+        .from("terminal_sessions")
+        .select("*")
+        .eq("id", input.sessionId)
+        .eq("user_id", userId)
+        .limit(1);
+      
+      if (!sessions || sessions.length === 0) {
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "Session not found",
+        });
+      }
+      
+      const session = sessions[0];
+      
+      // Get intake info
+      const { data: intakes } = await supabase
+        .from("intakes")
+        .select("first_name, last_name, practice_area")
+        .eq("id", session.intake_id)
+        .limit(1);
+      
+      const intake = intakes?.[0];
+      const clientName = intake ? `${intake.first_name || ''} ${intake.last_name || ''}`.trim() : `Intake #${session.intake_id}`;
+      
+      // Get messages
+      const { data: messages } = await supabase
+        .from("terminal_messages")
+        .select("*")
+        .eq("session_id", input.sessionId)
+        .order("created_at", { ascending: true });
+      
+      // Build PDF content
+      const pdfContent = {
+        title: session.title || "Terminal Session",
+        clientName,
+        practiceArea: intake?.practice_area || "Unknown",
+        sessionDate: session.created_at,
+        messages: (messages || []).map(m => ({
+          role: m.role,
+          content: m.content,
+          timestamp: m.created_at,
+          citations: m.citations || [],
+        })),
+      };
+      
+      return pdfContent;
+    }),
+
+  /**
+   * Commit session summary to case memory
+   */
+  commitToCaseMemory: adminProcedure
+    .input(z.object({
+      sessionId: z.string().uuid(),
+      title: z.string().min(1).max(500),
+      summary: z.string().optional(),
+    }))
+    .mutation(async ({ input, ctx }) => {
+      const supabase = getSupabaseAdmin();
+      const userId = String(ctx.user.id);
+      
+      // Get session
+      const { data: sessions } = await supabase
+        .from("terminal_sessions")
+        .select("*")
+        .eq("id", input.sessionId)
+        .eq("user_id", userId)
+        .limit(1);
+      
+      if (!sessions || sessions.length === 0) {
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "Session not found",
+        });
+      }
+      
+      const session = sessions[0];
+      
+      // Get all messages to build summary
+      const { data: messages } = await supabase
+        .from("terminal_messages")
+        .select("*")
+        .eq("session_id", input.sessionId)
+        .order("created_at", { ascending: true });
+      
+      // Extract key facts and citations from messages
+      const allCitations: Citation[] = [];
+      const keyFacts: string[] = [];
+      const legalIssues: string[] = [];
+      
+      (messages || []).forEach(m => {
+        if (m.citations) {
+          allCitations.push(...(m.citations as Citation[]));
+        }
+        // Extract key facts from assistant messages
+        if (m.role === "assistant" && m.content) {
+          const factMatches = m.content.match(/key fact[s]?:?\s*([^\n]+)/gi);
+          if (factMatches) {
+            keyFacts.push(...factMatches.map((f: string) => f.replace(/key fact[s]?:?\s*/i, '')));
+          }
+          const issueMatches = m.content.match(/legal issue[s]?:?\s*([^\n]+)/gi);
+          if (issueMatches) {
+            legalIssues.push(...issueMatches.map((i: string) => i.replace(/legal issue[s]?:?\s*/i, '')));
+          }
+        }
+      });
+      
+      // Build summary content if not provided
+      let summaryContent = input.summary;
+      if (!summaryContent) {
+        const assistantMessages = (messages || []).filter(m => m.role === "assistant");
+        summaryContent = assistantMessages.map(m => m.content).join("\n\n");
+      }
+      
+      // Insert into case_memory
+      const { data, error } = await supabase
+        .from("case_memory")
+        .insert({
+          intake_id: session.intake_id,
+          session_id: input.sessionId,
+          memory_type: "session_summary",
+          title: input.title,
+          content: summaryContent,
+          key_facts: keyFacts,
+          legal_issues: legalIssues,
+          citations: allCitations,
+          created_by: userId,
+        })
+        .select()
+        .single();
+      
+      if (error) {
+        console.error("Failed to commit to case memory:", error);
+        throw new TRPCError({
+          code: "INTERNAL_SERVER_ERROR",
+          message: "Failed to commit to case memory",
+        });
+      }
+      
+      return { success: true, memoryId: data.id };
+    }),
+
+  /**
+   * Get case memory entries for an intake
+   */
+  getCaseMemory: adminProcedure
+    .input(z.object({
+      intakeId: z.number(),
+      limit: z.number().min(1).max(100).default(50),
+    }))
+    .query(async ({ input, ctx }) => {
+      const supabase = getSupabaseAdmin();
+      
+      const hasAccess = await verifyIntakeAccess(input.intakeId, ctx.user.id, ctx.user.role || "user");
+      if (!hasAccess) {
+        throw new TRPCError({
+          code: "FORBIDDEN",
+          message: "You do not have access to this intake",
+        });
+      }
+      
+      const { data: memories, error } = await supabase
+        .from("case_memory")
+        .select("*")
+        .eq("intake_id", input.intakeId)
+        .order("created_at", { ascending: false })
+        .limit(input.limit);
+      
+      if (error) {
+        console.error("Failed to get case memory:", error);
+        return [];
+      }
+      
+      return memories || [];
     }),
 
   /**
