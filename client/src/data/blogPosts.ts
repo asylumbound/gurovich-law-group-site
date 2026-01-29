@@ -138,7 +138,7 @@ If you are facing criminal charges in California, contact us today for a free, c
     category: "Criminal Defense",
     author: "Gurovich Law Group",
     readTime: "7 min read",
-    image: "/images/blog/criminal-accusation.jpg"
+    image: "/images/blog-accused-crime.png"
   },
   {
     id: "4",
