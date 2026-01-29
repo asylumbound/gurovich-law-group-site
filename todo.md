@@ -103,3 +103,10 @@
 - [ ] Add FAQ schema markup to Tenant Rights page (not in current data)
 - [x] Add 5 Tenant Rights FAQs with schema markup
 - [x] Add Google Search Console verification meta tag
+
+## System Assessment
+- [ ] Analyze project structure and technology stack
+- [ ] Map sitemap and page hierarchy
+- [ ] Document database schema and API endpoints
+- [ ] Create system assessment Markdown report
+- [ ] Generate visual architecture diagram

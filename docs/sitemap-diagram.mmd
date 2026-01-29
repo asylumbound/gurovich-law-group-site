@@ -1,0 +1,33 @@
+flowchart TD
+    ROOT["gurovich.law"]
+    
+    ROOT --> HOME["/ Home"]
+    ROOT --> ABOUT["/about About Us"]
+    ROOT --> PRACTICE["/practice-areas"]
+    ROOT --> TEAM["/team Our Team"]
+    ROOT --> REVIEWS["/reviews"]
+    ROOT --> BLOG["/blog"]
+    ROOT --> CONTACT["/contact"]
+    ROOT --> INTAKE["/onboarding"]
+    ROOT --> LEGAL["Legal Pages"]
+    ROOT --> ADMIN["/admin Protected"]
+    
+    PRACTICE --> PI["/personal-injury"]
+    PRACTICE --> CD["/criminal-defense"]
+    PRACTICE --> EL["/employment-law"]
+    PRACTICE --> TR["/tenant-rights"]
+    PRACTICE --> CL["/civil-litigation"]
+    
+    PI --> PI_SUB["Subpages"]
+    CD --> CD_SUB["Subpages"]
+    EL --> EL_SUB["Subpages"]
+    TR --> TR_SUB["Subpages"]
+    CL --> CL_SUB["Subpages"]
+    
+    BLOG --> BLOG_POST["/blog/slug"]
+    
+    INTAKE --> SUCCESS["/onboarding/success"]
+    
+    LEGAL --> PRIVACY["/privacy"]
+    LEGAL --> TERMS["/terms"]
+    LEGAL --> DISCLAIMER["/disclaimer"]

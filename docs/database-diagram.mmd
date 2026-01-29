@@ -1,0 +1,77 @@
+erDiagram
+    intakes ||--o{ intake_notes : has
+    intakes ||--o{ intake_uploads : has
+    intakes ||--o{ intake_parties : has
+    intakes ||--o| intake_pi_details : has
+    intakes ||--o| intake_criminal_details : has
+    intakes ||--o| intake_employment_details : has
+    intakes ||--o| intake_tenant_details : has
+    intakes ||--o| intake_civil_details : has
+    intakes }o--|| issue_types : references
+    
+    intakes {
+        int id PK
+        string draft_token
+        enum status
+        string first_name
+        string last_name
+        string phone
+        string email
+        string city
+        string state
+        enum practice_area
+        int issue_type_id FK
+        enum urgency
+        text summary
+        date incident_date
+        boolean has_documents
+        timestamp created_at
+        timestamp updated_at
+    }
+    
+    intake_notes {
+        int id PK
+        int intake_id FK
+        string author_name
+        text content
+        timestamp created_at
+    }
+    
+    intake_uploads {
+        int id PK
+        int intake_id FK
+        string storage_bucket
+        string storage_path
+        string file_name
+        int file_size
+        string mime_type
+        enum tag
+        timestamp created_at
+    }
+    
+    intake_parties {
+        int id PK
+        int intake_id FK
+        enum party_type
+        enum party_role
+        string name
+        string phone
+        string email
+    }
+    
+    issue_types {
+        int id PK
+        enum practice_area
+        string name
+        text description
+    }
+    
+    users {
+        int id PK
+        string openId
+        string name
+        string email
+        enum role
+        timestamp createdAt
+        timestamp lastSignedIn
+    }

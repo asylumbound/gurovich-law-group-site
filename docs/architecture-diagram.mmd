@@ -1,0 +1,52 @@
+flowchart TB
+    subgraph CLIENT["CLIENT LAYER"]
+        direction LR
+        REACT["React 19 + TypeScript"]
+        TAILWIND["Tailwind CSS 4"]
+        WOUTER["Wouter Router"]
+        TRPC_C["tRPC Client"]
+    end
+    
+    subgraph PAGES["PUBLIC PAGES"]
+        direction LR
+        HOME["Home"]
+        PRACTICE["Practice Areas"]
+        INTAKE["Client Intake"]
+        BLOG["Blog"]
+        CONTACT["Contact"]
+    end
+    
+    subgraph SERVER["SERVER LAYER"]
+        direction LR
+        EXPRESS["Express.js"]
+        TRPC_S["tRPC Server"]
+        ZOD["Zod Validation"]
+    end
+    
+    subgraph API["API ROUTERS"]
+        direction LR
+        AUTH["auth.*"]
+        ONBOARD["onboard.*"]
+        ADMIN["admin.*"]
+    end
+    
+    subgraph DATA["DATA LAYER"]
+        direction LR
+        POSTGRES["Supabase PostgreSQL"]
+        STORAGE["Supabase Storage"]
+    end
+    
+    subgraph TABLES["DATABASE TABLES"]
+        direction LR
+        INTAKES["intakes"]
+        NOTES["intake_notes"]
+        UPLOADS["intake_uploads"]
+        ISSUES["issue_types"]
+    end
+    
+    CLIENT --> PAGES
+    PAGES --> SERVER
+    SERVER --> API
+    API --> DATA
+    DATA --> TABLES
+    STORAGE --> FILES["clients/intake_id/files"]
