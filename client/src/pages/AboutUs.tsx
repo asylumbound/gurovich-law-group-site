@@ -146,13 +146,12 @@ export default function AboutUs() {
                 transition={{ duration: 0.6, delay: 0.2 }}
                 className="relative"
               >
-                <div className="aspect-[4/3] bg-gradient-to-br from-secondary to-secondary/80 rounded-lg overflow-hidden shadow-xl">
-                  <div className="absolute inset-0 flex items-center justify-center">
-                    <Scale className="h-32 w-32 text-primary/20" />
-                  </div>
-                  {/* Decorative elements */}
-                  <div className="absolute top-4 right-4 w-20 h-20 border-2 border-primary/30 rounded-lg" />
-                  <div className="absolute bottom-4 left-4 w-16 h-16 bg-primary/10 rounded-lg" />
+                <div className="aspect-[4/3] rounded-lg overflow-hidden shadow-xl">
+                  <img 
+                    src="/images/aboutus-courtroom.png" 
+                    alt="Attorney presenting case in courtroom before judge" 
+                    className="w-full h-full object-cover"
+                  />
                 </div>
                 {/* Stats overlay */}
                 <div className="absolute -bottom-6 -left-6 bg-primary text-primary-foreground p-6 rounded-lg shadow-lg">

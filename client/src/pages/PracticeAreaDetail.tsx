@@ -6,7 +6,9 @@
  */
 
 import { Link, useParams } from "wouter";
+import { useEffect } from "react";
 import { getPracticeAreaBySlug } from "@/data/practiceAreas";
+import { generateFAQSchema, getFAQsBySlug } from "@/data/practiceAreaFAQs";
 import { Shield, Scale, Briefcase, Gavel, ArrowRight, Phone, ChevronRight, FileText } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useContactModal } from "@/contexts/ContactModalContext";
@@ -22,6 +24,30 @@ export default function PracticeAreaDetail() {
   const params = useParams<{ area: string }>();
   const area = getPracticeAreaBySlug(params.area || "");
   const { openContactModal } = useContactModal();
+  const faqs = getFAQsBySlug(params.area || "");
+  const faqSchema = generateFAQSchema(params.area || "");
+
+  // Inject FAQ schema into head
+  useEffect(() => {
+    if (!faqSchema) return;
+    
+    // Remove any existing FAQ schema
+    const existingScript = document.querySelector('script[data-faq-schema]');
+    if (existingScript) {
+      existingScript.remove();
+    }
+    
+    // Add new FAQ schema
+    const script = document.createElement('script');
+    script.type = 'application/ld+json';
+    script.setAttribute('data-faq-schema', 'true');
+    script.textContent = faqSchema;
+    document.head.appendChild(script);
+    
+    return () => {
+      script.remove();
+    };
+  }, [faqSchema]);
 
   if (!area) {
     return (
@@ -182,6 +208,29 @@ export default function PracticeAreaDetail() {
           </div>
         </div>
       </section>
+
+      {/* FAQ Section */}
+      {faqs && faqs.length > 0 && (
+        <section className="py-16 md:py-20 bg-slate-50">
+          <div className="container max-w-4xl">
+            <h2 className="text-3xl md:text-4xl font-bold text-slate-900 mb-8 text-center">
+              Frequently Asked Questions
+            </h2>
+            <div className="space-y-6">
+              {faqs.map((faq, index) => (
+                <div key={index} className="bg-white rounded-xl shadow-md p-6">
+                  <h3 className="text-lg font-semibold text-slate-900 mb-3">
+                    {faq.question}
+                  </h3>
+                  <p className="text-slate-600 leading-relaxed">
+                    {faq.answer}
+                  </p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
     </main>
   );
 }

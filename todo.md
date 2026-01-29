@@ -93,3 +93,11 @@
 - [x] Add JSON-LD structured data for Attorney schema
 - [x] Create sitemap.xml with all 15 pages
 - [x] Create robots.txt with sitemap reference and admin exclusion
+
+## About Page Image & FAQ Schema
+- [x] Add courtroom image to About page story marquee
+- [x] Add FAQ schema markup to Personal Injury page (5 FAQs)
+- [x] Add FAQ schema markup to Criminal Defense page (5 FAQs)
+- [x] Add FAQ schema markup to Employment Law page (5 FAQs)
+- [x] Add FAQ schema markup to Civil Litigation page (5 FAQs)
+- [ ] Add FAQ schema markup to Tenant Rights page (not in current data)
