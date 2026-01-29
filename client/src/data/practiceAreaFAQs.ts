@@ -92,6 +92,56 @@ export const practiceAreaFAQs: PracticeAreaFAQs[] = [
     ]
   },
   {
+    slug: "tenant-rights",
+    faqs: [
+      {
+        question: "What are my rights as a tenant in California?",
+        answer: "California tenants have extensive rights including the right to a habitable dwelling, protection from illegal evictions, security deposit limits and return requirements, privacy rights limiting landlord entry, protection from discrimination, and the right to organize. Landlords must maintain properties in safe, sanitary conditions and follow strict legal procedures for any eviction."
+      },
+      {
+        question: "Can my landlord evict me without cause in California?",
+        answer: "It depends on your situation. Under California's Tenant Protection Act (AB 1482), most tenants who have lived in their unit for over 12 months are protected from no-cause evictions. Landlords must have 'just cause' to evict, such as non-payment of rent, lease violations, or owner move-in. However, some properties are exempt, including single-family homes (with certain disclosures) and newer buildings."
+      },
+      {
+        question: "How much can my landlord raise my rent in California?",
+        answer: "Under the Tenant Protection Act, annual rent increases are capped at 5% plus local inflation, or 10% maximum, whichever is lower. Some cities like Los Angeles and San Francisco have additional rent control ordinances with stricter limits. Exempt properties may have no cap on rent increases. Always check if your unit is covered by state or local rent control laws."
+      },
+      {
+        question: "What can I do if my landlord won't make repairs?",
+        answer: "California law requires landlords to maintain habitable conditions. If repairs aren't made, you can: 1) Send written notice documenting the issues, 2) Contact local housing code enforcement, 3) Use 'repair and deduct' for minor repairs (up to one month's rent), 4) Withhold rent in an escrow account for serious habitability issues, or 5) Sue for damages. Document everything and consult an attorney before withholding rent."
+      },
+      {
+        question: "How long does my landlord have to return my security deposit?",
+        answer: "California landlords must return security deposits within 21 days after you move out. They must provide an itemized statement of any deductions for unpaid rent, cleaning beyond normal wear and tear, or repairs for damage you caused. Security deposits are capped at two months' rent for unfurnished units and three months for furnished. If your landlord fails to comply, you may be entitled to up to twice the deposit amount in damages."
+      }
+    ]
+  },
+  {
+    slug: "landlord-tenant-disputes",
+    faqs: [
+      {
+        question: "What are my rights as a tenant in California?",
+        answer: "California tenants have extensive rights including the right to a habitable dwelling, protection from illegal evictions, security deposit limits and return requirements, privacy rights limiting landlord entry, protection from discrimination, and the right to organize. Landlords must maintain properties in safe, sanitary conditions and follow strict legal procedures for any eviction."
+      },
+      {
+        question: "Can my landlord evict me without cause in California?",
+        answer: "It depends on your situation. Under California's Tenant Protection Act (AB 1482), most tenants who have lived in their unit for over 12 months are protected from no-cause evictions. Landlords must have 'just cause' to evict, such as non-payment of rent, lease violations, or owner move-in. However, some properties are exempt, including single-family homes (with certain disclosures) and newer buildings."
+      },
+      {
+        question: "How much can my landlord raise my rent in California?",
+        answer: "Under the Tenant Protection Act, annual rent increases are capped at 5% plus local inflation, or 10% maximum, whichever is lower. Some cities like Los Angeles and San Francisco have additional rent control ordinances with stricter limits. Exempt properties may have no cap on rent increases. Always check if your unit is covered by state or local rent control laws."
+      },
+      {
+        question: "What can I do if my landlord won't make repairs?",
+        answer: "California law requires landlords to maintain habitable conditions. If repairs aren't made, you can: 1) Send written notice documenting the issues, 2) Contact local housing code enforcement, 3) Use 'repair and deduct' for minor repairs (up to one month's rent), 4) Withhold rent in an escrow account for serious habitability issues, or 5) Sue for damages. Document everything and consult an attorney before withholding rent."
+      },
+      {
+        question: "How long does my landlord have to return my security deposit?",
+        answer: "California landlords must return security deposits within 21 days after you move out. They must provide an itemized statement of any deductions for unpaid rent, cleaning beyond normal wear and tear, or repairs for damage you caused. Security deposits are capped at two months' rent for unfurnished units and three months for furnished. If your landlord fails to comply, you may be entitled to up to twice the deposit amount in damages."
+      }
+    ]
+  },
+  {
     slug: "civil-litigation",
     faqs: [
       {

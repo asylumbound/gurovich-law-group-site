@@ -101,3 +101,4 @@
 - [x] Add FAQ schema markup to Employment Law page (5 FAQs)
 - [x] Add FAQ schema markup to Civil Litigation page (5 FAQs)
 - [ ] Add FAQ schema markup to Tenant Rights page (not in current data)
+- [x] Add 5 Tenant Rights FAQs with schema markup
