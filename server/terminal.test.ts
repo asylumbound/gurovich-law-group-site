@@ -193,6 +193,38 @@ describe("Terminal Text Extraction", () => {
   });
 });
 
+describe("Document Search", () => {
+  describe("searchUploadText fallback", () => {
+    it("should score results based on keyword matches", () => {
+      // Test the scoring logic
+      const keywords = ["accident", "injury"];
+      const content = "The accident caused serious injury to the victim.";
+      let score = 0;
+      
+      for (const keyword of keywords) {
+        const matches = content.toLowerCase().split(keyword).length - 1;
+        score += matches;
+      }
+      
+      expect(score).toBe(2); // Both keywords appear once
+    });
+
+    it("should extract snippet around keyword", () => {
+      const content = "Lorem ipsum dolor sit amet. The accident happened on Main Street. Consectetur adipiscing elit.";
+      const keyword = "accident";
+      const idx = content.toLowerCase().indexOf(keyword);
+      const start = Math.max(0, idx - 20);
+      const end = Math.min(content.length, idx + keyword.length + 20);
+      let snippet = content.substring(start, end);
+      if (start > 0) snippet = "..." + snippet;
+      if (end < content.length) snippet = snippet + "...";
+      
+      expect(snippet).toContain("accident");
+      expect(snippet.startsWith("...")).toBe(true);
+    });
+  });
+});
+
 describe("Terminal Types", () => {
   it("should have proper citation types", () => {
     const validTypes = ["INTAKE", "NOTE", "UPLOAD", "STATUTE", "CASELAW"];

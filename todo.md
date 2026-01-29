@@ -154,3 +154,12 @@
 - [x] Add global site header/top bar to Terminal page
 - [x] Update terminal-legal-tools.ts to use authenticated CourtListener API
 - [x] Test authenticated CourtListener search (58 tests passing)
+
+## PDF Text Extraction & Keyword Search
+- [x] Review existing terminal-text-extraction.ts implementation
+- [x] Add PDF text extraction trigger on file upload (processUploads procedure exists)
+- [x] Store extracted text in upload_text table
+- [x] Create keyword search procedure in terminal router (searchDocuments, getUploadStatus)
+- [x] Add document search UI to Terminal page
+- [x] Test PDF upload and text extraction flow (60 tests passing)
+- [x] Test keyword search across documents

@@ -616,6 +616,83 @@ Respond in markdown format. Be concise but thorough.`;
     }),
 
   /**
+   * Search documents for keywords
+   */
+  searchDocuments: adminProcedure
+    .input(z.object({
+      intakeId: z.number(),
+      query: z.string().min(1).max(500),
+      limit: z.number().min(1).max(20).default(10),
+    }))
+    .query(async ({ input, ctx }) => {
+      const hasAccess = await verifyIntakeAccess(input.intakeId, ctx.user.id, ctx.user.role || "user");
+      if (!hasAccess) {
+        throw new TRPCError({
+          code: "FORBIDDEN",
+          message: "You do not have access to this intake",
+        });
+      }
+      
+      const results = await searchUploadText(input.intakeId, input.query, input.limit);
+      return results;
+    }),
+
+  /**
+   * Get upload processing status for an intake
+   */
+  getUploadStatus: adminProcedure
+    .input(z.object({
+      intakeId: z.number(),
+    }))
+    .query(async ({ input, ctx }) => {
+      const supabase = getSupabaseAdmin();
+      
+      const hasAccess = await verifyIntakeAccess(input.intakeId, ctx.user.id, ctx.user.role || "user");
+      if (!hasAccess) {
+        throw new TRPCError({
+          code: "FORBIDDEN",
+          message: "You do not have access to this intake",
+        });
+      }
+      
+      // Get all uploads for intake
+      const { data: uploads } = await supabase
+        .from("intake_uploads")
+        .select("id, file_name, mime_type, file_size")
+        .eq("intake_id", input.intakeId);
+      
+      if (!uploads || uploads.length === 0) {
+        return { total: 0, processed: 0, pending: 0, uploads: [] };
+      }
+      
+      // Get which uploads have been processed
+      const { data: processedUploads } = await supabase
+        .from("upload_text")
+        .select("upload_id, word_count")
+        .eq("intake_id", input.intakeId);
+      
+      const processedMap = new Map(
+        (processedUploads || []).map(p => [p.upload_id, p.word_count])
+      );
+      
+      const uploadStatus = uploads.map(u => ({
+        id: u.id,
+        fileName: u.file_name,
+        mimeType: u.mime_type,
+        fileSize: u.file_size,
+        processed: processedMap.has(u.id),
+        wordCount: processedMap.get(u.id) || 0,
+      }));
+      
+      return {
+        total: uploads.length,
+        processed: processedUploads?.length || 0,
+        pending: uploads.length - (processedUploads?.length || 0),
+        uploads: uploadStatus,
+      };
+    }),
+
+  /**
    * Get list of intakes for dropdown (simplified)
    */
   getIntakeList: adminProcedure

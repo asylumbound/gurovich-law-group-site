@@ -80,6 +80,8 @@ export default function Terminal() {
   const [isQuerying, setIsQuerying] = useState(false);
   const [intakeSearch, setIntakeSearch] = useState("");
   const [showCitations, setShowCitations] = useState(true);
+  const [showDocSearch, setShowDocSearch] = useState(false);
+  const [docSearchQuery, setDocSearchQuery] = useState("");
   
   // Static password protection
   const [isAdminAuthenticated, setIsAdminAuthenticated] = useState(() => {
@@ -144,11 +146,24 @@ export default function Terminal() {
   const processUploadsMutation = trpc.terminal.processUploads.useMutation({
     onSuccess: (data) => {
       toast.success(`Processed ${data.processed} files (${data.failed} failed)`);
+      uploadStatusQuery.refetch();
     },
     onError: (error) => {
       toast.error(error.message);
     },
   });
+  
+  // Upload status query
+  const uploadStatusQuery = trpc.terminal.getUploadStatus.useQuery(
+    { intakeId: selectedIntakeId! },
+    { enabled: isAdminAuthenticated && !!selectedIntakeId }
+  );
+  
+  // Document search query
+  const docSearchResults = trpc.terminal.searchDocuments.useQuery(
+    { intakeId: selectedIntakeId!, query: docSearchQuery, limit: 10 },
+    { enabled: isAdminAuthenticated && !!selectedIntakeId && docSearchQuery.length >= 2 }
+  );
   
   const deleteSessionMutation = trpc.terminal.deleteSession.useMutation({
     onSuccess: () => {
@@ -439,6 +454,26 @@ export default function Terminal() {
             </div>
             
             <div className="flex items-center gap-2">
+              {/* Upload Status Badge */}
+              {uploadStatusQuery.data && selectedIntakeId && (
+                <Badge 
+                  variant={uploadStatusQuery.data.pending > 0 ? "secondary" : "outline"}
+                  className="cursor-pointer"
+                  onClick={() => setShowDocSearch(!showDocSearch)}
+                >
+                  <FileText className="h-3 w-3 mr-1" />
+                  {uploadStatusQuery.data.processed}/{uploadStatusQuery.data.total} docs indexed
+                </Badge>
+              )}
+              <Button
+                variant={showDocSearch ? "default" : "outline"}
+                size="sm"
+                onClick={() => setShowDocSearch(!showDocSearch)}
+                disabled={!selectedIntakeId}
+              >
+                <Search className="h-4 w-4 mr-2" />
+                Search Docs
+              </Button>
               <Button
                 variant="outline"
                 size="sm"
@@ -461,6 +496,133 @@ export default function Terminal() {
             </div>
           </div>
         </div>
+        
+        {/* Document Search Panel */}
+        {showDocSearch && selectedIntakeId && (
+          <div className="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 p-4">
+            <div className="max-w-4xl mx-auto">
+              <div className="flex items-center gap-4 mb-4">
+                <div className="flex-1">
+                  <Input
+                    placeholder="Search documents by keyword..."
+                    value={docSearchQuery}
+                    onChange={(e) => setDocSearchQuery(e.target.value)}
+                    className="w-full"
+                  />
+                </div>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => {
+                    setShowDocSearch(false);
+                    setDocSearchQuery("");
+                  }}
+                >
+                  Close
+                </Button>
+              </div>
+              
+              {/* Upload Status */}
+              {uploadStatusQuery.data && (
+                <div className="mb-4 p-3 bg-gray-50 dark:bg-gray-900 rounded-lg">
+                  <div className="flex items-center justify-between text-sm">
+                    <span className="text-gray-600 dark:text-gray-400">
+                      {uploadStatusQuery.data.total} documents total | 
+                      {uploadStatusQuery.data.processed} indexed | 
+                      {uploadStatusQuery.data.pending} pending
+                    </span>
+                    {uploadStatusQuery.data.pending > 0 && (
+                      <Button
+                        variant="link"
+                        size="sm"
+                        onClick={() => processUploadsMutation.mutate({ intakeId: selectedIntakeId })}
+                        disabled={processUploadsMutation.isPending}
+                      >
+                        {processUploadsMutation.isPending ? "Processing..." : "Index pending docs"}
+                      </Button>
+                    )}
+                  </div>
+                  
+                  {/* Document List */}
+                  {uploadStatusQuery.data.uploads.length > 0 && (
+                    <div className="mt-2 space-y-1">
+                      {uploadStatusQuery.data.uploads.map((upload) => (
+                        <div key={upload.id} className="flex items-center gap-2 text-xs">
+                          <FileText className="h-3 w-3 text-gray-400" />
+                          <span className="truncate flex-1">{upload.fileName}</span>
+                          <span className="text-gray-400">
+                            {Math.round(upload.fileSize / 1024)}KB
+                          </span>
+                          {upload.processed ? (
+                            <Badge variant="outline" className="text-xs">
+                              <CheckCircle className="h-2 w-2 mr-1 text-green-500" />
+                              {upload.wordCount} words
+                            </Badge>
+                          ) : (
+                            <Badge variant="secondary" className="text-xs">
+                              <Clock className="h-2 w-2 mr-1" />
+                              Pending
+                            </Badge>
+                          )}
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              )}
+              
+              {/* Search Results */}
+              {docSearchQuery.length >= 2 && (
+                <div className="space-y-2">
+                  {docSearchResults.isLoading ? (
+                    <div className="flex items-center justify-center py-4">
+                      <Loader2 className="h-5 w-5 animate-spin text-gray-400" />
+                    </div>
+                  ) : docSearchResults.data && docSearchResults.data.length > 0 ? (
+                    <>
+                      <p className="text-sm text-gray-500 mb-2">
+                        Found {docSearchResults.data.length} results for "{docSearchQuery}"
+                      </p>
+                      {docSearchResults.data.map((result, idx) => (
+                        <Card key={idx} className="p-3">
+                          <div className="flex items-start gap-2">
+                            <FileText className="h-4 w-4 text-green-600 mt-1 flex-shrink-0" />
+                            <div className="flex-1 min-w-0">
+                              <p className="font-medium text-sm truncate">{result.file_name}</p>
+                              <p className="text-xs text-gray-600 dark:text-gray-400 mt-1 line-clamp-3">
+                                {result.snippet}
+                              </p>
+                              <div className="flex items-center gap-2 mt-2">
+                                <Badge variant="outline" className="text-xs">
+                                  Relevance: {result.rank}
+                                </Badge>
+                                <Button
+                                  variant="link"
+                                  size="sm"
+                                  className="text-xs h-auto p-0"
+                                  onClick={() => {
+                                    setInputValue(`What does the document "${result.file_name}" say about ${docSearchQuery}?`);
+                                    setShowDocSearch(false);
+                                  }}
+                                >
+                                  Ask about this →
+                                </Button>
+                              </div>
+                            </div>
+                          </div>
+                        </Card>
+                      ))}
+                    </>
+                  ) : docSearchResults.data?.length === 0 ? (
+                    <p className="text-sm text-gray-500 text-center py-4">
+                      No results found for "{docSearchQuery}"
+                    </p>
+                  ) : null}
+                </div>
+              )}
+            </div>
+          </div>
+        )}
         
         {/* Chat Area */}
         <div className="flex-1 flex">
