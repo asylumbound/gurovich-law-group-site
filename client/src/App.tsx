@@ -6,6 +6,7 @@ import ErrorBoundary from "./components/ErrorBoundary";
 import { ThemeProvider } from "./contexts/ThemeContext";
 import { ContactModalProvider } from "./contexts/ContactModalContext";
 import Layout from "./components/Layout";
+import CookieConsent from "./components/CookieConsent";
 import Home from "./pages/Home";
 import Blog from "./pages/Blog";
 import BlogPost from "./pages/BlogPost";
@@ -16,6 +17,9 @@ import PracticeAreaDetail from "./pages/PracticeAreaDetail";
 import PracticeAreaSubPage from "./pages/PracticeAreaSubPage";
 import Contact from "./pages/Contact";
 import OurTeam from "./pages/OurTeam";
+import PrivacyPolicy from "./pages/PrivacyPolicy";
+import TermsOfService from "./pages/TermsOfService";
+import Disclaimer from "./pages/Disclaimer";
 
 function Router() {
   return (
@@ -31,6 +35,9 @@ function Router() {
         <Route path={"/practice-areas/:area/:subpage"} component={PracticeAreaSubPage} />
         <Route path={"/contact"} component={Contact} />
         <Route path={"/team"} component={OurTeam} />
+        <Route path={"/privacy"} component={PrivacyPolicy} />
+        <Route path={"/terms"} component={TermsOfService} />
+        <Route path={"/disclaimer"} component={Disclaimer} />
         <Route path={"/404"} component={NotFound} />
         {/* Final fallback route */}
         <Route component={NotFound} />
@@ -55,6 +62,7 @@ function App() {
           <TooltipProvider>
             <Toaster />
             <Router />
+            <CookieConsent />
           </TooltipProvider>
         </ContactModalProvider>
       </ThemeProvider>
