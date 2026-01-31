@@ -1,6 +1,6 @@
 # Terminal Subdomain Deployment Guide
 
-This guide provides step-by-step instructions for deploying the Terminal application to `terminal.gurovich.law` as a separate subdomain, completely isolating its heavy dependencies (mermaid, streamdown, shiki) from the main marketing site.
+This guide provides step-by-step instructions for deploying the Terminal application to `terminal.gurovichlawgroup.com` as a separate subdomain, completely isolating its heavy dependencies (mermaid, streamdown, shiki) from the main marketing site.
 
 ---
 
@@ -8,13 +8,13 @@ This guide provides step-by-step instructions for deploying the Terminal applica
 
 The Terminal is a staff-only RAG assistant that requires heavy JavaScript libraries for markdown rendering, syntax highlighting, and diagram generation. These libraries add approximately 3.2 MB to the bundle, which is unacceptable for the public-facing marketing site. By hosting the Terminal on a separate subdomain, we achieve complete bundle isolation while maintaining shared authentication and API access.
 
-| Component | Main Site (gurovich.law) | Terminal (terminal.gurovich.law) |
+| Component | Main Site (gurovichlawgroup.com) | Terminal (terminal.gurovichlawgroup.com) |
 |-----------|--------------------------|----------------------------------|
 | Bundle Size | 637 KB | 3.2 MB (lazy loaded) |
 | Target Audience | Public visitors | Staff only |
 | Dependencies | React, Tailwind, tRPC | + Mermaid, Streamdown, Shiki |
 | Authentication | Manus OAuth | Manus OAuth (shared cookies) |
-| API Endpoint | /api/trpc | gurovich.law/api/trpc (CORS) |
+| API Endpoint | /api/trpc | gurovichlawgroup.com/api/trpc (CORS) |
 
 ---
 
@@ -63,7 +63,7 @@ In Vercel Project Settings → Environment Variables, add:
 ### Step 4: Configure Custom Domain
 
 1. In Vercel Project Settings → Domains
-2. Add `terminal.gurovich.law`
+2. Add `terminal.gurovichlawgroup.com`
 3. Vercel will provide DNS instructions
 
 ### Step 5: Configure DNS
@@ -79,7 +79,7 @@ In your domain registrar (or Manus Domains settings):
 
 ### Step 6: Verify Deployment
 
-1. Visit `https://terminal.gurovich.law`
+1. Visit `https://terminal.gurovichlawgroup.com`
 2. You should see the Terminal login page
 3. Log in with your Manus credentials
 4. Verify you can access intakes and chat with the assistant
@@ -115,7 +115,7 @@ In the new project, update `client/src/lib/trpc.ts` to point to the main site AP
 const trpcClient = trpc.createClient({
   links: [
     httpBatchLink({
-      url: "https://www.gurovich.law/api/trpc",
+      url: "https://www.gurovichlawgroup.com/api/trpc",
       // ... rest of config
     }),
   ],
@@ -125,14 +125,14 @@ const trpcClient = trpc.createClient({
 ### Step 4: Configure Domain
 
 1. In Manus Project Settings → Domains
-2. Add `terminal.gurovich.law` as a custom domain
+2. Add `terminal.gurovichlawgroup.com` as a custom domain
 3. Follow DNS configuration instructions
 
 ---
 
 ## Option 3: Path-Based Routing (No Subdomain)
 
-If you want to avoid subdomain complexity, you can host Terminal at `gurovich.law/terminal`. However, this brings the mermaid bundle back into the main site.
+If you want to avoid subdomain complexity, you can host Terminal at `gurovichlawgroup.com/terminal`. However, this brings the mermaid bundle back into the main site.
 
 ### Step 1: Re-enable Terminal Route
 
@@ -157,13 +157,13 @@ pnpm build
 
 ## CORS Configuration
 
-The main site's server is already configured to accept requests from `terminal.gurovich.law`. The CORS middleware in `server/_core/index.ts` includes:
+The main site's server is already configured to accept requests from `terminal.gurovichlawgroup.com`. The CORS middleware in `server/_core/index.ts` includes:
 
 ```typescript
 const allowedOrigins = [
-  "https://www.gurovich.law",
-  "https://gurovich.law",
-  "https://terminal.gurovich.law",
+  "https://www.gurovichlawgroup.com",
+  "https://gurovichlawgroup.com",
+  "https://terminal.gurovichlawgroup.com",
   // ... development origins
 ];
 ```
@@ -176,7 +176,7 @@ If you use a different subdomain, update this list accordingly.
 
 The Terminal uses the same Manus OAuth as the main site. For cross-subdomain authentication to work:
 
-1. **Cookie Domain:** Ensure cookies are set with `domain=.gurovich.law` (note the leading dot) so they're shared across subdomains
+1. **Cookie Domain:** Ensure cookies are set with `domain=.gurovichlawgroup.com` (note the leading dot) so they're shared across subdomains
 2. **OAuth Redirect:** The OAuth callback should redirect back to the Terminal subdomain after login
 
 The current implementation handles this automatically when both sites are under the same root domain.
@@ -194,20 +194,20 @@ Check the browser console for JavaScript errors. Common causes:
 
 ### API calls fail with CORS error
 
-1. Verify `terminal.gurovich.law` is in the CORS allowed origins list
+1. Verify `terminal.gurovichlawgroup.com` is in the CORS allowed origins list
 2. Rebuild and redeploy the main site
 3. Clear browser cache and retry
 
 ### Login doesn't persist
 
-1. Check that cookies are set with `domain=.gurovich.law`
+1. Check that cookies are set with `domain=.gurovichlawgroup.com`
 2. Verify both sites use the same `VITE_APP_ID`
 3. Check browser's cookie settings (third-party cookies must be allowed)
 
 ### Terminal can't access intakes
 
 1. Verify the user has `intake_access` records in the database
-2. Check that the API endpoint is correct (`https://www.gurovich.law/api/trpc`)
+2. Check that the API endpoint is correct (`https://www.gurovichlawgroup.com/api/trpc`)
 3. Verify the JWT token is being sent with requests
 
 ---

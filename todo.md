@@ -360,3 +360,23 @@
 ## Google Maps & Terminal Deployment Guide (Completed)
 - [x] Update Google Maps embed in Contact component to new address (15250 Ventura Blvd Suite 700)
 - [x] Write comprehensive Terminal subdomain deployment guide (TERMINAL_SUBDOMAIN_DEPLOYMENT.md)
+
+
+## Terminal Standalone Package
+- [ ] Identify all Terminal-related files (components, routers, types)
+- [ ] Extract Terminal code into standalone package structure
+- [ ] Document Supabase database schema (all Terminal tables)
+- [ ] Document all required environment variables
+- [ ] Document API integrations (OpenAI, CourtListener, Supabase)
+- [ ] Write comprehensive setup instructions
+- [ ] Create ZIP package for deployment
+
+
+## Domain Update: gurovich.law → gurovichlawgroup.com (Completed)
+- [x] Update CORS configuration in server/_core/index.ts
+- [x] Update client/index.html (Open Graph, Twitter, canonical, JSON-LD)
+- [x] Update client/public/sitemap.xml (all 15 URLs)
+- [x] Update client/public/robots.txt
+- [x] Update TERMINAL_SUBDOMAIN_DEPLOYMENT.md
+- [x] Update DEPLOYMENT_TERMINAL.md
+- [x] All 71 tests passing

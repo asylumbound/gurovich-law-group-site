@@ -1,5 +1,5 @@
 # Robots.txt for Gurovich Law Group
-# https://www.gurovich.law
+# https://www.gurovichlawgroup.com
 
 User-agent: *
 Allow: /
@@ -9,4 +9,4 @@ Disallow: /admin
 Disallow: /api/
 
 # Sitemap location
-Sitemap: https://www.gurovich.law/sitemap.xml
+Sitemap: https://www.gurovichlawgroup.com/sitemap.xml

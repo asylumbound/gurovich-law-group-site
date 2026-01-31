@@ -35,9 +35,9 @@ async function startServer() {
   app.use((req, res, next) => {
     const origin = req.headers.origin;
     const allowedOrigins = [
-      'https://terminal.gurovich.law',
-      'https://www.gurovich.law',
-      'https://gurovich.law',
+      'https://terminal.gurovichlawgroup.com',
+      'https://www.gurovichlawgroup.com',
+      'https://gurovichlawgroup.com',
       // Development origins
       /^https?:\/\/localhost(:\d+)?$/,
       /^https?:\/\/.*\.manus\.computer$/,

@@ -14,10 +14,10 @@ The project now builds two separate bundles:
 ## Build Commands
 
 ```bash
-# Build main site only (for www.gurovich.law)
+# Build main site only (for www.gurovichlawgroup.com)
 pnpm build
 
-# Build Terminal only (for terminal.gurovich.law)
+# Build Terminal only (for terminal.gurovichlawgroup.com)
 pnpm build:terminal
 
 # Build both
@@ -32,7 +32,7 @@ Deploy both builds to the same server with nginx routing:
 
 ```nginx
 server {
-    server_name www.gurovich.law gurovich.law;
+    server_name www.gurovichlawgroup.com gurovichlawgroup.com;
     
     location / {
         root /var/www/gurovich/dist/public;
@@ -45,7 +45,7 @@ server {
 }
 
 server {
-    server_name terminal.gurovich.law;
+    server_name terminal.gurovichlawgroup.com;
     
     location / {
         root /var/www/gurovich/dist/terminal;
@@ -54,8 +54,8 @@ server {
     
     # API calls go to main site
     location /api/ {
-        proxy_pass https://www.gurovich.law;
-        proxy_set_header Host www.gurovich.law;
+        proxy_pass https://www.gurovichlawgroup.com;
+        proxy_set_header Host www.gurovichlawgroup.com;
     }
 }
 ```
@@ -72,15 +72,15 @@ Contact Manus support for subdomain configuration options.
 ## CORS Configuration
 
 The server is already configured to accept requests from:
-- `https://terminal.gurovich.law`
-- `https://www.gurovich.law`
-- `https://gurovich.law`
+- `https://terminal.gurovichlawgroup.com`
+- `https://www.gurovichlawgroup.com`
+- `https://gurovichlawgroup.com`
 - Development origins (localhost, *.manus.computer)
 
 ## Authentication
 
 The Terminal uses the same OAuth flow as the main site:
-- Cookies are shared across subdomains (set on `.gurovich.law`)
+- Cookies are shared across subdomains (set on `.gurovichlawgroup.com`)
 - Login redirects work from either domain
 - Session state is maintained via the shared API
 
@@ -138,5 +138,5 @@ If Terminal shows errors:
 
 ### Authentication Issues
 If login doesn't work on Terminal subdomain:
-1. Ensure OAuth callback URL includes `terminal.gurovich.law`
-2. Verify cookie domain is set to `.gurovich.law` (with leading dot)
+1. Ensure OAuth callback URL includes `terminal.gurovichlawgroup.com`
+2. Verify cookie domain is set to `.gurovichlawgroup.com` (with leading dot)
