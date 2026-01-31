@@ -161,7 +161,7 @@ export default function Contact() {
               </div>
             </a>
             
-            <a href="https://maps.google.com/?q=15233+Ventura+Blvd+Suite+500+Sherman+Oaks+CA+91403" target="_blank" rel="noopener noreferrer" className="group">
+            <a href="https://maps.google.com/?q=15250+Ventura+Blvd+Suite+700+Sherman+Oaks+CA+91403" target="_blank" rel="noopener noreferrer" className="group">
               <div className="bg-white rounded-xl p-6 shadow-md hover:shadow-lg transition-all h-full">
                 <div className="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center mb-4 group-hover:bg-primary/20 transition-colors">
                   <MapPin className="w-6 h-6 text-primary" />
@@ -346,7 +346,7 @@ export default function Contact() {
               {/* Google Map Embed */}
               <div className="rounded-xl overflow-hidden shadow-lg mb-8">
                 <iframe
-                  src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3301.8876!2d-118.4485!3d34.1517!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x80c296d3c4d3c3c3%3A0x0!2s15233%20Ventura%20Blvd%2C%20Sherman%20Oaks%2C%20CA%2091403!5e0!3m2!1sen!2sus!4v1234567890"
+                  src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3301.8876!2d-118.4485!3d34.1517!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x80c296d3c4d3c3c3%3A0x0!2s15250%20Ventura%20Blvd%20Suite%20700%2C%20Sherman%20Oaks%2C%20CA%2091403!5e0!3m2!1sen!2sus!4v1234567890"
                   width="100%"
                   height="350"
                   style={{ border: 0 }}

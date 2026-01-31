@@ -355,3 +355,8 @@
 - [x] Update any hardcoded email/phone references
 - [x] Updated 37 email references to info@gurovichlaw.com
 - [x] Updated 10 address references to 15250 Ventura Blvd. Suite 700, Sherman Oaks, CA 91403
+
+
+## Google Maps & Terminal Deployment Guide (Completed)
+- [x] Update Google Maps embed in Contact component to new address (15250 Ventura Blvd Suite 700)
+- [x] Write comprehensive Terminal subdomain deployment guide (TERMINAL_SUBDOMAIN_DEPLOYMENT.md)
