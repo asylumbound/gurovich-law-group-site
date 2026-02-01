@@ -1,13 +1,14 @@
-import { Shield, Check } from "lucide-react";
+import { Check } from "lucide-react";
 
 const caseResults = [
-  { amount: "$3,000,000", description: "Police Brutality | Settlement" },
-  { amount: "$1,100,000", description: "Slip and Fall | Settlement" },
-  { amount: "$650,000", description: "Invasion of Privacy | Settlement" },
-  { amount: "$1,000,000", description: "Dog Bite" },
-  { amount: "$2,500,000", description: "Motorcycle Accident | Settlement" },
-  { amount: "$13,000,000", description: "Bus Accident | Settlement" },
-  { amount: "$300,000", description: "Scooter Accident | Settlement" },
+  { amount: "$3,000,000", description: "Wrongful Death | Settlement" },
+  { amount: "$1,400,000", description: "Slip and Fall | Settlement" },
+  { amount: "$650,000", description: "Employment (wrongful termination) | Trial Verdict" },
+  { amount: "$457,000", description: "Dog Bite | Settlement" },
+  { amount: "$1,300,000", description: "Motorcycle Accident | Settlement" },
+  { amount: "$1,250,000", description: "Vehicle Accident | Trial Verdict" },
+  { amount: "$458,000", description: "Scooter Accident | Settlement" },
+  { amount: "$6,800,000", description: "Ponzi Scheme Fraud | Trial Verdict" },
 ];
 
 export default function NoFeeGuarantee() {
@@ -53,7 +54,7 @@ export default function NoFeeGuarantee() {
 
           {/* Case Results Grid */}
           <div className="flex-1 w-full">
-            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-6 gap-y-8 md:gap-x-8 md:gap-y-10">
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-x-6 gap-y-8 md:gap-x-8 md:gap-y-10">
               {caseResults.map((result, index) => (
                 <div key={index} className="text-center">
                   <div className="text-2xl md:text-3xl lg:text-4xl font-bold text-white mb-1">

@@ -380,3 +380,9 @@
 - [x] Update TERMINAL_SUBDOMAIN_DEPLOYMENT.md
 - [x] Update DEPLOYMENT_TERMINAL.md
 - [x] All 71 tests passing
+
+
+## Marquee Content Update
+- [x] Update marquee with "No Fee Guarantee" messaging
+- [x] Add case results data (settlements and verdicts)
+- [x] Verify marquee displays correctly
