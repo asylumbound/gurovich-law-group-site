@@ -2,9 +2,10 @@ import { motion, useInView } from "framer-motion";
 import { useRef, useEffect, useState } from "react";
 
 const stats = [
-  { value: 750, suffix: "M+", label: "Settlement Wins", prefix: "$" },
-  { value: 550, suffix: "+", label: "Cases Won", prefix: "" },
-  { value: 575, suffix: "+", label: "Clients Served", prefix: "" },
+  { value: 30, suffix: "+", label: "Years Experience", prefix: "" },
+  { value: 470, suffix: "M+", label: "Settlement Wins", prefix: "$" },
+  { value: 6550, suffix: "+", label: "Cases Won", prefix: "" },
+  { value: 6750, suffix: "+", label: "Clients Served", prefix: "" },
 ];
 
 function AnimatedCounter({
@@ -40,10 +41,13 @@ function AnimatedCounter({
     return () => clearInterval(timer);
   }, [inView, value]);
 
+  // Format number with commas for thousands
+  const formattedCount = count.toLocaleString();
+
   return (
     <span className="font-display text-5xl md:text-6xl lg:text-7xl font-bold text-secondary">
       {prefix}
-      {count}
+      {formattedCount}
       {suffix}
     </span>
   );
@@ -61,7 +65,7 @@ export default function Statistics() {
           whileInView={{ opacity: 1 }}
           viewport={{ once: true }}
           transition={{ duration: 0.6 }}
-          className="grid grid-cols-1 md:grid-cols-3 gap-12 lg:gap-16"
+          className="grid grid-cols-2 md:grid-cols-4 gap-8 lg:gap-12"
         >
           {stats.map((stat, index) => (
             <motion.div

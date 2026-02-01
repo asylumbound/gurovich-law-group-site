@@ -457,3 +457,10 @@
 - [x] Update pages with consistent hero sections (dark gradient backgrounds matching site aesthetic)
 - [x] Updated: Our Team, Practice Areas, Areas Served, Contact, Reviews, City Landing Pages
 - [x] Verify all pages have cohesive visual design
+
+
+## Statistics Section Update (Completed)
+- [x] Update stats to: 30+ years experience, $470M+ settlement wins, 6,550+ cases won, 6,750+ clients served
+- [x] Add 4th stat (years experience) to the layout
+- [x] Changed grid from 3 columns to 4 columns
+- [x] Added number formatting with commas for thousands
