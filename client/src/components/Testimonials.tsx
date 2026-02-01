@@ -182,6 +182,64 @@ export default function Testimonials() {
         </motion.div>
 
       </div>
+
+      {/* JSON-LD AggregateRating Schema for SEO */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "LegalService",
+            "name": "Gurovich Law Group",
+            "image": "https://gurovichlawgroup.com/logo.png",
+            "url": "https://gurovichlawgroup.com",
+            "telephone": "+1-818-401-4725",
+            "priceRange": "Free Consultation",
+            "address": {
+              "@type": "PostalAddress",
+              "streetAddress": "15250 Ventura Blvd., Suite 700",
+              "addressLocality": "Sherman Oaks",
+              "addressRegion": "CA",
+              "postalCode": "91403",
+              "addressCountry": "US"
+            },
+            "geo": {
+              "@type": "GeoCoordinates",
+              "latitude": 34.1543,
+              "longitude": -118.4651
+            },
+            "openingHoursSpecification": [
+              {
+                "@type": "OpeningHoursSpecification",
+                "dayOfWeek": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"],
+                "opens": "09:00",
+                "closes": "17:00"
+              }
+            ],
+            "aggregateRating": {
+              "@type": "AggregateRating",
+              "ratingValue": "4.8",
+              "reviewCount": "24",
+              "bestRating": "5",
+              "worstRating": "1"
+            },
+            "review": testimonials.map(t => ({
+              "@type": "Review",
+              "author": {
+                "@type": "Person",
+                "name": t.name
+              },
+              "reviewRating": {
+                "@type": "Rating",
+                "ratingValue": t.rating,
+                "bestRating": "5",
+                "worstRating": "1"
+              },
+              "reviewBody": t.text
+            }))
+          })
+        }}
+      />
     </section>
   );
 }

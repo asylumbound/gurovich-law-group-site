@@ -430,3 +430,23 @@
 
 ## Remove Review Links Section (Completed)
 - [x] Remove "Read more reviews on" section with Google, Avvo, CrushMyTicket links from Testimonials
+
+
+## Individual City Landing Pages (Local SEO) - Completed
+- [x] Create CityLandingPage.tsx component with dynamic routing
+- [x] Add city-specific content (practice areas, nearby courthouses, local statistics)
+- [x] Create pages for major cities (Los Angeles, Sherman Oaks, Burbank, Glendale, etc.)
+- [x] Add route /areas-served/:city to App.tsx
+- [x] Link cities from AreasServed page to individual city pages
+
+## Interactive Google Maps - Completed
+- [x] Add Google Maps component to Areas Served page (CourthouseMap.tsx)
+- [x] Show office location marker (Gurovich Law Group, Sherman Oaks)
+- [x] Show courthouse location markers with info windows (60 courthouses)
+- [x] Add map legend and controls (county filter buttons, zoom, fullscreen)
+
+## JSON-LD Review Schema Markup - Completed
+- [x] Add AggregateRating schema to Testimonials section
+- [x] Add LegalService schema with review data in index.html
+- [x] Add individual Review schemas in Testimonials component
+- [x] Schema includes 4.8 rating, 24 reviews, business details

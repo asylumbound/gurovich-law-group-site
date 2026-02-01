@@ -1,5 +1,8 @@
 import { useState } from "react";
+import { Link } from "wouter";
 import { MapPin, Building2, ChevronDown, ChevronUp, Phone } from "lucide-react";
+import { majorCities } from "@shared/cityData";
+import { CourthouseMap } from "@/components/CourthouseMap";
 import { Button } from "@/components/ui/button";
 import { useContactModal } from "@/contexts/ContactModalContext";
 
@@ -148,17 +151,36 @@ export default function AreasServed() {
           </div>
 
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3">
-            {displayedCities.map((city) => (
-              <div
-                key={city}
-                className="bg-white rounded-lg px-4 py-3 text-sm text-slate-700 hover:bg-primary hover:text-white transition-colors duration-200 cursor-default border border-slate-200 hover:border-primary"
-              >
+            {displayedCities.map((city) => {
+              const cityData = majorCities.find(c => c.name === city);
+              const content = (
                 <div className="flex items-center gap-2">
                   <MapPin className="w-3 h-3 flex-shrink-0 opacity-60" />
                   <span className="truncate">{city}, CA</span>
                 </div>
-              </div>
-            ))}
+              );
+              
+              if (cityData) {
+                return (
+                  <Link
+                    key={city}
+                    href={`/areas-served/${cityData.slug}`}
+                    className="bg-white rounded-lg px-4 py-3 text-sm text-slate-700 hover:bg-primary hover:text-white transition-colors duration-200 border border-slate-200 hover:border-primary cursor-pointer"
+                  >
+                    {content}
+                  </Link>
+                );
+              }
+              
+              return (
+                <div
+                  key={city}
+                  className="bg-white rounded-lg px-4 py-3 text-sm text-slate-700 hover:bg-primary hover:text-white transition-colors duration-200 border border-slate-200 hover:border-primary cursor-default"
+                >
+                  {content}
+                </div>
+              );
+            })}
           </div>
 
           {citiesServed.length > 60 && (
@@ -185,8 +207,24 @@ export default function AreasServed() {
         </div>
       </section>
 
-      {/* Courthouses Section */}
+      {/* Interactive Map Section */}
       <section className="py-16 bg-white">
+        <div className="container">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl md:text-4xl font-bold text-slate-900 mb-4">
+              Office & Courthouse Locations
+            </h2>
+            <p className="text-lg text-slate-600 max-w-2xl mx-auto">
+              Our Sherman Oaks office is centrally located to serve clients throughout 
+              Southern California. Click on any courthouse marker for directions.
+            </p>
+          </div>
+          <CourthouseMap className="max-w-5xl mx-auto" />
+        </div>
+      </section>
+
+      {/* Courthouses Section */}
+      <section className="py-16 bg-slate-50">
         <div className="container">
           <div className="text-center mb-12">
             <h2 className="text-3xl md:text-4xl font-bold text-slate-900 mb-4">
