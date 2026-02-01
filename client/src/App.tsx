@@ -27,6 +27,7 @@ import PrivacyPolicy from "./pages/PrivacyPolicy";
 import TermsOfService from "./pages/TermsOfService";
 import Disclaimer from "./pages/Disclaimer";
 import OnboardingSuccess from "./pages/OnboardingSuccess";
+import AreasServed from "./pages/AreasServed";
 
 // Lazy imports for heavy admin/internal pages (auth required, loaded on demand)
 const AdminDashboard = lazy(() => import("./pages/AdminDashboard"));
@@ -90,6 +91,7 @@ function Router() {
             <Route path="/practice-areas/:area/:subpage" component={PracticeAreaSubPage} />
             <Route path="/contact" component={Contact} />
             <Route path="/team" component={OurTeam} />
+            <Route path="/areas-served" component={AreasServed} />
             <Route path="/privacy" component={PrivacyPolicy} />
             <Route path="/terms" component={TermsOfService} />
             <Route path="/disclaimer" component={Disclaimer} />

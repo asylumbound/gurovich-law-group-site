@@ -417,3 +417,12 @@
 - [x] Remove any team members not on the provided list (removed Anna Garkusha, Natalia Garfulina, Nadya, Guadalupe Soto)
 - [x] Update practice areas, languages, and credentials for each member
 - [x] Verify team page displays correctly
+
+
+## Areas Served Page (Completed)
+- [x] Create AreasServed.tsx page component with cities and courthouses
+- [x] Add route to App.tsx for /areas-served
+- [x] Add navigation link in header/footer
+- [x] Organize by county (Los Angeles, Orange, San Diego, Ventura)
+- [x] Display courthouse locations with addresses
+- [x] Verify page displays correctly

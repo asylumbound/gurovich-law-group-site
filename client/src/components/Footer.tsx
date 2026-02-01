@@ -43,6 +43,7 @@ export default function Footer() {
     { label: t("nav.team"), href: "/team" },
     { label: t("nav.reviews"), href: "/reviews" },
     { label: t("nav.blog"), href: "/blog" },
+    { label: "Areas Served", href: "/areas-served" },
   ];
 
   return (
