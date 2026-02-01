@@ -25,8 +25,17 @@ export default function PracticeAreas() {
   return (
     <main className="min-h-screen">
       {/* Hero Section */}
-      <section className="bg-slate-900 text-white py-20 md:py-28">
-        <div className="container max-w-6xl">
+      <section className="relative bg-slate-900 text-white py-20 md:py-28 overflow-hidden">
+        {/* Background Image */}
+        <div className="absolute inset-0 z-0">
+          <img
+            src="/images/practice-areas-hero-bg.png"
+            alt="Legal practice areas"
+            className="w-full h-full object-cover opacity-30"
+          />
+          <div className="absolute inset-0 bg-gradient-to-r from-slate-900 via-slate-900/95 to-slate-900/80" />
+        </div>
+        <div className="container max-w-6xl relative z-10">
           <p className="text-primary font-medium tracking-widest uppercase text-sm mb-4">
             Our Expertise
           </p>

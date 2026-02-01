@@ -62,8 +62,16 @@ export default function CityLandingPage() {
   return (
     <main id="main-content" className="min-h-screen bg-background">
       {/* Hero Section */}
-      <section className="relative bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 text-white py-20">
-        <div className="absolute inset-0 bg-[url('/grid-pattern.svg')] opacity-5"></div>
+      <section className="relative bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 text-white py-20 overflow-hidden">
+        {/* Background Image */}
+        <div className="absolute inset-0 z-0">
+          <img
+            src="/images/areas-served-hero-bg.jpg"
+            alt="California courthouse"
+            className="w-full h-full object-cover opacity-15"
+          />
+          <div className="absolute inset-0 bg-gradient-to-r from-slate-900 via-slate-900/90 to-slate-900/80" />
+        </div>
         <div className="container relative z-10">
           <Link 
             href="/areas-served" 

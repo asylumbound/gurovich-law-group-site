@@ -450,3 +450,10 @@
 - [x] Add LegalService schema with review data in index.html
 - [x] Add individual Review schemas in Testimonials component
 - [x] Schema includes 4.8 rating, 24 reviews, business details
+
+
+## Hero Images for All Pages (Completed)
+- [x] Audit all pages to identify those without hero images
+- [x] Update pages with consistent hero sections (dark gradient backgrounds matching site aesthetic)
+- [x] Updated: Our Team, Practice Areas, Areas Served, Contact, Reviews, City Landing Pages
+- [x] Verify all pages have cohesive visual design

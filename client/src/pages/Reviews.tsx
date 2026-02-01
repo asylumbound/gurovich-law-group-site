@@ -112,8 +112,17 @@ export default function Reviews() {
   return (
     <>
         {/* Hero Section */}
-        <section className="bg-secondary py-16 md:py-20">
-          <div className="container">
+        <section className="relative bg-secondary py-16 md:py-20 overflow-hidden">
+          {/* Background Image */}
+          <div className="absolute inset-0 z-0">
+            <img
+              src="/images/reviews-hero-bg.jpg"
+              alt="Happy client handshake"
+              className="w-full h-full object-cover opacity-15"
+            />
+            <div className="absolute inset-0 bg-gradient-to-r from-secondary via-secondary/95 to-secondary/80" />
+          </div>
+          <div className="container relative z-10">
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}

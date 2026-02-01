@@ -122,8 +122,16 @@ export default function AreasServed() {
   return (
     <main id="main-content" className="min-h-screen bg-background">
       {/* Hero Section */}
-      <section className="relative bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 text-white py-20">
-        <div className="absolute inset-0 bg-[url('/grid-pattern.svg')] opacity-5"></div>
+      <section className="relative bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 text-white py-20 overflow-hidden">
+        {/* Background Image */}
+        <div className="absolute inset-0 z-0">
+          <img
+            src="/images/areas-served-hero-bg.jpg"
+            alt="Stanley Mosk Courthouse Los Angeles"
+            className="w-full h-full object-cover opacity-20"
+          />
+          <div className="absolute inset-0 bg-gradient-to-r from-slate-900 via-slate-900/90 to-slate-900/80" />
+        </div>
         <div className="container relative z-10">
           <p className="text-primary font-medium tracking-wider uppercase mb-4">Service Coverage</p>
           <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6">
