@@ -410,3 +410,10 @@
 - [x] Add review source badges (Google, CrushMyTicket)
 - [x] Add links to Google Reviews, Avvo, and CrushMyTicket
 - [x] Verify testimonials display correctly with photos and initials
+
+
+## Our Team Section Update (Completed)
+- [x] Update team data with 5 members: Konstantin Gurovich, Rita Skuratovsky, John Rogers, Leo Rotenberg, Milena Dolukhanyan
+- [x] Remove any team members not on the provided list (removed Anna Garkusha, Natalia Garfulina, Nadya, Guadalupe Soto)
+- [x] Update practice areas, languages, and credentials for each member
+- [x] Verify team page displays correctly

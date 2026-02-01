@@ -3,15 +3,12 @@
  * Gurovich Law Group
  * 
  * Features: Attorney profile cards with photos, bios, credentials
- * Team members from sitemap:
- * - Konstantin Gurovich (Principal)
- * - Rita Skuratovsky
- * - Anna Garkusha
- * - Natalia Garfulina
- * - Nadya
- * - Guadalupe Soto
- * - Of Cnsl John Rogers
- * - Of Cnsl Leo Rotenberg
+ * Team members:
+ * - Konstantin Gurovich (Founding Partner)
+ * - Rita Skuratovsky (Partner)
+ * - John Rogers (Of Counsel)
+ * - Leo Rotenberg (Of Counsel)
+ * - Milena Dolukhanyan (Of Counsel)
  */
 
 import { Phone, Mail, Scale, Award, Globe } from "lucide-react";
@@ -36,92 +33,59 @@ const teamMembers: TeamMember[] = [
   {
     id: "konstantin-gurovich",
     name: "Konstantin Gurovich",
-    title: "Founding Attorney",
+    title: "Founding Partner",
     role: "Principal",
     bio: "Konstantin Gurovich is the founding attorney of Gurovich Law Group. With over two decades of experience in California law, he has built a reputation for vigorous advocacy and exceptional client service. Mr. Gurovich is fluent in multiple languages, allowing him to serve the diverse communities of Los Angeles. He is committed to providing personalized legal representation and fighting for the rights of every client.",
     practiceAreas: ["Personal Injury", "Criminal Defense", "Civil Litigation", "Employment Law"],
     languages: ["English", "Russian", "Ukrainian"],
-    education: ["J.D., Law School", "B.A., Political Science"],
     credentials: ["California State Bar", "U.S. District Court, Central District of California"],
     email: "info@gurovichlaw.com",
   },
   {
     id: "rita-skuratovsky",
     name: "Rita Skuratovsky",
-    title: "Senior Associate",
+    title: "Partner",
     role: "Attorney",
     bio: "Rita Skuratovsky is a dedicated attorney with extensive experience in personal injury and civil litigation. She is known for her meticulous case preparation and compassionate approach to client representation. Rita works closely with clients to understand their needs and develop effective legal strategies.",
-    practiceAreas: ["Personal Injury", "Civil Litigation"],
-    languages: ["English", "Russian"],
-    education: ["J.D., Law School"],
-    credentials: ["California State Bar"],
-  },
-  {
-    id: "anna-garkusha",
-    name: "Anna Garkusha",
-    title: "Associate Attorney",
-    role: "Attorney",
-    bio: "Anna Garkusha brings a strong background in employment law and civil rights to the firm. She is passionate about protecting workers' rights and has successfully represented clients in discrimination, harassment, and wrongful termination cases.",
-    practiceAreas: ["Employment Law", "Civil Rights"],
+    practiceAreas: ["Personal Injury", "Civil Litigation", "Employment"],
     languages: ["English", "Russian", "Ukrainian"],
-    education: ["J.D., Law School"],
     credentials: ["California State Bar"],
-  },
-  {
-    id: "natalia-garfulina",
-    name: "Natalia Garfulina",
-    title: "Associate Attorney",
-    role: "Attorney",
-    bio: "Natalia Garfulina focuses her practice on criminal defense and immigration-related matters. She understands the unique challenges faced by immigrant communities and provides culturally sensitive legal representation.",
-    practiceAreas: ["Criminal Defense", "Immigration"],
-    languages: ["English", "Russian"],
-    education: ["J.D., Law School"],
-    credentials: ["California State Bar"],
-  },
-  {
-    id: "nadya",
-    name: "Nadya",
-    title: "Legal Assistant",
-    role: "Support Staff",
-    bio: "Nadya provides essential support to our legal team, ensuring smooth case management and excellent client communication. Her attention to detail and organizational skills help keep our cases on track.",
-    practiceAreas: ["Case Management", "Client Relations"],
-    languages: ["English", "Russian", "Armenian"],
-  },
-  {
-    id: "guadalupe-soto",
-    name: "Guadalupe Soto",
-    title: "Paralegal",
-    role: "Support Staff",
-    bio: "Guadalupe Soto is an experienced paralegal who assists with case preparation, document management, and client intake. Her bilingual abilities help us serve our Spanish-speaking clients effectively.",
-    practiceAreas: ["Personal Injury", "Civil Litigation"],
-    languages: ["English", "Spanish"],
   },
   {
     id: "john-rogers",
     name: "John Rogers",
     title: "Of Counsel",
     role: "Of Counsel",
-    bio: "John Rogers serves as Of Counsel to Gurovich Law Group, bringing decades of litigation experience to complex cases. His expertise in trial advocacy and appellate practice strengthens our ability to handle challenging matters.",
-    practiceAreas: ["Complex Litigation", "Appeals"],
+    bio: "John Rogers serves as Of Counsel to Gurovich Law Group, bringing decades of litigation experience to complex federal and state criminal cases. His expertise in trial advocacy and practice strengthens our ability to handle challenging matters.",
+    practiceAreas: ["Federal and State Criminal"],
     languages: ["English"],
-    credentials: ["California State Bar", "Multiple Federal Courts"],
+    credentials: ["California State Bar", "U.S. District Courts"],
   },
   {
     id: "leo-rotenberg",
     name: "Leo Rotenberg",
     title: "Of Counsel",
     role: "Of Counsel",
-    bio: "Leo Rotenberg is Of Counsel to the firm, specializing in business litigation and commercial disputes. His strategic approach and negotiation skills have helped numerous clients resolve complex business conflicts.",
-    practiceAreas: ["Business Litigation", "Commercial Disputes"],
-    languages: ["English", "Russian"],
+    bio: "Leo Rotenberg is Of Counsel to the firm, specializing in real estate, evictions, business litigation and commercial disputes. His strategic approach and negotiation skills have helped numerous clients resolve complex business conflicts.",
+    practiceAreas: ["Evictions", "Real Estate Litigation", "Business Litigation", "Commercial Disputes"],
+    languages: ["English", "Russian", "Ukrainian"],
     credentials: ["California State Bar"],
+  },
+  {
+    id: "milena-dolukhanyan",
+    name: "Milena Dolukhanyan",
+    title: "Of Counsel",
+    role: "Of Counsel",
+    bio: "Ms. Dolukhanyan is an experienced litigator and a trial lawyer. Ms. Dolukhanyan's practice includes litigation, general arbitration claims, mediations, SEC, state regulatory and FINRA investigations. Ms. Dolukhanyan has extensive experience in complex business litigation, EB-5 investigations and litigation, commercial landlord/tenant disputes, SEC investigations and broker/dealer relations. She also has experience representing both financial institutions and individual brokers in FINRA arbitrations.",
+    practiceAreas: ["Business Litigation", "Commercial Disputes", "Civil Federal Investigations"],
+    languages: ["English", "Russian", "Armenian"],
+    credentials: ["California State Bar", "U.S. District Courts", "Ninth Circuit Court of Appeals"],
   },
 ];
 
 // Group team members by role
 const attorneys = teamMembers.filter(m => m.role === "Principal" || m.role === "Attorney");
 const ofCounsel = teamMembers.filter(m => m.role === "Of Counsel");
-const supportStaff = teamMembers.filter(m => m.role === "Support Staff");
 
 export default function OurTeam() {
   const { openContactModal } = useContactModal();
@@ -138,19 +102,19 @@ export default function OurTeam() {
             Our Team
           </h1>
           <p className="text-xl text-slate-300 max-w-3xl leading-relaxed">
-            The Gurovich Law Group is comprised of experienced attorneys and dedicated support staff 
-            who share a commitment to excellence and client service. Together, we bring diverse 
-            backgrounds and perspectives to every case.
+            The Gurovich Law Group is comprised of experienced attorneys who share a commitment 
+            to excellence and client service. Together, we bring diverse backgrounds and 
+            perspectives to every case.
           </p>
         </div>
       </section>
 
-      {/* Attorneys Section */}
+      {/* Partners Section */}
       <section className="py-16 md:py-24 bg-white">
         <div className="container max-w-6xl">
-          <h2 className="text-3xl font-bold text-slate-900 mb-4">Attorneys</h2>
+          <h2 className="text-3xl font-bold text-slate-900 mb-4">Partners</h2>
           <p className="text-lg text-slate-600 mb-10 max-w-3xl">
-            Our attorneys bring decades of combined experience and a passion for justice to every case.
+            Our partners bring decades of combined experience and a passion for justice to every case.
           </p>
 
           <div className="grid md:grid-cols-2 gap-8">
@@ -169,25 +133,9 @@ export default function OurTeam() {
             Our Of Counsel attorneys provide specialized expertise and additional resources for complex matters.
           </p>
 
-          <div className="grid md:grid-cols-2 gap-8">
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
             {ofCounsel.map((member) => (
               <TeamCard key={member.id} member={member} />
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Support Staff Section */}
-      <section className="py-16 md:py-20 bg-white">
-        <div className="container max-w-6xl">
-          <h2 className="text-3xl font-bold text-slate-900 mb-4">Support Staff</h2>
-          <p className="text-lg text-slate-600 mb-10 max-w-3xl">
-            Our dedicated support team ensures smooth operations and excellent client communication.
-          </p>
-
-          <div className="grid md:grid-cols-2 gap-8">
-            {supportStaff.map((member) => (
-              <TeamCard key={member.id} member={member} compact />
             ))}
           </div>
         </div>
@@ -205,7 +153,7 @@ export default function OurTeam() {
             and culturally sensitive representation.
           </p>
           <div className="flex flex-wrap gap-4">
-            {["English", "Spanish", "Russian", "Ukrainian", "Armenian"].map((lang) => (
+            {["English", "Russian", "Ukrainian", "Armenian"].map((lang) => (
               <div key={lang} className="bg-slate-700 px-6 py-3 rounded-lg font-medium">
                 {lang}
               </div>
@@ -246,79 +194,78 @@ export default function OurTeam() {
 }
 
 // Team Card Component
-function TeamCard({ member, featured = false, compact = false }: { member: TeamMember; featured?: boolean; compact?: boolean }) {
+function TeamCard({ member, featured = false }: { member: TeamMember; featured?: boolean }) {
   return (
     <div className={`bg-white rounded-xl shadow-md overflow-hidden ${featured ? "ring-2 ring-primary" : ""}`}>
       <div className="p-6">
         {/* Header */}
         <div className="flex items-start gap-4 mb-4">
           {/* Avatar placeholder */}
-          <div className={`${compact ? "w-16 h-16" : "w-20 h-20"} rounded-xl bg-slate-200 flex items-center justify-center flex-shrink-0`}>
+          <div className="w-20 h-20 rounded-xl bg-slate-200 flex items-center justify-center flex-shrink-0">
             <span className="text-2xl font-bold text-slate-400">
               {member.name.split(" ").map(n => n[0]).join("")}
             </span>
           </div>
           <div>
-            <h3 className={`${compact ? "text-lg" : "text-xl"} font-bold text-slate-900`}>
+            <h3 className="text-xl font-bold text-slate-900">
               {member.name}
             </h3>
             <p className="text-primary font-medium">{member.title}</p>
             {featured && (
               <span className="inline-block mt-1 px-2 py-0.5 bg-primary/10 text-primary text-xs font-medium rounded">
-                Founding Attorney
+                Founding Partner
               </span>
             )}
           </div>
         </div>
 
         {/* Bio */}
-        <p className={`text-slate-600 ${compact ? "text-sm" : ""} mb-4 leading-relaxed`}>
-          {compact ? member.bio.substring(0, 150) + "..." : member.bio}
+        <p className="text-slate-600 text-sm leading-relaxed mb-4">
+          {member.bio}
         </p>
 
-        {!compact && (
-          <>
-            {/* Practice Areas */}
-            <div className="mb-4">
-              <div className="flex items-center gap-2 text-sm font-medium text-slate-700 mb-2">
-                <Scale className="w-4 h-4 text-primary" />
-                Practice Areas
-              </div>
-              <div className="flex flex-wrap gap-2">
-                {member.practiceAreas.map((area) => (
-                  <span key={area} className="px-2 py-1 bg-slate-100 text-slate-700 text-xs rounded">
-                    {area}
-                  </span>
-                ))}
-              </div>
-            </div>
+        {/* Practice Areas */}
+        <div className="mb-4">
+          <div className="flex items-center gap-2 mb-2">
+            <Scale className="w-4 h-4 text-slate-400" />
+            <span className="text-sm font-medium text-slate-700">Practice Areas</span>
+          </div>
+          <div className="flex flex-wrap gap-2">
+            {member.practiceAreas.map((area) => (
+              <span key={area} className="px-2 py-1 bg-slate-100 text-slate-600 text-xs rounded">
+                {area}
+              </span>
+            ))}
+          </div>
+        </div>
 
-            {/* Languages */}
-            <div className="mb-4">
-              <div className="flex items-center gap-2 text-sm font-medium text-slate-700 mb-2">
-                <Globe className="w-4 h-4 text-primary" />
-                Languages
-              </div>
-              <p className="text-sm text-slate-600">{member.languages.join(", ")}</p>
-            </div>
+        {/* Languages */}
+        <div className="mb-4">
+          <div className="flex items-center gap-2 mb-2">
+            <Globe className="w-4 h-4 text-slate-400" />
+            <span className="text-sm font-medium text-slate-700">Languages</span>
+          </div>
+          <p className="text-sm text-slate-600">{member.languages.join(", ")}</p>
+        </div>
 
-            {/* Credentials */}
-            {member.credentials && (
-              <div className="mb-4">
-                <div className="flex items-center gap-2 text-sm font-medium text-slate-700 mb-2">
-                  <Award className="w-4 h-4 text-primary" />
-                  Credentials
-                </div>
-                <p className="text-sm text-slate-600">{member.credentials.join(" • ")}</p>
-              </div>
-            )}
-          </>
+        {/* Credentials */}
+        {member.credentials && member.credentials.length > 0 && (
+          <div>
+            <div className="flex items-center gap-2 mb-2">
+              <Award className="w-4 h-4 text-slate-400" />
+              <span className="text-sm font-medium text-slate-700">Credentials</span>
+            </div>
+            <p className="text-sm text-slate-600">{member.credentials.join(" • ")}</p>
+          </div>
         )}
 
         {/* Contact */}
         {member.email && (
-          <div className="pt-4 border-t border-slate-100">
-            <a href={`mailto:${member.email}`} className="flex items-center gap-2 text-primary hover:underline text-sm">
+          <div className="mt-4 pt-4 border-t border-slate-100">
+            <a 
+              href={`mailto:${member.email}`}
+              className="inline-flex items-center gap-2 text-sm text-primary hover:underline"
+            >
               <Mail className="w-4 h-4" />
               {member.email}
             </a>
