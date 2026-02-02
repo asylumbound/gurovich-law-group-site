@@ -488,3 +488,9 @@
 - [x] Who is Liable in an Uber or Lyft Accident?
 - [x] The Basics of Product Liability Law: When Products Cause Harm
 - Total blog posts: 16 (6 original + 10 new)
+
+
+## Comprehensive Sitemap Update (Completed)
+- [x] Audit all pages (main pages, city landing pages, blog posts)
+- [x] Generate comprehensive sitemap.xml with all URLs (52 total URLs)
+- [x] Update lastmod dates to 2026-02-02
