@@ -128,7 +128,7 @@ export default function Contact() {
           <img
             src="/images/contact-hero-bg.jpg"
             alt="Modern law office interior"
-            className="w-full h-full object-cover opacity-20"
+            className="w-full h-full object-cover opacity-40"
           />
           <div className="absolute inset-0 bg-gradient-to-r from-slate-900 via-slate-900/95 to-slate-900/80" />
         </div>

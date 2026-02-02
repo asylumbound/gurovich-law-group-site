@@ -118,7 +118,7 @@ export default function Reviews() {
             <img
               src="/images/reviews-hero-bg.jpg"
               alt="Happy client handshake"
-              className="w-full h-full object-cover opacity-15"
+              className="w-full h-full object-cover opacity-40"
             />
             <div className="absolute inset-0 bg-gradient-to-r from-secondary via-secondary/95 to-secondary/80" />
           </div>

@@ -464,3 +464,27 @@
 - [x] Add 4th stat (years experience) to the layout
 - [x] Changed grid from 3 columns to 4 columns
 - [x] Added number formatting with commas for thousands
+
+
+## Free Case Evaluation Card - Button Spacing Fix (Completed)
+- [x] Fix button spacing on Free Case Evaluation card (PracticeAreaDetail.tsx, PracticeAreaSubPage.tsx)
+- [x] Verified contact form uses Manus Notification Service (notifyOwner) - configure in Settings → Notifications
+
+
+## Hero Images Z-Index Fix (Completed)
+- [x] Fixed hero images opacity from 15-20% to 40% for better visibility
+- [x] Updated: OurTeam, Contact, AreasServed, Reviews, CityLandingPage pages
+- [x] Verify hero images display correctly on all pages
+
+## Blog Entries - 10 New Articles (Completed)
+- [x] What to Do Immediately After a Car Accident: A Step-by-Step Guide
+- [x] How to Deal with Insurance Adjusters: Protecting Your Rights
+- [x] Common Mistakes That Can Ruin Your Personal Injury Claim
+- [x] Slip and Fall Accidents: Proving Negligence in Premises Liability
+- [x] How Is "Pain and Suffering" Calculated in a Settlement?
+- [x] Understanding the Statute of Limitations: Critical Deadlines
+- [x] What to Do If You Are Injured at Work: Workers' Comp vs. PI Claims
+- [x] Proving Liability in Distracted Driving Accidents
+- [x] Who is Liable in an Uber or Lyft Accident?
+- [x] The Basics of Product Liability Law: When Products Cause Harm
+- Total blog posts: 16 (6 original + 10 new)

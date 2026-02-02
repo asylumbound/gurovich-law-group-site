@@ -158,7 +158,7 @@ export default function PracticeAreaSubPage() {
                   Have questions about your {subPage.title.toLowerCase()} case? 
                   Call us now or fill out the form below for a free consultation.
                 </p>
-                <div className="space-y-3">
+                <div className="space-y-4">
                   <a href="tel:818-401-4725" className="block">
                     <Button size="lg" className="w-full bg-primary hover:bg-primary/90">
                       <Phone className="w-5 h-5 mr-2" />

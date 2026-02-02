@@ -187,7 +187,7 @@ export default function PracticeAreaDetail() {
                 Not sure if you have a case? Contact us for a free, no-obligation consultation. 
                 We'll review your situation and explain your legal options.
               </p>
-              <div className="space-y-4">
+              <div className="space-y-5">
                 <Link href="/onboarding">
                   <Button 
                     size="lg" 
