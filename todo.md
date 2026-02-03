@@ -494,3 +494,13 @@
 - [x] Audit all pages (main pages, city landing pages, blog posts)
 - [x] Generate comprehensive sitemap.xml with all URLs (52 total URLs)
 - [x] Update lastmod dates to 2026-02-02
+
+
+## Google Search Console Sitemap Submission
+- [ ] Navigate to Google Search Console
+- [ ] Submit sitemap.xml for gurovichlawgroup.com
+- [ ] Verify submission status
+
+## Source Badge Removal
+- [x] Remove source badges from Testimonials component
+- [x] Remove source badges from Reviews page

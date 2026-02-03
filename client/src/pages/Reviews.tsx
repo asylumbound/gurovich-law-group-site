@@ -55,19 +55,13 @@ function ReviewCard({ review, index }: { review: Review; index: number }) {
       className="bg-card border border-border rounded-lg p-6 hover:shadow-lg transition-shadow duration-300"
     >
       {/* Header: Name and Rating */}
-      <div className="flex items-start justify-between gap-4 mb-4">
-        <div>
-          <h3 className="font-heading text-lg font-semibold text-foreground">
-            {review.reviewer_name}
-          </h3>
-          <div className="mt-1">
-            <StarRating rating={review.stars} />
-          </div>
+      <div className="mb-4">
+        <h3 className="font-heading text-lg font-semibold text-foreground">
+          {review.reviewer_name}
+        </h3>
+        <div className="mt-1">
+          <StarRating rating={review.stars} />
         </div>
-        {/* Source badge - subtle */}
-        <span className="text-xs text-muted-foreground bg-muted px-2 py-1 rounded capitalize">
-          {review.source}
-        </span>
       </div>
 
       {/* Title */}
