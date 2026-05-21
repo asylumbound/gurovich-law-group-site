@@ -53,7 +53,7 @@ export default function AboutUs() {
           {/* Background Image */}
           <div className="absolute inset-0">
             <img 
-              src="/manus-storage/about-firm-hero-bg_161f2a64.png" 
+              src="https://txeynebsnznkoqkhmuag.supabase.co/storage/v1/object/public/Gurovich/images/about-firm-hero-bg.png" 
               alt="" 
               className="w-full h-full object-cover"
             />
@@ -148,7 +148,7 @@ export default function AboutUs() {
               >
                 <div className="aspect-[4/3] rounded-lg overflow-hidden shadow-xl">
                   <img 
-                    src="/images/aboutus-courtroom.png" 
+                    src="https://txeynebsnznkoqkhmuag.supabase.co/storage/v1/object/public/Gurovich/images/aboutus-courtroom.png" 
                     alt="Attorney presenting case in courtroom before judge" 
                     className="w-full h-full object-cover"
                   />

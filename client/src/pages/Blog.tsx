@@ -15,7 +15,7 @@ export default function Blog() {
         {/* Background Image */}
         <div 
           className="absolute inset-0 bg-cover bg-center bg-no-repeat"
-          style={{ backgroundImage: "url('/manus-storage/blog-hero-bg_dfa1e672.png')" }}
+          style={{ backgroundImage: "url('https://txeynebsnznkoqkhmuag.supabase.co/storage/v1/object/public/Gurovich/images/blog-hero-bg.png')" }}
         />
         {/* Dark Overlay */}
         <div className="absolute inset-0 bg-secondary/70" />
