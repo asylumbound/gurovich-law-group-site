@@ -30,7 +30,7 @@ export default function PracticeAreas() {
         <div className="absolute inset-0 z-0">
           <img
             src="https://txeynebsnznkoqkhmuag.supabase.co/storage/v1/object/public/Gurovich/images/practice-areas-hero-bg.png"
-            alt="Legal practice areas"
+            alt="Scales of justice representing comprehensive legal practice areas"
             className="w-full h-full object-cover opacity-30"
           />
           <div className="absolute inset-0 bg-gradient-to-r from-slate-900 via-slate-900/95 to-slate-900/80" />

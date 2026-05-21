@@ -53,8 +53,8 @@ export default function AboutUs() {
           {/* Background Image */}
           <div className="absolute inset-0">
             <img 
-              src="https://txeynebsnznkoqkhmuag.supabase.co/storage/v1/object/public/Gurovich/images/about-firm-hero-bg.png" 
-              alt="" 
+              src="https://txeynebsnznkoqkhmuag.supabase.co/storage/v1/object/public/Gurovich/images/about-firm-hero-bg.webp" 
+              alt="Gurovich Law Group office building in Sherman Oaks California" 
               className="w-full h-full object-cover"
             />
             {/* Dark overlay for text readability */}
@@ -150,6 +150,7 @@ export default function AboutUs() {
                   <img 
                     src="https://txeynebsnznkoqkhmuag.supabase.co/storage/v1/object/public/Gurovich/images/aboutus-courtroom.png" 
                     alt="Attorney presenting case in courtroom before judge" 
+                    loading="lazy"
                     className="w-full h-full object-cover"
                   />
                 </div>

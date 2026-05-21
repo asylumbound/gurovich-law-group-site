@@ -128,6 +128,7 @@ export default function BadgeCarousel() {
                   <img
                     src={badge.src}
                     alt={badge.alt}
+                    loading="lazy"
                     className="h-full w-auto object-contain max-w-full"
                   />
                 </div>

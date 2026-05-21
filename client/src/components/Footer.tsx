@@ -174,6 +174,7 @@ export default function Footer() {
             <img
               src="https://txeynebsnznkoqkhmuag.supabase.co/storage/v1/object/public/Gurovich/images/payment-icons.webp"
               alt="We accept American Express, MasterCard, Visa, Discover, and Cash"
+              loading="lazy"
               className="h-6 w-auto"
             />
             <ScrollToTopLink

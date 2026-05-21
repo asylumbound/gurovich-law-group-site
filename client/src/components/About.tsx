@@ -23,7 +23,7 @@ export default function About() {
       {/* Hero Background Image */}
       <div 
         className="absolute inset-0 bg-cover bg-center bg-no-repeat"
-        style={{ backgroundImage: "url('https://txeynebsnznkoqkhmuag.supabase.co/storage/v1/object/public/Gurovich/images/about-firm-hero-bg.png')" }}
+        style={{ backgroundImage: "url('https://txeynebsnznkoqkhmuag.supabase.co/storage/v1/object/public/Gurovich/images/about-firm-hero-bg.webp')" }}
       />
       {/* Dark Overlay for text readability */}
       <div className="absolute inset-0 bg-secondary/70" />
@@ -41,7 +41,8 @@ export default function About() {
             <div className="relative rounded-2xl overflow-hidden shadow-2xl">
               <img
                 src="https://images.unsplash.com/photo-1589829545856-d10d557cf95f?w=800&h=600&fit=crop"
-                alt="Law office interior"
+                alt="Professional law office with legal books and modern furnishings"
+                loading="lazy"
                 className="w-full h-auto object-cover"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-secondary/60 to-transparent" />

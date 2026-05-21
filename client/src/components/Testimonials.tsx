@@ -148,7 +148,8 @@ export default function Testimonials() {
                       {testimonial.hasPhoto ? (
                         <img
                           src={testimonial.image}
-                          alt={testimonial.name}
+                          alt={`${testimonial.name} - client testimonial photo`}
+                          loading="lazy"
                           className="w-12 h-12 rounded-full object-cover"
                         />
                       ) : (

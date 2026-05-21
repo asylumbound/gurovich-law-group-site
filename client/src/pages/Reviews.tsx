@@ -111,7 +111,7 @@ export default function Reviews() {
           <div className="absolute inset-0 z-0">
             <img
               src="https://txeynebsnznkoqkhmuag.supabase.co/storage/v1/object/public/Gurovich/images/reviews-hero-bg.jpg"
-              alt="Happy client handshake"
+              alt="Satisfied client shaking hands with attorney after successful case resolution"
               className="w-full h-full object-cover opacity-40"
             />
             <div className="absolute inset-0 bg-gradient-to-r from-secondary via-secondary/95 to-secondary/80" />

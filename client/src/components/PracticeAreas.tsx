@@ -90,6 +90,7 @@ export default function PracticeAreas() {
                       <img
                         src={area.icon}
                         alt={`${area.title} icon`}
+                        loading="lazy"
                         className="w-10 h-10 object-contain"
                       />
                     </div>

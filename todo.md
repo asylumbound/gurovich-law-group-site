@@ -504,3 +504,10 @@
 ## Source Badge Removal
 - [x] Remove source badges from Testimonials component
 - [x] Remove source badges from Reviews page
+
+## Image Optimization & Performance
+- [ ] Add descriptive alt text to all images for SEO/accessibility
+- [ ] Implement lazy loading on all non-hero images
+- [ ] Configure Supabase CDN caching headers
+- [ ] Ensure all images are web-optimized (compressed, correct format)
+- [ ] Audit page load times

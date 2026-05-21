@@ -15,7 +15,7 @@ export default function Blog() {
         {/* Background Image */}
         <div 
           className="absolute inset-0 bg-cover bg-center bg-no-repeat"
-          style={{ backgroundImage: "url('https://txeynebsnznkoqkhmuag.supabase.co/storage/v1/object/public/Gurovich/images/blog-hero-bg.png')" }}
+          style={{ backgroundImage: "url('https://txeynebsnznkoqkhmuag.supabase.co/storage/v1/object/public/Gurovich/images/blog-hero-bg.webp')" }}
         />
         {/* Dark Overlay */}
         <div className="absolute inset-0 bg-secondary/70" />
@@ -90,6 +90,7 @@ function BlogCard({ post, index }: { post: typeof blogPosts[0]; index: number })
           <img
             src={post.image}
             alt={post.title}
+            loading="lazy"
             className="w-full h-full object-cover"
             onError={() => setImageError(true)}
           />

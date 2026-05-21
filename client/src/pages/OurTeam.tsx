@@ -88,7 +88,7 @@ export default function OurTeam() {
         <div className="absolute inset-0 z-0">
           <img
             src="https://txeynebsnznkoqkhmuag.supabase.co/storage/v1/object/public/Gurovich/images/team-hero-bg.jpg"
-            alt="Professional legal team"
+            alt="Gurovich Law Group attorneys in professional setting"
             className="w-full h-full object-cover opacity-40"
           />
           <div className="absolute inset-0 bg-gradient-to-r from-slate-900 via-slate-900/95 to-slate-900/80" />

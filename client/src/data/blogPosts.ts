@@ -52,7 +52,7 @@ If you are facing criminal charges, the stakes are higher than you may realize. 
     category: "Criminal Defense",
     author: "Gurovich Law Group",
     readTime: "8 min read",
-    image: "https://txeynebsnznkoqkhmuag.supabase.co/storage/v1/object/public/Gurovich/images/blog-hidden-penalties.png"
+    image: "https://txeynebsnznkoqkhmuag.supabase.co/storage/v1/object/public/Gurovich/images/blog-hidden-penalties.webp"
   },
   {
     id: "2",
@@ -94,7 +94,7 @@ Contact us for a free consultation. We will handle the negotiations and fight to
     category: "Personal Injury",
     author: "Gurovich Law Group",
     readTime: "6 min read",
-    image: "https://txeynebsnznkoqkhmuag.supabase.co/storage/v1/object/public/Gurovich/images/blog-insurance-adjusters.png"
+    image: "https://txeynebsnznkoqkhmuag.supabase.co/storage/v1/object/public/Gurovich/images/blog-insurance-adjusters.webp"
   },
   {
     id: "3",
@@ -138,7 +138,7 @@ If you are facing criminal charges in California, contact us today for a free, c
     category: "Criminal Defense",
     author: "Gurovich Law Group",
     readTime: "7 min read",
-    image: "https://txeynebsnznkoqkhmuag.supabase.co/storage/v1/object/public/Gurovich/images/blog-accused-crime.png"
+    image: "https://txeynebsnznkoqkhmuag.supabase.co/storage/v1/object/public/Gurovich/images/blog-accused-crime.webp"
   },
   {
     id: "4",
@@ -186,7 +186,7 @@ Contact us today for a free consultation.`,
     category: "Personal Injury",
     author: "Gurovich Law Group",
     readTime: "6 min read",
-    image: "https://txeynebsnznkoqkhmuag.supabase.co/storage/v1/object/public/Gurovich/images/blog-car-accident.png"
+    image: "https://txeynebsnznkoqkhmuag.supabase.co/storage/v1/object/public/Gurovich/images/blog-car-accident.webp"
   },
   {
     id: "5",
@@ -242,7 +242,7 @@ Remember, safety should always be your top priority. Contact us for a free consu
     category: "Personal Injury",
     author: "Gurovich Law Group",
     readTime: "5 min read",
-    image: "https://txeynebsnznkoqkhmuag.supabase.co/storage/v1/object/public/Gurovich/images/blog-10-things-accident.png"
+    image: "https://txeynebsnznkoqkhmuag.supabase.co/storage/v1/object/public/Gurovich/images/blog-10-things-accident.webp"
   },
   {
     id: "6",
@@ -282,7 +282,7 @@ If you suffered injury stemming from an accident, contact us for a free consulta
     category: "Personal Injury",
     author: "Gurovich Law Group",
     readTime: "7 min read",
-    image: "https://txeynebsnznkoqkhmuag.supabase.co/storage/v1/object/public/Gurovich/images/blog-what-is-personal-injury.png"
+    image: "https://txeynebsnznkoqkhmuag.supabase.co/storage/v1/object/public/Gurovich/images/blog-what-is-personal-injury.webp"
   },
   // NEW BLOG POSTS START HERE
   {
@@ -400,7 +400,7 @@ Contact us today for a free consultation. Let us deal with the insurance compani
     category: "Personal Injury",
     author: "Gurovich Law Group",
     readTime: "7 min read",
-    image: "https://txeynebsnznkoqkhmuag.supabase.co/storage/v1/object/public/Gurovich/images/blog-insurance-adjusters.png"
+    image: "https://txeynebsnznkoqkhmuag.supabase.co/storage/v1/object/public/Gurovich/images/blog-insurance-adjusters.webp"
   },
   {
     id: "9",

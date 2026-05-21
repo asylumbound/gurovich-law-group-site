@@ -67,7 +67,7 @@ export default function CityLandingPage() {
         <div className="absolute inset-0 z-0">
           <img
             src="https://txeynebsnznkoqkhmuag.supabase.co/storage/v1/object/public/Gurovich/images/areas-served-hero-bg.jpg"
-            alt="California courthouse"
+            alt="California courthouse serving Los Angeles County residents"
             className="w-full h-full object-cover opacity-40"
           />
           <div className="absolute inset-0 bg-gradient-to-r from-slate-900 via-slate-900/90 to-slate-900/80" />
