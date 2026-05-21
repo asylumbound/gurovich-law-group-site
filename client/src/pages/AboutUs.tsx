@@ -53,7 +53,7 @@ export default function AboutUs() {
           {/* Background Image */}
           <div className="absolute inset-0">
             <img 
-              src="/images/about-firm-hero-bg.png" 
+              src="/manus-storage/about-firm-hero-bg_161f2a64.png" 
               alt="" 
               className="w-full h-full object-cover"
             />

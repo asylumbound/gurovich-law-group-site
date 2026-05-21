@@ -23,7 +23,7 @@ export default function About() {
       {/* Hero Background Image */}
       <div 
         className="absolute inset-0 bg-cover bg-center bg-no-repeat"
-        style={{ backgroundImage: "url('/images/about-firm-hero-bg.png')" }}
+        style={{ backgroundImage: "url('/manus-storage/about-firm-hero-bg_161f2a64.png')" }}
       />
       {/* Dark Overlay for text readability */}
       <div className="absolute inset-0 bg-secondary/70" />

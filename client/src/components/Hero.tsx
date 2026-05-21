@@ -41,7 +41,7 @@ export default function Hero() {
         aria-hidden="true"
       >
         <img
-          src="/images/her0_element_base.png"
+          src="/manus-storage/her0_element_base_6e3bd040.png"
           alt="Los Angeles skyline at sunset - Gurovich Law Group serves the greater LA area"
           className="w-full h-full object-cover object-center"
         />
@@ -83,7 +83,7 @@ export default function Hero() {
         }}
       >
         <img
-          src="/images/justice-statue-replacement-2.png"
+          src="/manus-storage/justice-statue-replacement-2_0cf9ec0d.png"
           alt="Lady Justice statue symbolizing fair legal representation"
           className="absolute bottom-0 left-0 object-contain object-left-bottom h-full w-auto max-w-none"
           style={{

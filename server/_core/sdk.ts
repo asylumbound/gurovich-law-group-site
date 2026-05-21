@@ -291,9 +291,14 @@ class SDKServer {
       throw ForbiddenError("User not found");
     }
 
-    await db.upsertUser({
-      openId: user.open_id,
-    });
+    // Update last_signed_in timestamp
+    try {
+      await db.upsertUser({
+        openId: user.open_id,
+      });
+    } catch (error) {
+      console.warn("[Auth] Failed to update last_signed_in:", error);
+    }
 
     return user;
   }

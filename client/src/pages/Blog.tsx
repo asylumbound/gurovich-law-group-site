@@ -15,7 +15,7 @@ export default function Blog() {
         {/* Background Image */}
         <div 
           className="absolute inset-0 bg-cover bg-center bg-no-repeat"
-          style={{ backgroundImage: "url('/images/blog-hero-bg.png')" }}
+          style={{ backgroundImage: "url('/manus-storage/blog-hero-bg_dfa1e672.png')" }}
         />
         {/* Dark Overlay */}
         <div className="absolute inset-0 bg-secondary/70" />
