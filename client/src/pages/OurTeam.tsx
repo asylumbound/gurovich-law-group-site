@@ -7,7 +7,6 @@
  * - Konstantin Gurovich (Founding Partner)
  * - Rita Skuratovsky (Partner)
  * - John Rogers (Of Counsel)
- * - Leo Rotenberg (Of Counsel)
  * - Milena Dolukhanyan (Of Counsel)
  */
 
@@ -61,16 +60,7 @@ const teamMembers: TeamMember[] = [
     languages: ["English"],
     credentials: ["California State Bar", "U.S. District Courts"],
   },
-  {
-    id: "leo-rotenberg",
-    name: "Leo Rotenberg",
-    title: "Of Counsel",
-    role: "Of Counsel",
-    bio: "Leo Rotenberg is Of Counsel to the firm, specializing in real estate, evictions, business litigation and commercial disputes. His strategic approach and negotiation skills have helped numerous clients resolve complex business conflicts.",
-    practiceAreas: ["Evictions", "Real Estate Litigation", "Business Litigation", "Commercial Disputes"],
-    languages: ["English", "Russian", "Ukrainian"],
-    credentials: ["California State Bar"],
-  },
+
   {
     id: "milena-dolukhanyan",
     name: "Milena Dolukhanyan",

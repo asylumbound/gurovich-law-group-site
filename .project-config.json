@@ -1,0 +1,46 @@
+{
+  "build_command": "pnpm run build",
+  "capabilities": [
+    "db",
+    "server",
+    "user"
+  ],
+  "dev_command": "pnpm run dev",
+  "env_vars": {
+    "DATABASE_URL": "mysql://2QmWxs7iH8DQva8.5d87819da4f6:T00octsH27A5HVx8kQMc@gateway03.us-east-1.prod.aws.tidbcloud.com:4000/J2wS2ZoP78AcJaejkgQxeA?ssl={\"rejectUnauthorized\":true}"
+  },
+  "experiments": null,
+  "git_remote": {
+    "repo_url": "s3://vida-prod-gitrepo/webdev-git/310519663299010464/J2wS2ZoP78AcJaejkgQxeA",
+    "access_key_id": "ASIAZV3A2ECZBWONXIV3",
+    "secret_access_key": "GTc5Aout0M1LDmIZSvl0n7aRdOSbIhnOnkb7Nfm9",
+    "session_token": "IQoJb3JpZ2luX2VjEDEaCXVzLWVhc3QtMSJGMEQCIBnsVVJinFZYUKQbX3CHzstpMOih9dFGkSy7snZq/JSiAiA5f90NbQFBB9IosJW36nmw4Vpur5PgLUcFW3lhGvceiSr/Awj6//////////8BEAQaDDY2NTM4NjA5ODg2NiIMCwxZhb/u1wDN0h1oKtMDsG21iBjG5q9j/H7bxfqoRjDCqlAWW1yCohgftuNJJGqfhC3necF9xLj6vld0d2GfSmSPhrcvbEXoepxJ3gy4k+xoBHC9u1jZ135lpPyhkZMP1/sMB2CvFXNPXz1mONZWkC/UP8i2YVSGcTit3MUvhfRWgrHB2TnGKjx/8kN0cW4MUfocpmJPwLIcyt2LA4jK9wihvkCMErIoBIXAxD/mvbhLnBL11ARv4vCPb6TuGkAqiq3keOE4A/dzhJI3exII0XFvfET06PpN1AL7AmXVzKNyzqK7DGhxVpmehYVf+8HLR0kojMescXbIzF6HNecLLNZ+iiYl8J9+r5gw4ZuhUuIe+xYBZVzYTHLdo0DETvok3sQciMk4WPGW9avKdjJSTL9+2UoGNh7GYnuxFsncquvE6SMo8X9E2gqvNE3tH3Zoj1sNV/MFlb8S2RoHxqG449s96ybvR+fJlVzfs4wVywG1Fuf1kUoyS1gEwADrzsQRXUWc/aBKdfhJ6M1hw4oKEz3F4y7WLs9XTh3eopC6ONJMyRWm4VeBaQuoL5m4T9qbmPA50OsqZpYIksTL67ww2fTLvbkt0P1sBnqWJ0jsDfWf75jjWWdm5bda3jhNlceAZT0w8qG50AY6ngHMFeKtrF6JODS705JblqAYatpP0CFAcbb1yZXLGjI6MG7/rtSDG+Nx+91zjjHYk0mH3zuewVUyPuGYbvDJ/HFWInLjTN8CKZUVfMlvmpNRPGBmJ8Idvydi59ObaQ5wKbkTmo/6YSTfTalo4sUJkzyAvy7+OxuR9YCcJnlHjVf6Uxs6it4LK2Jk3hXrI5CjQ43mkyaCBapGEl8MqVO7Lg==",
+    "expiration": "2026-05-21T12:25:22.000Z"
+  },
+  "name": "gurovich-law-group-site",
+  "path": "/home/ubuntu/gurovich-law-group-site",
+  "port": 3000,
+  "secrets": {
+    "BUILT_IN_FORGE_API_KEY": "cdbHJm9n7e4WqgegCEHymo",
+    "BUILT_IN_FORGE_API_URL": "https://forge.manus.ai",
+    "COURTLISTENER_API_TOKEN": "12ea763b9f0b6b95992964da1d1fba369f51fb5c",
+    "JWT_SECRET": "QqAgwfhDL3mMeEHUZSksUL",
+    "OAUTH_SERVER_URL": "https://api.manus.im",
+    "OPENAI_API_KEY": "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",
+    "OWNER_NAME": "Heriberto Hernandez",
+    "OWNER_OPEN_ID": "6Gzd627bp5gfYboLhe43NJ",
+    "SUPABASE_ANON_KEY": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InR4ZXluZWJzbnpua29xa2htdWFnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njk2NjI4NDcsImV4cCI6MjA4NTIzODg0N30.erHUtwO8G2N60t2WZyltgaMMrZOXwxnVijB7KAZN2jQ",
+    "SUPABASE_SERVICE_ROLE_KEY": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InR4ZXluZWJzbnpua29xa2htdWFnIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc2OTY2Mjg0NywiZXhwIjoyMDg1MjM4ODQ3fQ.FtfCrcsdjQPZQJ0BwTBqrgXqRMYqXJC3NXISAANIz9U",
+    "SUPABASE_URL": "https://txeynebsnznkoqkhmuag.supabase.co",
+    "VITE_ANALYTICS_ENDPOINT": "https://manus-analytics.com",
+    "VITE_ANALYTICS_WEBSITE_ID": "709fff0f-d743-4c68-8be8-a84abaa26820",
+    "VITE_APP_ID": "J2wS2ZoP78AcJaejkgQxeA",
+    "VITE_APP_LOGO": "https://files.manuscdn.com/user_upload_by_module/web_dev_logo/310519663299010464/YwpbosayZwpykHoX.png",
+    "VITE_APP_TITLE": "Gurovich Law Group",
+    "VITE_FRONTEND_FORGE_API_KEY": "NYWMLMkmM57YJzNksRJZUb",
+    "VITE_FRONTEND_FORGE_API_URL": "https://forge.manus.ai",
+    "VITE_OAUTH_PORTAL_URL": "https://manus.im"
+  },
+  "template_id": "web-db-user",
+  "test_command": "pnpm test"
+}
