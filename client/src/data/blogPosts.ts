@@ -186,7 +186,7 @@ Contact us today for a free consultation.`,
     category: "Personal Injury",
     author: "Gurovich Law Group",
     readTime: "6 min read",
-    image: "/images/blog-car-accident.png"
+    image: "https://txeynebsnznkoqkhmuag.supabase.co/storage/v1/object/public/Gurovich/images/blog-car-accident.png"
   },
   {
     id: "5",
@@ -348,7 +348,7 @@ Contact Gurovich Law Group today for a free consultation. We are available 24/7.
     category: "Personal Injury",
     author: "Gurovich Law Group",
     readTime: "8 min read",
-    image: "/images/blog-car-accident-steps.jpg"
+    image: "https://txeynebsnznkoqkhmuag.supabase.co/storage/v1/object/public/Gurovich/images/blog-car-accident-steps.jpg"
   },
   {
     id: "8",
@@ -460,7 +460,7 @@ Contact us today for a free consultation.`,
     category: "Personal Injury",
     author: "Gurovich Law Group",
     readTime: "8 min read",
-    image: "/images/blog-claim-mistakes.jpg"
+    image: "https://txeynebsnznkoqkhmuag.supabase.co/storage/v1/object/public/Gurovich/images/blog-claim-mistakes.jpg"
   },
   {
     id: "10",
@@ -534,7 +534,7 @@ Contact us today for a free consultation. We will review your case and explain y
     category: "Personal Injury",
     author: "Gurovich Law Group",
     readTime: "9 min read",
-    image: "/images/blog-slip-fall-premises.jpg"
+    image: "https://txeynebsnznkoqkhmuag.supabase.co/storage/v1/object/public/Gurovich/images/blog-slip-fall-premises.jpg"
   },
   {
     id: "11",
@@ -633,7 +633,7 @@ Contact Gurovich Law Group today for a free consultation. We will fight to ensur
     category: "Personal Injury",
     author: "Gurovich Law Group",
     readTime: "9 min read",
-    image: "/images/blog-pain-suffering.webp"
+    image: "https://txeynebsnznkoqkhmuag.supabase.co/storage/v1/object/public/Gurovich/images/blog-pain-suffering.webp"
   },
   {
     id: "12",
@@ -717,7 +717,7 @@ Contact us today for a free consultation. Time may be running out on your claim.
     category: "Personal Injury",
     author: "Gurovich Law Group",
     readTime: "8 min read",
-    image: "/images/blog-statute-limitations.webp"
+    image: "https://txeynebsnznkoqkhmuag.supabase.co/storage/v1/object/public/Gurovich/images/blog-statute-limitations.webp"
   },
   {
     id: "13",
@@ -811,7 +811,7 @@ Contact us today for a free consultation.`,
     category: "Personal Injury",
     author: "Gurovich Law Group",
     readTime: "9 min read",
-    image: "/images/blog-workplace-injury.jpg"
+    image: "https://txeynebsnznkoqkhmuag.supabase.co/storage/v1/object/public/Gurovich/images/blog-workplace-injury.jpg"
   },
   {
     id: "14",
@@ -907,7 +907,7 @@ At Gurovich Law Group, we have the resources and experience to investigate distr
     category: "Personal Injury",
     author: "Gurovich Law Group",
     readTime: "9 min read",
-    image: "/images/blog-distracted-driving.jpg"
+    image: "https://txeynebsnznkoqkhmuag.supabase.co/storage/v1/object/public/Gurovich/images/blog-distracted-driving.jpg"
   },
   {
     id: "15",
@@ -1010,7 +1010,7 @@ Contact us today for a free consultation.`,
     category: "Personal Injury",
     author: "Gurovich Law Group",
     readTime: "10 min read",
-    image: "/images/blog-uber-lyft.jpg"
+    image: "https://txeynebsnznkoqkhmuag.supabase.co/storage/v1/object/public/Gurovich/images/blog-uber-lyft.jpg"
   },
   {
     id: "16",
@@ -1126,7 +1126,7 @@ Contact us today for a free consultation.`,
     category: "Personal Injury",
     author: "Gurovich Law Group",
     readTime: "10 min read",
-    image: "/images/blog-product-liability.webp"
+    image: "https://txeynebsnznkoqkhmuag.supabase.co/storage/v1/object/public/Gurovich/images/blog-product-liability.webp"
   }
 ];
 

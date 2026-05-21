@@ -57,7 +57,7 @@ export default function Hero() {
         aria-hidden="true"
       >
         <img
-          src="/images/opacity_half_hero.png"
+          src="https://txeynebsnznkoqkhmuag.supabase.co/storage/v1/object/public/Gurovich/images/opacity_half_hero.png"
           alt="Decorative gradient overlay"
           className="w-full h-full object-cover object-left"
           style={{ opacity: 0.75 }}
@@ -205,7 +205,7 @@ export default function Hero() {
         aria-hidden="true"
       >
         <img
-          src="/images/her0_element_bottom_angles.png"
+          src="https://txeynebsnznkoqkhmuag.supabase.co/storage/v1/object/public/Gurovich/images/her0_element_bottom_angles.png"
           alt="Decorative section divider"
           className="w-full h-auto block"
           style={{ marginBottom: '-1px' }}

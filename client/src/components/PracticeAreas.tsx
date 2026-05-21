@@ -27,25 +27,25 @@ export default function PracticeAreas() {
 
   const practiceAreas = [
     {
-      icon: "/images/personal-injury-LOGO.png",
+      icon: "https://txeynebsnznkoqkhmuag.supabase.co/storage/v1/object/public/Gurovich/images/personal-injury-LOGO.png",
       title: t("practice.personalInjury"),
       description: t("practice.personalInjuryDesc"),
       href: "/practice-areas/personal-injury",
     },
     {
-      icon: "/images/criminal-defense.png",
+      icon: "https://txeynebsnznkoqkhmuag.supabase.co/storage/v1/object/public/Gurovich/images/criminal-defense.png",
       title: t("practice.criminalDefense"),
       description: t("practice.criminalDefenseDesc"),
       href: "/practice-areas/criminal-defense",
     },
     {
-      icon: "/images/tenants-rights.png",
+      icon: "https://txeynebsnznkoqkhmuag.supabase.co/storage/v1/object/public/Gurovich/images/tenants-rights.png",
       title: t("practice.employmentLaw"),
       description: t("practice.employmentLawDesc"),
       href: "/practice-areas/employment-law",
     },
     {
-      icon: "/images/civillitigation.png",
+      icon: "https://txeynebsnznkoqkhmuag.supabase.co/storage/v1/object/public/Gurovich/images/civillitigation.png",
       title: t("practice.civilLitigation"),
       description: t("practice.civilLitigationDesc"),
       href: "/practice-areas/civil-litigation",

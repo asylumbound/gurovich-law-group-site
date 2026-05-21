@@ -16,7 +16,7 @@ const testimonials = [
     source: "Google",
     rating: 5,
     text: "Gurovich Law Group has been my go to law firm for anything from traffic citations to personal injury cases and car accidents for many years now. They provide great service and truly do fight for you trying to make it work in all kinds of situations.",
-    image: "/images/testimonials/alina_t_large.webp",
+    image: "https://txeynebsnznkoqkhmuag.supabase.co/storage/v1/object/public/Gurovich/images/testimonials/alina_t_large.webp",
     hasPhoto: true,
   },
   {
@@ -25,7 +25,7 @@ const testimonials = [
     source: "Google",
     rating: 5,
     text: "The Gurovich team did their best! They fought for my brother's case after mistrial from a previous ridiculous lawyer we had. They did a magnificent job and was able to reduce the time on my brother's case. They went above and beyond!",
-    image: "/images/testimonials/allan_zepeda_large.webp",
+    image: "https://txeynebsnznkoqkhmuag.supabase.co/storage/v1/object/public/Gurovich/images/testimonials/allan_zepeda_large.webp",
     hasPhoto: true,
   },
   {

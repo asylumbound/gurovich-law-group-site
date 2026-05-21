@@ -66,7 +66,7 @@ export default function CityLandingPage() {
         {/* Background Image */}
         <div className="absolute inset-0 z-0">
           <img
-            src="/images/areas-served-hero-bg.jpg"
+            src="https://txeynebsnznkoqkhmuag.supabase.co/storage/v1/object/public/Gurovich/images/areas-served-hero-bg.jpg"
             alt="California courthouse"
             className="w-full h-full object-cover opacity-40"
           />

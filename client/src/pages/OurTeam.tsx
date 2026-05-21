@@ -87,7 +87,7 @@ export default function OurTeam() {
         {/* Background Image */}
         <div className="absolute inset-0 z-0">
           <img
-            src="/images/team-hero-bg.jpg"
+            src="https://txeynebsnznkoqkhmuag.supabase.co/storage/v1/object/public/Gurovich/images/team-hero-bg.jpg"
             alt="Professional legal team"
             className="w-full h-full object-cover opacity-40"
           />

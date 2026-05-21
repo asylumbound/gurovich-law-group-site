@@ -172,7 +172,7 @@ export default function Footer() {
           <div className="flex items-center gap-6 flex-wrap justify-center">
             {/* Payment Icons */}
             <img
-              src="/images/payment-icons.webp"
+              src="https://txeynebsnznkoqkhmuag.supabase.co/storage/v1/object/public/Gurovich/images/payment-icons.webp"
               alt="We accept American Express, MasterCard, Visa, Discover, and Cash"
               className="h-6 w-auto"
             />

@@ -110,7 +110,7 @@ export default function Reviews() {
           {/* Background Image */}
           <div className="absolute inset-0 z-0">
             <img
-              src="/images/reviews-hero-bg.jpg"
+              src="https://txeynebsnznkoqkhmuag.supabase.co/storage/v1/object/public/Gurovich/images/reviews-hero-bg.jpg"
               alt="Happy client handshake"
               className="w-full h-full object-cover opacity-40"
             />

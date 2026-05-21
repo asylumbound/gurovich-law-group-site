@@ -29,7 +29,7 @@ export default function PracticeAreas() {
         {/* Background Image */}
         <div className="absolute inset-0 z-0">
           <img
-            src="/images/practice-areas-hero-bg.png"
+            src="https://txeynebsnznkoqkhmuag.supabase.co/storage/v1/object/public/Gurovich/images/practice-areas-hero-bg.png"
             alt="Legal practice areas"
             className="w-full h-full object-cover opacity-30"
           />

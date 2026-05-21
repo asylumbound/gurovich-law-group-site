@@ -12,19 +12,19 @@ import { motion, AnimatePresence } from "framer-motion";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 
 const badges = [
-  { src: "/images/badges/AIoTL-2025.png", alt: "American Institute of Trial Lawyers - Litigator of the Year 2025" },
-  { src: "/images/badges/badge-2021.png", alt: "National Alliance of Attorneys - Member Attorney of the Year 2021" },
-  { src: "/images/badges/image-5-2.png", alt: "Million Dollar Advocates Forum" },
-  { src: "/images/badges/LACBA.png", alt: "Los Angeles County Bar Association" },
-  { src: "/images/badges/AAA-Top-100.png", alt: "American Academy of Attorneys - Top 100" },
-  { src: "/images/badges/Consumer-Attorneys.png", alt: "Consumer Attorneys Association of Los Angeles - CAALA" },
-  { src: "/images/badges/TOP-LITIGATOR.png", alt: "Litigator Awards - Ranked Top 1% Lawyers" },
-  { src: "/images/badges/Super-Lawyers-2026.png", alt: "Super Lawyers 2026" },
-  { src: "/images/badges/avvo.png", alt: "Avvo Rating" },
-  { src: "/images/badges/AILA-2025-copy.png", alt: "American Institute of Legal Advocates 2025" },
-  { src: "/images/badges/LoD.png", alt: "Lawyers of Distinction" },
-  { src: "/images/badges/NACDA-Badge-2025.png", alt: "National Academy of Criminal Defense Attorneys 2025" },
-  { src: "/images/badges/NAJ-2025copy.png", alt: "National Academy of Jurisprudence 2025" },
+  { src: "https://txeynebsnznkoqkhmuag.supabase.co/storage/v1/object/public/Gurovich/images/badges/AIoTL-2025.png", alt: "American Institute of Trial Lawyers - Litigator of the Year 2025" },
+  { src: "https://txeynebsnznkoqkhmuag.supabase.co/storage/v1/object/public/Gurovich/images/badges/badge-2021.png", alt: "National Alliance of Attorneys - Member Attorney of the Year 2021" },
+  { src: "https://txeynebsnznkoqkhmuag.supabase.co/storage/v1/object/public/Gurovich/images/badges/image-5-2.png", alt: "Million Dollar Advocates Forum" },
+  { src: "https://txeynebsnznkoqkhmuag.supabase.co/storage/v1/object/public/Gurovich/images/badges/LACBA.png", alt: "Los Angeles County Bar Association" },
+  { src: "https://txeynebsnznkoqkhmuag.supabase.co/storage/v1/object/public/Gurovich/images/badges/AAA-Top-100.png", alt: "American Academy of Attorneys - Top 100" },
+  { src: "https://txeynebsnznkoqkhmuag.supabase.co/storage/v1/object/public/Gurovich/images/badges/Consumer-Attorneys.png", alt: "Consumer Attorneys Association of Los Angeles - CAALA" },
+  { src: "https://txeynebsnznkoqkhmuag.supabase.co/storage/v1/object/public/Gurovich/images/badges/TOP-LITIGATOR.png", alt: "Litigator Awards - Ranked Top 1% Lawyers" },
+  { src: "https://txeynebsnznkoqkhmuag.supabase.co/storage/v1/object/public/Gurovich/images/badges/Super-Lawyers-2026.png", alt: "Super Lawyers 2026" },
+  { src: "https://txeynebsnznkoqkhmuag.supabase.co/storage/v1/object/public/Gurovich/images/badges/avvo.png", alt: "Avvo Rating" },
+  { src: "https://txeynebsnznkoqkhmuag.supabase.co/storage/v1/object/public/Gurovich/images/badges/AILA-2025-copy.png", alt: "American Institute of Legal Advocates 2025" },
+  { src: "https://txeynebsnznkoqkhmuag.supabase.co/storage/v1/object/public/Gurovich/images/badges/LoD.png", alt: "Lawyers of Distinction" },
+  { src: "https://txeynebsnznkoqkhmuag.supabase.co/storage/v1/object/public/Gurovich/images/badges/NACDA-Badge-2025.png", alt: "National Academy of Criminal Defense Attorneys 2025" },
+  { src: "https://txeynebsnznkoqkhmuag.supabase.co/storage/v1/object/public/Gurovich/images/badges/NAJ-2025copy.png", alt: "National Academy of Jurisprudence 2025" },
 ];
 
 export default function BadgeCarousel() {
