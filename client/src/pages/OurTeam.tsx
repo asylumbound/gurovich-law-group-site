@@ -199,12 +199,21 @@ function TeamCard({ member, featured = false }: { member: TeamMember; featured?:
       <div className="p-6">
         {/* Header */}
         <div className="flex items-start gap-4 mb-4">
-          {/* Avatar placeholder */}
-          <div className="w-20 h-20 rounded-xl bg-slate-200 flex items-center justify-center flex-shrink-0">
-            <span className="text-2xl font-bold text-slate-400">
-              {member.name.split(" ").map(n => n[0]).join("")}
-            </span>
-          </div>
+          {/* Portrait, falling back to initials when no photo is set */}
+          {member.image ? (
+            <img
+              src={member.image}
+              alt={`${member.name}, ${member.title} at Gurovich Law Group`}
+              loading="lazy"
+              className="w-20 h-20 rounded-xl object-cover flex-shrink-0"
+            />
+          ) : (
+            <div className="w-20 h-20 rounded-xl bg-slate-200 flex items-center justify-center flex-shrink-0">
+              <span className="text-2xl font-bold text-slate-400">
+                {member.name.split(" ").map(n => n[0]).join("")}
+              </span>
+            </div>
+          )}
           <div>
             <h3 className="text-xl font-bold text-slate-900">
               {member.name}
