@@ -20,6 +20,7 @@ interface TeamMember {
   title: string;
   role: string;
   image?: string;
+  imageSrcSet?: string;
   bio: string;
   practiceAreas: string[];
   languages: string[];
@@ -28,9 +29,21 @@ interface TeamMember {
   email?: string;
 }
 
+const PORTRAIT_BASE =
+  "https://txeynebsnznkoqkhmuag.supabase.co/storage/v1/object/public/Gurovich/images/team";
+
+// Portraits are square-cropped WebP at 160px and 320px; the cards render at 80px,
+// so 320px covers high-density displays. A full-aspect <slug>.webp is also stored
+// for future use on larger layouts.
+const portrait = (slug: string) => ({
+  image: `${PORTRAIT_BASE}/${slug}-320.webp`,
+  imageSrcSet: `${PORTRAIT_BASE}/${slug}-160.webp 160w, ${PORTRAIT_BASE}/${slug}-320.webp 320w`,
+});
+
 const teamMembers: TeamMember[] = [
   {
     id: "konstantin-gurovich",
+    ...portrait("konstantin-gurovich"),
     name: "Konstantin Gurovich",
     title: "Founding Partner",
     role: "Principal",
@@ -42,6 +55,7 @@ const teamMembers: TeamMember[] = [
   },
   {
     id: "rita-skuratovsky",
+    ...portrait("rita-skuratovsky"),
     name: "Rita Skuratovsky",
     title: "Partner",
     role: "Attorney",
@@ -52,6 +66,7 @@ const teamMembers: TeamMember[] = [
   },
   {
     id: "john-rogers",
+    ...portrait("john-rogers"),
     name: "John Rogers",
     title: "Of Counsel",
     role: "Of Counsel",
@@ -63,6 +78,7 @@ const teamMembers: TeamMember[] = [
 
   {
     id: "milena-dolukhanyan",
+    ...portrait("milena-dolukhanyan"),
     name: "Milena Dolukhanyan",
     title: "Of Counsel",
     role: "Of Counsel",
@@ -203,6 +219,10 @@ function TeamCard({ member, featured = false }: { member: TeamMember; featured?:
           {member.image ? (
             <img
               src={member.image}
+              srcSet={member.imageSrcSet}
+              sizes="80px"
+              width={80}
+              height={80}
               alt={`${member.name}, ${member.title} at Gurovich Law Group`}
               loading="lazy"
               className="w-20 h-20 rounded-xl object-cover flex-shrink-0"
